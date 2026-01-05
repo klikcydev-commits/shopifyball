@@ -1,6 +1,9 @@
 import { MetadataRoute } from 'next'
 import { getCollections, getProducts } from '@/lib/shopify'
 
+// Force dynamic rendering for sitemap
+export const dynamic = 'force-dynamic'
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://lemah.com'
 

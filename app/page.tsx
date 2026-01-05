@@ -7,6 +7,9 @@ import { FeaturedCategories } from '@/components/home/featured-categories'
 import { Testimonials } from '@/components/home/testimonials'
 import { Newsletter } from '@/components/home/newsletter'
 
+// Force dynamic rendering to avoid build-time Shopify API calls
+export const dynamic = 'force-dynamic'
+
 export default function HomePage() {
   return (
     <>

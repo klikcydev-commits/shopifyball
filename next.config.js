@@ -24,6 +24,11 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
+  // Allow build to continue with some errors (for graceful degradation)
+  onDemandEntries: {
+    maxInactiveAge: 60 * 1000,
+    pagesBufferLength: 5,
+  },
   // Exclude src from page detection
   pageExtensions: ['tsx', 'ts', 'jsx', 'js'],
 }

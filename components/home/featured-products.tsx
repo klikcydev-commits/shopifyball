@@ -5,7 +5,19 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 
 export async function FeaturedProducts() {
-  const { products } = await getProducts({ first: 6 })
+  let products: Awaited<ReturnType<typeof getProducts>>['products'] = []
+  
+  try {
+    const result = await getProducts({ first: 6 })
+    products = result.products
+  } catch (error) {
+    console.error('Error fetching featured products:', error)
+    // Return empty state if API fails
+  }
+
+  if (products.length === 0) {
+    return null
+  }
 
   return (
     <section className="section-padding bg-cream">

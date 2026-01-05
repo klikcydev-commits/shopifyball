@@ -46,11 +46,11 @@ export async function shopifyFetch<T>({
       body,
     }
   } catch (e) {
-    throw {
-      status: 500,
-      message: e instanceof Error ? e.message : 'Error fetching data',
-      query,
-    }
+    const errorMessage = e instanceof Error ? e.message : 'Error fetching data'
+    const error = new Error(errorMessage)
+    // Add status as a property (not in the message to avoid serialization issues)
+    ;(error as any).status = 500
+    throw error
   }
 }
 

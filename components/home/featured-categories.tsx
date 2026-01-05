@@ -5,7 +5,18 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 
 export async function FeaturedCategories() {
-  const collections = await getCollections(6)
+  let collections: Awaited<ReturnType<typeof getCollections>> = []
+  
+  try {
+    collections = await getCollections(6)
+  } catch (error) {
+    console.error('Error fetching featured categories:', error)
+    // Return empty state if API fails
+  }
+
+  if (collections.length === 0) {
+    return null
+  }
 
   return (
     <section className="section-padding bg-background">

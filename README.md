@@ -1,4 +1,4 @@
-# LeMah - Next.js Ecommerce with Shopify
+# ShopifyBall - Next.js Ecommerce with Shopify
 
 A high-performance, server-rendered Next.js App Router ecommerce application using Shopify as a headless CMS. Built with React Server Components, Server Actions, Suspense, useOptimistic, and more.
 

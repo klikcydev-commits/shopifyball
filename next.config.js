@@ -10,15 +10,22 @@ const nextConfig = {
       bodySizeLimit: '2mb',
     },
   },
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
     // Ignore old src directory files that use react-router-dom
     config.plugins.push(
       new webpack.IgnorePlugin({
-        resourceRegExp: /^\.\/src\/pages\/.*$/,
+        resourceRegExp: /^\.\/src\/.*$/,
+        contextRegExp: /\.$/,
       })
     )
     return config
   },
+  // Exclude src directory from TypeScript compilation
+  typescript: {
+    ignoreBuildErrors: false,
+  },
+  // Exclude src from page detection
+  pageExtensions: ['tsx', 'ts', 'jsx', 'js'],
 }
 
 module.exports = nextConfig

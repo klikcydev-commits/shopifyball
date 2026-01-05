@@ -46,3 +46,6 @@ next-env.d.ts
 # OS
 Thumbs.db
 
+# Old src directory (Vite/React Router - not used in Next.js)
+/src
+

@@ -1,0 +1,39 @@
+import { Suspense } from 'react'
+import { Header } from '@/components/layout/header'
+import { Footer } from '@/components/layout/footer'
+import { SearchClient } from './search-client'
+import { getCollections } from '@/lib/shopify'
+
+export const metadata = {
+  title: 'Search Products | LeMah',
+  description: 'Browse our collection of premium football gear',
+}
+
+export default async function SearchPage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined }
+}) {
+  const collectionHandle = typeof searchParams.collection === 'string' ? searchParams.collection : undefined
+  const query = typeof searchParams.q === 'string' ? searchParams.q : undefined
+
+  const collections = await getCollections(20)
+
+  return (
+    <>
+      <Header />
+      <main className="pt-32">
+        <Suspense fallback={<div className="section-padding bg-cream" />}>
+          <SearchClient
+            collectionHandle={collectionHandle}
+            query={query}
+            collections={collections}
+          />
+        </Suspense>
+      </main>
+      <Footer />
+    </>
+  )
+}
+
+

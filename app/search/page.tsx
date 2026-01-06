@@ -1,6 +1,7 @@
 import { Suspense } from 'react'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
+import { PageHero } from '@/components/ui/page-hero'
 import { SearchClient } from './search-client'
 import { getCollections } from '@/lib/shopify'
 
@@ -32,7 +33,14 @@ export default async function SearchPage({
   return (
     <>
       <Header />
-      <main className="pt-32">
+      <main className="pt-20">
+        {/* Hero Section */}
+        <PageHero 
+          title="Shop Our Collection"
+          subtitle="Discover premium football gear designed for champions at every level."
+          badge="Browse Products"
+        />
+        
         <Suspense fallback={<div className="section-padding bg-cream" />}>
           <SearchClient
             collectionHandle={collectionHandle}
@@ -45,5 +53,3 @@ export default async function SearchPage({
     </>
   )
 }
-
-

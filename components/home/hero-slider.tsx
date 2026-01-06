@@ -1,15 +1,17 @@
 'use client'
 
+import { useEffect, useRef } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
+  type CarouselApi,
 } from '@/components/ui/carousel'
+import Autoplay from 'embla-carousel-autoplay'
 
 const heroSlides = [
   {
@@ -18,7 +20,7 @@ const heroSlides = [
     title: 'BUILT FOR',
     titleHighlight: 'CHAMPIONS',
     description: 'From the training field to game day, we equip athletes with the best equipment to dominate the competition.',
-    image: 'https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=1920&q=80',
+    image: '/hero/143e766fa898a0c6d2b3306e6f0399a1.jpg',
     cta: 'Shop Now',
     ctaLink: '/search',
   },
@@ -28,7 +30,7 @@ const heroSlides = [
     title: 'TRAIN LIKE A',
     titleHighlight: 'PRO',
     description: 'Professional-grade equipment designed for serious athletes who demand the best from their gear.',
-    image: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1920&q=80',
+    image: '/hero/50f8d3f1432e84d6ca0e973b063c4202.jpg',
     cta: 'Explore Collection',
     ctaLink: '/search',
   },
@@ -38,16 +40,51 @@ const heroSlides = [
     title: 'WIN WITH',
     titleHighlight: 'CONFIDENCE',
     description: 'Step onto the field with gear that matches your ambition. Built for those who never settle.',
-    image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=1920&q=80',
+    image: '/hero/9bfa24ff77e7fd01ee3bcfd17d7f7fc0.jpg',
     cta: 'Shop Now',
+    ctaLink: '/search',
+  },
+  {
+    id: 4,
+    badge: 'Signature Collection',
+    title: 'THE 11',
+    titleHighlight: 'KIT',
+    description: 'Exclusive gear for the ultimate football experience. Premium quality meets iconic design.',
+    image: '/hero/ae7d957f2c45de5aaa5ed7cbb0356459.jpg',
+    cta: 'View Collection',
+    ctaLink: '/search',
+  },
+  {
+    id: 5,
+    badge: 'New Arrivals',
+    title: 'DOMINATE THE',
+    titleHighlight: 'FIELD',
+    description: 'Discover the latest in football innovation. Gear engineered for peak performance.',
+    image: '/hero/b31949241432d0ca148b2fb051ff2eb8.jpg',
+    cta: 'Shop New',
+    ctaLink: '/search',
+  },
+  {
+    id: 6,
+    badge: 'LeMah Exclusive',
+    title: 'ELEVATE YOUR',
+    titleHighlight: 'GAME',
+    description: 'Join the champions who trust LeMah for their football journey.',
+    image: '/hero/cd87e0c0b2b6bb096b297a54db9850c4.jpg',
+    cta: 'Get Started',
     ctaLink: '/search',
   },
 ]
 
 export function HeroSlider() {
+  const plugin = useRef(
+    Autoplay({ delay: 1000, stopOnInteraction: false, stopOnMouseEnter: false })
+  )
+
   return (
     <section className="relative min-h-screen overflow-hidden">
       <Carousel
+        plugins={[plugin.current]}
         opts={{
           align: 'start',
           loop: true,
@@ -58,13 +95,15 @@ export function HeroSlider() {
           {heroSlides.map((slide) => (
             <CarouselItem key={slide.id} className="pl-0">
               <div className="relative min-h-screen flex items-center bg-navy overflow-hidden">
-                <div
-                  className="absolute inset-0 bg-cover bg-center opacity-30"
-                  style={{
-                    backgroundImage: `url(${slide.image})`,
-                  }}
+                <Image
+                  src={slide.image}
+                  alt={slide.title}
+                  fill
+                  className="object-cover opacity-40"
+                  priority={slide.id === 1}
+                  sizes="100vw"
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-navy via-navy/80 to-navy" />
+                <div className="absolute inset-0 bg-gradient-to-b from-navy/60 via-navy/70 to-navy/90" />
                 
                 <div className="container-custom relative pt-32 w-full">
                   <div className="max-w-3xl">
@@ -94,11 +133,8 @@ export function HeroSlider() {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="left-4 md:left-8 h-12 w-12 bg-white/10 hover:bg-white/20 border-white/20 text-white" />
-        <CarouselNext className="right-4 md:right-8 h-12 w-12 bg-white/10 hover:bg-white/20 border-white/20 text-white" />
+        {/* No arrows - auto sliding only */}
       </Carousel>
     </section>
   )
 }
-
-

@@ -1,5 +1,6 @@
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
+import { PageHero } from '@/components/ui/page-hero'
 
 export const metadata = {
   title: 'About Us | LeMah',
@@ -10,25 +11,13 @@ export default function AboutPage() {
   return (
     <>
       <Header />
-      <main className="pt-32 pb-16">
+      <main className="pt-20">
         {/* Hero Section */}
-        <section className="bg-navy text-primary-foreground py-20">
-          <div className="container-custom">
-            <div className="max-w-3xl">
-              <span className="inline-block px-4 py-2 bg-gold/20 border border-gold/30 rounded-full text-gold text-sm font-medium uppercase tracking-wider mb-6">
-                Our Story
-              </span>
-              <h1 className="font-heading text-5xl md:text-6xl mb-6">
-                Built for <span className="text-gold">Champions</span>
-              </h1>
-              <p className="text-xl text-primary-foreground/80">
-                LeMah was founded with a simple mission: to provide athletes with premium 
-                football gear that helps them perform at their best, from the training 
-                field to game day.
-              </p>
-            </div>
-          </div>
-        </section>
+        <PageHero 
+          title="Built for Champions"
+          subtitle="LeMah was founded with a simple mission: to provide athletes with premium football gear that helps them perform at their best."
+          badge="Our Story"
+        />
 
         {/* Mission Section */}
         <section className="section-padding bg-cream">
@@ -122,4 +111,3 @@ export default function AboutPage() {
     </>
   )
 }
-

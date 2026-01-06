@@ -79,7 +79,7 @@ const heroSlides = [
 export function HeroSlider() {
   const plugin = useRef(
     Autoplay({ 
-      delay: 1000, 
+      delay: 4000, 
       stopOnInteraction: false, 
       stopOnMouseEnter: false,
       playOnInit: true,

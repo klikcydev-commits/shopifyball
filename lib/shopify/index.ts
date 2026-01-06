@@ -17,6 +17,7 @@ export async function getMenu(handle: string): Promise<ShopifyMenu | null> {
   const res = await shopifyFetch<{ data: { menu: ShopifyMenu | null } }>({
     query: getMenuQuery,
     variables: { handle },
+    cache: 'no-store', // Always fetch fresh menu from Shopify
   })
 
   return res.body.data.menu
@@ -65,6 +66,7 @@ export async function getProducts({
       query,
       first,
     },
+    cache: 'no-store', // Always fetch fresh products from Shopify
   })
 
   return {
@@ -81,6 +83,7 @@ export async function getCollection(
   const res = await shopifyFetch<{ data: { collection: ShopifyCollection | null } }>({
     query: getCollectionQuery,
     variables: { handle, first, after },
+    cache: 'no-store', // Always fetch fresh collection data from Shopify
   })
 
   return res.body.data.collection
@@ -96,6 +99,7 @@ export async function getCollections(first: number = 12): Promise<ShopifyCollect
   }>({
     query: getCollectionsQuery,
     variables: { first },
+    cache: 'no-store', // Always fetch fresh collections from Shopify
   })
 
   return res.body.data.collections.edges.map((edge) => edge.node)

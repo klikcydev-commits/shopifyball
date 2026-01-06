@@ -8,22 +8,78 @@ import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useCart } from '@/components/cart/cart-provider'
 import { CartModal } from '@/components/cart/cart-modal'
+import { fetchMenu } from '@/app/actions/menu-actions'
 
-const defaultNavLinks = [
+interface MenuItem {
+  id: string
+  title: string
+  url: string
+  items?: MenuItem[]
+}
+
+const defaultNavLinks: MenuItem[] = [
   { id: 'home', title: 'Home', url: '/' },
   { id: 'shop', title: 'Shop', url: '/search' },
   { id: 'about', title: 'About', url: '/about' },
   { id: 'contact', title: 'Contact', url: '/contact' },
 ]
 
+// Convert Shopify URLs to local paths
+function normalizeUrl(url: string): string {
+  if (!url) return '/'
+  try {
+    const u = new URL(url)
+    // Convert Shopify collection URLs to search page
+    if (u.pathname.startsWith('/collections/')) {
+      const handle = u.pathname.replace('/collections/', '')
+      return `/search?collection=${handle}`
+    }
+    return u.pathname + u.search + u.hash
+  } catch {
+    // If it's already a relative URL
+    if (url.startsWith('/collections/')) {
+      const handle = url.replace('/collections/', '')
+      return `/search?collection=${handle}`
+    }
+    return url
+  }
+}
+
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isCartOpen, setIsCartOpen] = useState(false)
+  const [navLinks, setNavLinks] = useState<MenuItem[]>(defaultNavLinks)
   const pathname = usePathname()
   const { cart } = useCart()
 
   const cartItemCount = cart?.lines?.edges?.reduce((total, edge) => total + (edge?.node?.quantity ?? 0), 0) ?? 0
+
+  // Fetch menu from Shopify
+  useEffect(() => {
+    async function loadMenu() {
+      try {
+        const menu = await fetchMenu('main-menu')
+        if (menu && menu.items && menu.items.length > 0) {
+          const items = menu.items.map((item) => ({
+            id: item.id,
+            title: item.title,
+            url: normalizeUrl(item.url),
+            items: item.items?.map((subItem) => ({
+              id: subItem.id,
+              title: subItem.title,
+              url: normalizeUrl(subItem.url),
+            })),
+          }))
+          setNavLinks(items)
+        }
+      } catch (error) {
+        console.error('Error loading menu:', error)
+        // Keep default nav links on error
+      }
+    }
+    loadMenu()
+  }, [])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,7 +114,7 @@ export function Header() {
             </Link>
 
             <ul className="hidden lg:flex items-center gap-8">
-              {defaultNavLinks.map((link) => (
+              {navLinks.map((link) => (
                 <li key={link.id} className="relative group">
                   <Link
                     href={link.url}
@@ -77,14 +133,29 @@ export function Header() {
                       />
                     )}
                   </Link>
+                  {link.items && link.items.length > 0 && (
+                    <div className="absolute left-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                      <div className="bg-navy border border-navy-light rounded-lg shadow-lg py-2 min-w-[200px]">
+                        {link.items.map((subLink) => (
+                          <Link
+                            key={subLink.id}
+                            href={subLink.url}
+                            className="block px-4 py-2 text-sm text-primary-foreground hover:text-gold hover:bg-navy-light transition-colors"
+                          >
+                            {subLink.title}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </li>
               ))}
             </ul>
 
             <div className="flex items-center gap-4">
-              <button className="text-primary-foreground hover:text-gold transition-colors hidden sm:block">
+              <Link href="/search" className="text-primary-foreground hover:text-gold transition-colors hidden sm:block">
                 <Search className="w-5 h-5" />
-              </button>
+              </Link>
               <button className="text-primary-foreground hover:text-gold transition-colors hidden sm:block">
                 <User className="w-5 h-5" />
               </button>
@@ -121,7 +192,7 @@ export function Header() {
             >
               <div className="container-custom py-6">
                 <ul className="flex flex-col gap-4">
-                  {defaultNavLinks.map((link, index) => (
+                  {navLinks.map((link, index) => (
                     <motion.li
                       key={link.id}
                       initial={{ opacity: 0, x: -20 }}
@@ -138,6 +209,19 @@ export function Header() {
                       >
                         {link.title}
                       </Link>
+                      {link.items && link.items.length > 0 && (
+                        <div className="pl-4 mt-2 space-y-2">
+                          {link.items.map((subLink) => (
+                            <Link
+                              key={subLink.id}
+                              href={subLink.url}
+                              className="block py-1 text-primary-foreground/70 hover:text-gold transition-colors"
+                            >
+                              {subLink.title}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
                     </motion.li>
                   ))}
                 </ul>

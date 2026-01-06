@@ -26,7 +26,12 @@ interface PageHeroProps {
 
 export function PageHero({ title, subtitle, badge }: PageHeroProps) {
   const plugin = useRef(
-    Autoplay({ delay: 1000, stopOnInteraction: false, stopOnMouseEnter: false })
+    Autoplay({ 
+      delay: 1000, 
+      stopOnInteraction: false, 
+      stopOnMouseEnter: false,
+      playOnInit: true,
+    })
   )
 
   return (

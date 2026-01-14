@@ -1,7 +1,8 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Menu, X, ShoppingBag, Search, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -108,12 +109,16 @@ export function Header() {
         <div className="container-custom">
           <nav className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-10 h-10 bg-gold rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <span className="font-heading font-bold text-navy text-xl">L</span>
+              <div className="relative w-12 h-12 group-hover:scale-110 transition-transform duration-300">
+                <Image
+                  src="/logo.png"
+                  alt="LeMah Logo"
+                  fill
+                  className="object-contain"
+                  priority
+                  sizes="48px"
+                />
               </div>
-              <span className="font-heading text-2xl text-primary-foreground tracking-wide">
-                <span className="text-gold">LeMah</span>
-              </span>
             </Link>
 
             <ul className="hidden lg:flex items-center gap-8">

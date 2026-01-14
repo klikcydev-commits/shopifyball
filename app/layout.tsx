@@ -21,10 +21,28 @@ export const metadata: Metadata = {
   description: 'Premium football gear for champions. From the training field to game day, we equip athletes with the best equipment.',
   keywords: ['football', 'sports equipment', 'athletic gear', 'football gear'],
   authors: [{ name: 'LeMah' }],
+  icons: {
+    icon: '/logo.png',
+    apple: '/logo.png',
+  },
   openGraph: {
     title: 'LeMah - Premium Football Gear',
-    description: 'Premium football gear for champions',
+    description: 'Premium football gear for champions. From the training field to game day, we equip athletes with the best equipment.',
     type: 'website',
+    images: [
+      {
+        url: '/logo.png',
+        width: 1200,
+        height: 630,
+        alt: 'LeMah - Premium Football Gear',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'LeMah - Premium Football Gear',
+    description: 'Premium football gear for champions',
+    images: ['/logo.png'],
   },
 }
 

@@ -1,40 +1,50 @@
-import { Suspense } from 'react'
 import Image from 'next/image'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
-import { getProducts } from '@/lib/shopify'
-import { ProductCard } from '@/components/product/product-card'
+import { KitDisplay } from './kit-display'
 import type { Metadata } from 'next'
 
-// Force dynamic rendering to avoid build-time API calls
-export const dynamic = 'force-dynamic'
-
 export const metadata: Metadata = {
-  title: 'Real Madrid Kits | LeMah',
-  description: 'Discover official Real Madrid kits and accessories - authentic jerseys and complete kits for true Madridistas.',
+  title: 'The 11 Kit | LeMah - Real Madrid',
+  description: 'Discover The 11 Kit - Official Real Madrid kit collection. Premium quality for true Madridistas.',
 }
 
-export default async function KitPage() {
-  // Fetch products with "kit" tag from Shopify
-  let products: Awaited<ReturnType<typeof getProducts>>['products'] = []
-  
-  try {
-    const result = await getProducts({ 
-      query: 'tag:kit', // Filter products by "kit" tag
-      first: 50 // Get up to 50 kit products
-    })
-    products = result.products
-  } catch (error) {
-    console.error('Error fetching kit products:', error)
-    // Continue with empty products array
-  }
+// Kit product data structure - ready for you to add your product
+interface KitProduct {
+  id: string
+  name: string
+  description: string
+  price: string
+  originalPrice?: string
+  images: string[]
+  features: string[]
+  sizes?: string[]
+  inStock: boolean
+}
 
+// Placeholder - you'll add your actual product data here later
+const kitProducts: KitProduct[] = [
+  // Add your "The 11 Kit" product data here when ready
+  // Example structure:
+  // {
+  //   id: 'the-11-kit',
+  //   name: 'The 11 Kit',
+  //   description: 'Complete Real Madrid kit...',
+  //   price: '$199.99',
+  //   images: ['/path/to/image1.jpg', '/path/to/image2.jpg'],
+  //   features: ['Official jersey', 'Shorts', 'Socks', 'Complete set'],
+  //   sizes: ['S', 'M', 'L', 'XL', 'XXL'],
+  //   inStock: true,
+  // }
+]
+
+export default function KitPage() {
   return (
     <>
       <Header />
       <main className="pt-20">
         {/* Hero Section */}
-        <section className="relative h-[50vh] min-h-[400px] overflow-hidden">
+        <section className="relative h-[70vh] min-h-[600px] overflow-hidden">
           <div className="relative h-full w-full">
             <Image
               src="/hero/ae7d957f2c45de5aaa5ed7cbb0356459.jpg"
@@ -46,65 +56,61 @@ export default async function KitPage() {
             />
           </div>
           
-          {/* Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-navy/70 via-navy/60 to-navy/80" />
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-navy/85 via-navy/75 to-navy/90" />
+          
+          {/* Animated Background Pattern */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute inset-0" style={{
+              backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0)',
+              backgroundSize: '40px 40px'
+            }} />
+          </div>
           
           {/* Content */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="container-custom text-center">
-              <span className="inline-block px-4 py-2 bg-gold/20 border border-gold/30 rounded-full text-gold text-sm font-medium uppercase tracking-wider mb-6">
-                Premium Collection
-              </span>
-              <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl text-primary-foreground mb-4">
-                Real Madrid Kits
+            <div className="container-custom text-center relative z-10">
+              <div className="inline-block px-6 py-3 bg-gold/20 backdrop-blur-sm border-2 border-gold/40 rounded-full text-gold text-sm font-bold uppercase tracking-widest mb-8 animate-fade-in">
+                Exclusive Collection
+              </div>
+              <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl xl:text-8xl text-primary-foreground mb-6 leading-tight">
+                <span className="block">THE</span>
+                <span className="block text-gold drop-shadow-2xl">11 KIT</span>
               </h1>
-              <p className="text-xl text-primary-foreground/80 max-w-2xl mx-auto">
-                Official Real Madrid kits and accessories. Authentic jerseys and complete kits for true Madridistas.
+              <p className="text-xl md:text-2xl text-primary-foreground/90 max-w-3xl mx-auto mb-8 leading-relaxed">
+                Official Real Madrid kit collection. Premium quality designed for champions.
+                <br />
+                <span className="text-gold font-semibold">Authentic. Exclusive. Legendary.</span>
               </p>
+              <div className="flex flex-wrap justify-center gap-4">
+                <a 
+                  href="#kit-display" 
+                  className="px-8 py-4 bg-gold text-navy font-bold rounded-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 uppercase tracking-wider"
+                >
+                  View Collection
+                </a>
+                <a 
+                  href="#kit-display" 
+                  className="px-8 py-4 border-2 border-primary-foreground text-primary-foreground font-bold rounded-lg hover:bg-primary-foreground hover:text-navy transition-all duration-300 uppercase tracking-wider"
+                >
+                  Learn More
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          {/* Scroll Indicator */}
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <div className="w-6 h-10 border-2 border-primary-foreground/50 rounded-full flex justify-center">
+              <div className="w-1 h-3 bg-primary-foreground/50 rounded-full mt-2 animate-pulse" />
             </div>
           </div>
         </section>
         
-        {/* Products Section */}
-        <section className="section-padding bg-cream">
+        {/* Kit Display Section */}
+        <section id="kit-display" className="section-padding bg-gradient-to-b from-cream via-background to-cream">
           <div className="container-custom">
-            <div className="mb-8">
-              <h2 className="font-heading text-3xl md:text-4xl text-navy mb-4">
-                Real Madrid Kit Collection
-              </h2>
-              {products.length > 0 && (
-                <p className="text-muted-foreground">
-                  {products.length} {products.length === 1 ? 'kit' : 'kits'} available
-                </p>
-              )}
-            </div>
-
-            <Suspense 
-              fallback={
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {[...Array(6)].map((_, i) => (
-                    <div key={i} className="h-96 bg-muted animate-pulse rounded-lg" />
-                  ))}
-                </div>
-              }
-            >
-              {products.length === 0 ? (
-                <div className="text-center py-16">
-                  <p className="text-xl text-muted-foreground mb-4">
-                    No kit products found
-                  </p>
-                  <p className="text-muted-foreground">
-                    Make sure you have products tagged with &quot;kit&quot; in your Shopify store.
-                  </p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {products.map((product) => (
-                    <ProductCard key={product.id} product={product} />
-                  ))}
-                </div>
-              )}
-            </Suspense>
+            <KitDisplay products={kitProducts} />
           </div>
         </section>
       </main>
@@ -112,4 +118,3 @@ export default async function KitPage() {
     </>
   )
 }
-

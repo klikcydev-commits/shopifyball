@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Menu, X, ShoppingBag, Search, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -56,7 +55,7 @@ export function Header() {
 
   const cartItemCount = cart?.lines?.edges?.reduce((total, edge) => total + (edge?.node?.quantity ?? 0), 0) ?? 0
 
-  // Fetch menu from Shopify - use Shopify menu directly, no merging to avoid duplicates
+  // Fetch menu from Shopify and merge with default links
   useEffect(() => {
     async function loadMenu() {
       try {
@@ -73,10 +72,26 @@ export function Header() {
             })),
           }))
           
-          // Use Shopify menu directly - no merging to prevent duplicates
-          setNavLinks(shopifyItems)
+          // Merge with default links - ensure essential items are always present
+          const mergedItems: MenuItem[] = [...shopifyItems]
+          
+          // Add default links that are missing from Shopify menu
+          defaultNavLinks.forEach((defaultLink) => {
+            const exists = mergedItems.some(
+              (item) => item.url === defaultLink.url || item.title.toLowerCase() === defaultLink.title.toLowerCase()
+            )
+            if (!exists) {
+              mergedItems.push({
+                id: defaultLink.id,
+                title: defaultLink.title,
+                url: defaultLink.url,
+                items: defaultLink.items,
+              })
+            }
+          })
+          
+          setNavLinks(mergedItems)
         }
-        // If Shopify menu fails or is empty, keep default nav links
       } catch (error) {
         console.error('Error loading menu:', error)
         // Keep default nav links on error
@@ -109,16 +124,12 @@ export function Header() {
         <div className="container-custom">
           <nav className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2 group">
-              <div className="relative w-20 h-20 md:w-24 md:h-24 group-hover:scale-110 transition-transform duration-300">
-                <Image
-                  src="/logo.png"
-                  alt="LeMah Logo"
-                  fill
-                  className="object-contain"
-                  priority
-                  sizes="(max-width: 768px) 80px, 96px"
-                />
+              <div className="w-10 h-10 bg-gold rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <span className="font-heading font-bold text-navy text-xl">L</span>
               </div>
+              <span className="font-heading text-2xl text-primary-foreground tracking-wide">
+                <span className="text-gold">LeMah</span>
+              </span>
             </Link>
 
             <ul className="hidden lg:flex items-center gap-8">

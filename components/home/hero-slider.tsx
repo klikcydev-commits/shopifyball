@@ -17,7 +17,7 @@ const heroSlides = [
   {
     id: 1,
     badge: 'Premium Football Gear',
-    title: 'BUILT FOR',
+    title: 'LeMah - BUILT FOR',
     titleHighlight: 'CHAMPIONS',
     description: 'From the training field to game day, we equip athletes with the best equipment to dominate the competition.',
     image: '/hero/143e766fa898a0c6d2b3306e6f0399a1.jpg',

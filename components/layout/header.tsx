@@ -81,7 +81,12 @@ export function Header() {
               (item) => item.url === defaultLink.url || item.title.toLowerCase() === defaultLink.title.toLowerCase()
             )
             if (!exists) {
-              mergedItems.push(defaultLink)
+              mergedItems.push({
+                id: defaultLink.id,
+                title: defaultLink.title,
+                url: defaultLink.url,
+                items: defaultLink.items || undefined,
+              })
             }
           })
           

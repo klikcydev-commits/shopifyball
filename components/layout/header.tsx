@@ -55,7 +55,7 @@ export function Header() {
 
   const cartItemCount = cart?.lines?.edges?.reduce((total, edge) => total + (edge?.node?.quantity ?? 0), 0) ?? 0
 
-  // Fetch menu from Shopify and merge with default links
+  // Fetch menu from Shopify - use Shopify menu directly, no merging to avoid duplicates
   useEffect(() => {
     async function loadMenu() {
       try {
@@ -72,26 +72,10 @@ export function Header() {
             })),
           }))
           
-          // Merge with default links - ensure essential items are always present
-          const mergedItems = [...shopifyItems]
-          
-          // Add default links that are missing from Shopify menu
-          defaultNavLinks.forEach((defaultLink) => {
-            const exists = mergedItems.some(
-              (item) => item.url === defaultLink.url || item.title.toLowerCase() === defaultLink.title.toLowerCase()
-            )
-            if (!exists) {
-              mergedItems.push({
-                id: defaultLink.id,
-                title: defaultLink.title,
-                url: defaultLink.url,
-                items: defaultLink.items || undefined,
-              })
-            }
-          })
-          
-          setNavLinks(mergedItems)
+          // Use Shopify menu directly - no merging to prevent duplicates
+          setNavLinks(shopifyItems)
         }
+        // If Shopify menu fails or is empty, keep default nav links
       } catch (error) {
         console.error('Error loading menu:', error)
         // Keep default nav links on error

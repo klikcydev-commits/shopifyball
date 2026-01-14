@@ -4,6 +4,9 @@ import { Footer } from '@/components/layout/footer'
 import { KitDisplay } from './kit-display'
 import type { Metadata } from 'next'
 
+// Static page - no dynamic data needed
+export const dynamic = 'force-static'
+
 export const metadata: Metadata = {
   title: 'The 11 Kit | LeMah - Real Madrid',
   description: 'Discover The 11 Kit - Official Real Madrid kit collection. Premium quality for true Madridistas.',

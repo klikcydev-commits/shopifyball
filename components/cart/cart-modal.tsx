@@ -176,3 +176,4 @@ export function CartModal({ isOpen, onClose }: CartModalProps) {
 }
 
 
+

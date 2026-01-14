@@ -13,3 +13,4 @@ export async function fetchMenu(handle: string = 'main-menu'): Promise<ShopifyMe
   }
 }
 
+

@@ -55,13 +55,13 @@ export function Header() {
 
   const cartItemCount = cart?.lines?.edges?.reduce((total, edge) => total + (edge?.node?.quantity ?? 0), 0) ?? 0
 
-  // Fetch menu from Shopify
+  // Fetch menu from Shopify and merge with default links
   useEffect(() => {
     async function loadMenu() {
       try {
         const menu = await fetchMenu('main-menu')
         if (menu && menu.items && menu.items.length > 0) {
-          const items = menu.items.map((item) => ({
+          const shopifyItems = menu.items.map((item) => ({
             id: item.id,
             title: item.title,
             url: normalizeUrl(item.url),
@@ -71,7 +71,21 @@ export function Header() {
               url: normalizeUrl(subItem.url),
             })),
           }))
-          setNavLinks(items)
+          
+          // Merge with default links - ensure essential items are always present
+          const mergedItems = [...shopifyItems]
+          
+          // Add default links that are missing from Shopify menu
+          defaultNavLinks.forEach((defaultLink) => {
+            const exists = mergedItems.some(
+              (item) => item.url === defaultLink.url || item.title.toLowerCase() === defaultLink.title.toLowerCase()
+            )
+            if (!exists) {
+              mergedItems.push(defaultLink)
+            }
+          })
+          
+          setNavLinks(mergedItems)
         }
       } catch (error) {
         console.error('Error loading menu:', error)
@@ -96,10 +110,10 @@ export function Header() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 bg-navy ${
           isScrolled
-            ? 'bg-navy/95 backdrop-blur-md shadow-lg py-3'
-            : 'bg-transparent py-5'
+            ? 'backdrop-blur-md shadow-lg py-3'
+            : 'py-5'
         }`}
       >
         <div className="container-custom">

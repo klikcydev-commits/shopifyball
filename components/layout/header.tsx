@@ -109,14 +109,14 @@ export function Header() {
         <div className="container-custom">
           <nav className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2 group">
-              <div className="relative w-12 h-12 group-hover:scale-110 transition-transform duration-300">
+              <div className="relative w-20 h-20 md:w-24 md:h-24 group-hover:scale-110 transition-transform duration-300">
                 <Image
                   src="/logo.png"
                   alt="LeMah Logo"
                   fill
                   className="object-contain"
                   priority
-                  sizes="48px"
+                  sizes="(max-width: 768px) 80px, 96px"
                 />
               </div>
             </Link>

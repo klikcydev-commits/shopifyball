@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic'
 
 export const metadata = {
   title: 'Search Products | LeMah',
-  description: 'Browse our collection of premium football gear',
+  description: 'Browse our collection of official Real Madrid accessories and merchandise',
 }
 
 export default async function SearchPage({
@@ -36,8 +36,8 @@ export default async function SearchPage({
       <main className="pt-20">
         {/* Hero Section */}
         <PageHero 
-          title="Shop Our Collection"
-          subtitle="Discover premium football gear designed for champions at every level."
+          title="Shop Real Madrid Accessories"
+          subtitle="Discover authentic Real Madrid merchandise - official jerseys, kits, scarves, and collectibles for true Madridistas."
           badge="Browse Products"
         />
         

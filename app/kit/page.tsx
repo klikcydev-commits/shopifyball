@@ -10,8 +10,8 @@ import type { Metadata } from 'next'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'The 11 Kit | LeMah',
-  description: 'Discover our premium football kits - complete gear sets designed for champions. From jerseys to full team kits.',
+  title: 'Real Madrid Kits | LeMah',
+  description: 'Discover official Real Madrid kits and accessories - authentic jerseys and complete kits for true Madridistas.',
 }
 
 export default async function KitPage() {
@@ -56,10 +56,10 @@ export default async function KitPage() {
                 Premium Collection
               </span>
               <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl text-primary-foreground mb-4">
-                The 11 Kit
+                Real Madrid Kits
               </h1>
               <p className="text-xl text-primary-foreground/80 max-w-2xl mx-auto">
-                Complete football gear sets designed for champions. Premium quality kits for every player.
+                Official Real Madrid kits and accessories. Authentic jerseys and complete kits for true Madridistas.
               </p>
             </div>
           </div>
@@ -70,7 +70,7 @@ export default async function KitPage() {
           <div className="container-custom">
             <div className="mb-8">
               <h2 className="font-heading text-3xl md:text-4xl text-navy mb-4">
-                Complete Kit Collection
+                Real Madrid Kit Collection
               </h2>
               {products.length > 0 && (
                 <p className="text-muted-foreground">

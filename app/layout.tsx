@@ -17,31 +17,31 @@ const oswald = Oswald({
 })
 
 export const metadata: Metadata = {
-  title: 'LeMah - Premium Football Gear',
-  description: 'Premium football gear for champions. From the training field to game day, we equip athletes with the best equipment.',
-  keywords: ['football', 'sports equipment', 'athletic gear', 'football gear'],
+  title: 'LeMah - Official Real Madrid Accessories',
+  description: 'Authentic Real Madrid accessories and merchandise. Official jerseys, scarves, kits, and collectibles for true Madridistas.',
+  keywords: ['Real Madrid', 'Real Madrid accessories', 'Real Madrid merchandise', 'Los Blancos', 'Madridista', 'Real Madrid jerseys', 'Real Madrid kit'],
   authors: [{ name: 'LeMah' }],
   icons: {
     icon: '/logo.png',
     apple: '/logo.png',
   },
   openGraph: {
-    title: 'LeMah - Premium Football Gear',
-    description: 'Premium football gear for champions. From the training field to game day, we equip athletes with the best equipment.',
+    title: 'LeMah - Official Real Madrid Accessories',
+    description: 'Authentic Real Madrid accessories and merchandise. Official jerseys, scarves, kits, and collectibles for true Madridistas.',
     type: 'website',
     images: [
       {
         url: '/logo.png',
         width: 1200,
         height: 630,
-        alt: 'LeMah - Premium Football Gear',
+        alt: 'LeMah - Official Real Madrid Accessories',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'LeMah - Premium Football Gear',
-    description: 'Premium football gear for champions',
+    title: 'LeMah - Official Real Madrid Accessories',
+    description: 'Authentic Real Madrid accessories and merchandise for true Madridistas',
     images: ['/logo.png'],
   },
 }

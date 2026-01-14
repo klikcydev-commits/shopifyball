@@ -4,11 +4,11 @@ import { Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin } from 'luci
 
 const footerLinks = {
   shop: [
-    { name: 'Footballs', path: '/search?collection=footballs' },
-    { name: 'Helmets', path: '/search?collection=helmets' },
-    { name: 'Gloves', path: '/search?collection=gloves' },
-    { name: 'Cleats', path: '/search?collection=cleats' },
-    { name: 'Apparel', path: '/search?collection=apparel' },
+    { name: 'Jerseys', path: '/search?collection=jerseys' },
+    { name: 'Kits', path: '/kit' },
+    { name: 'Scarves', path: '/search?collection=scarves' },
+    { name: 'Accessories', path: '/search?collection=accessories' },
+    { name: 'Collectibles', path: '/search?collection=collectibles' },
   ],
   company: [
     { name: 'About Us', path: '/about' },
@@ -52,8 +52,8 @@ export function Footer() {
               </div>
             </Link>
             <p className="text-primary-foreground/70 mb-6 max-w-sm">
-              Premium football gear for champions. From the training field to game day,
-              we equip athletes with the best equipment to dominate the competition.
+              Official Real Madrid accessories and merchandise. Authentic jerseys, kits, scarves, and collectibles 
+              for true Madridistas. Show your support for Los Blancos.
             </p>
             <div className="flex gap-4">
               {socialLinks.map((social) => {

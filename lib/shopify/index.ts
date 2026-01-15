@@ -1,6 +1,7 @@
 import { shopifyFetch } from './fetch'
 import {
   getMenuQuery,
+  getPageQuery,
   getProductQuery,
   getProductsQuery,
   getCollectionQuery,
@@ -11,7 +12,7 @@ import {
   removeFromCartMutation,
   getCartQuery,
 } from './queries'
-import type { ShopifyProduct, ShopifyCollection, ShopifyMenu, ShopifyCart } from './types'
+import type { ShopifyProduct, ShopifyCollection, ShopifyMenu, ShopifyPage, ShopifyCart } from './types'
 
 export async function getMenu(handle: string): Promise<ShopifyMenu | null> {
   const res = await shopifyFetch<{ data: { menu: ShopifyMenu | null } }>({
@@ -21,6 +22,16 @@ export async function getMenu(handle: string): Promise<ShopifyMenu | null> {
   })
 
   return res.body.data.menu
+}
+
+export async function getPageByHandle(handle: string): Promise<ShopifyPage | null> {
+  const res = await shopifyFetch<{ data: { page: ShopifyPage | null } }>({
+    query: getPageQuery,
+    variables: { handle },
+    cache: 'no-store', // Always fetch fresh page from Shopify
+  })
+
+  return res.body.data.page
 }
 
 export async function getProduct(handle: string): Promise<ShopifyProduct | null> {

@@ -95,6 +95,14 @@ export interface ShopifyMenu {
   }>
 }
 
+export interface ShopifyPage {
+  id: string
+  title: string
+  handle: string
+  body: string
+  bodySummary: string
+}
+
 export interface ShopifyCart {
   id: string
   checkoutUrl: string

@@ -17,6 +17,18 @@ export const getMenuQuery = `
   }
 `
 
+export const getPageQuery = `
+  query getPage($handle: String!) {
+    page(handle: $handle) {
+      id
+      title
+      handle
+      body
+      bodySummary
+    }
+  }
+`
+
 export const getProductsQuery = `
   query getProducts($first: Int!, $query: String) {
     products(first: $first, query: $query) {

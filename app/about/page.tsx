@@ -1,108 +1,133 @@
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { PageHero } from '@/components/ui/page-hero'
+import { getPageByHandle } from '@/lib/shopify'
+import type { Metadata } from 'next'
 
-export const metadata = {
-  title: 'About Us | LeMah',
-  description: 'Learn about LeMah - Official Real Madrid accessories and merchandise for true Madridistas',
+// Force dynamic rendering to avoid build-time API calls
+export const dynamic = 'force-dynamic'
+
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPageByHandle('about')
+  
+  return {
+    title: page?.title ? `${page.title} | LeMah` : 'About Us | LeMah',
+    description: page?.bodySummary || 'Learn about LeMah - Premium football gear for champions',
+  }
 }
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  // Fetch page content from Shopify
+  const page = await getPageByHandle('about')
+
   return (
     <>
       <Header />
       <main className="pt-20">
         {/* Hero Section */}
         <PageHero 
-          title="Real Madrid Accessories"
-          subtitle="LeMah is your destination for authentic Real Madrid merchandise. We provide official accessories, jerseys, kits, and collectibles for true Madridistas worldwide."
+          title={page?.title || 'Built for Champions'}
+          subtitle={page?.bodySummary || 'LeMah was founded with a simple mission: to provide athletes with premium football gear that helps them perform at their best.'}
           badge="Our Story"
         />
 
-        {/* Mission Section */}
+        {/* Page Content */}
         <section className="section-padding bg-cream">
           <div className="container-custom">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div>
-                <h2 className="font-heading text-4xl text-navy mb-6">Our Mission</h2>
-                <p className="text-muted-foreground text-lg mb-4">
-                  We are dedicated to providing authentic Real Madrid accessories and merchandise 
-                  to fans around the world. Every product is official and authentic.
-                </p>
-                <p className="text-muted-foreground text-lg mb-4">
-                  As passionate Madridistas ourselves, we understand the importance of quality 
-                  and authenticity when it comes to supporting Los Blancos.
-                </p>
-                <p className="text-muted-foreground text-lg">
-                  From match day essentials to collectibles, LeMah brings you the best Real Madrid 
-                  merchandise to show your support for the greatest club in the world.
-                </p>
+            {page?.body ? (
+              <div className="max-w-4xl mx-auto">
+                <div 
+                  className="prose prose-lg max-w-none"
+                  dangerouslySetInnerHTML={{ __html: page.body }}
+                />
               </div>
-              <div className="bg-navy rounded-2xl p-8 text-primary-foreground">
-                <div className="grid grid-cols-2 gap-8">
-                  <div className="text-center">
-                    <div className="font-heading text-5xl text-gold mb-2">100K+</div>
-                    <div className="text-primary-foreground/70">Madridistas</div>
+            ) : (
+              <>
+                {/* Mission Section */}
+                <div className="grid md:grid-cols-2 gap-12 items-center">
+                  <div>
+                    <h2 className="font-heading text-4xl text-navy mb-6">Our Mission</h2>
+                    <p className="text-muted-foreground text-lg mb-4">
+                      We believe every athlete deserves access to high-quality equipment 
+                      that enhances their performance and keeps them safe on the field.
+                    </p>
+                    <p className="text-muted-foreground text-lg mb-4">
+                      Our team works directly with professional athletes and coaches to 
+                      design and test every product, ensuring it meets the demands of 
+                      competitive play.
+                    </p>
+                    <p className="text-muted-foreground text-lg">
+                      From youth leagues to professional teams, LeMah gear is trusted by 
+                      athletes who refuse to compromise on quality.
+                    </p>
                   </div>
-                  <div className="text-center">
-                    <div className="font-heading text-5xl text-gold mb-2">35+</div>
-                    <div className="text-primary-foreground/70">La Liga Titles</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="font-heading text-5xl text-gold mb-2">14</div>
-                    <div className="text-primary-foreground/70">Champions Leagues</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="font-heading text-5xl text-gold mb-2">5★</div>
-                    <div className="text-primary-foreground/70">Avg Rating</div>
+                  <div className="bg-navy rounded-2xl p-8 text-primary-foreground">
+                    <div className="grid grid-cols-2 gap-8">
+                      <div className="text-center">
+                        <div className="font-heading text-5xl text-gold mb-2">10K+</div>
+                        <div className="text-primary-foreground/70">Happy Athletes</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="font-heading text-5xl text-gold mb-2">500+</div>
+                        <div className="text-primary-foreground/70">Teams Equipped</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="font-heading text-5xl text-gold mb-2">50+</div>
+                        <div className="text-primary-foreground/70">Pro Partners</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="font-heading text-5xl text-gold mb-2">5★</div>
+                        <div className="text-primary-foreground/70">Avg Rating</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
-        {/* Values Section */}
-        <section className="section-padding bg-background">
-          <div className="container-custom">
-            <div className="text-center mb-12">
-              <h2 className="font-heading text-4xl text-navy mb-4">Our Values</h2>
-              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                These core principles guide everything we do at LeMah.
-              </p>
-            </div>
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="bg-cream rounded-xl p-8 text-center">
-                <div className="w-16 h-16 bg-gold/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <span className="text-3xl">🏆</span>
-                </div>
-                <h3 className="font-heading text-xl text-navy mb-4">Authenticity</h3>
-                <p className="text-muted-foreground">
-                  Every product is official and authentic. We only offer genuine Real Madrid 
-                  merchandise to ensure you get the real deal.
-                </p>
-              </div>
-              <div className="bg-cream rounded-xl p-8 text-center">
-                <div className="w-16 h-16 bg-gold/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <span className="text-3xl">🤝</span>
-                </div>
-                <h3 className="font-heading text-xl text-navy mb-4">Madridismo</h3>
-                <p className="text-muted-foreground">
-                  Real Madrid is more than a club—it's a way of life. We're proud to 
-                  serve Madridistas worldwide with authentic merchandise.
-                </p>
-              </div>
-              <div className="bg-cream rounded-xl p-8 text-center">
-                <div className="w-16 h-16 bg-gold/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <span className="text-3xl">💪</span>
-                </div>
-                <h3 className="font-heading text-xl text-navy mb-4">Heritage</h3>
-                <p className="text-muted-foreground">
-                  We honor the rich history and tradition of Real Madrid, bringing you 
-                  merchandise that celebrates the club's legendary legacy.
-                </p>
-              </div>
-            </div>
+                {/* Values Section */}
+                <section className="section-padding bg-background mt-12">
+                  <div className="container-custom">
+                    <div className="text-center mb-12">
+                      <h2 className="font-heading text-4xl text-navy mb-4">Our Values</h2>
+                      <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                        These core principles guide everything we do at LeMah.
+                      </p>
+                    </div>
+                    <div className="grid md:grid-cols-3 gap-8">
+                      <div className="bg-cream rounded-xl p-8 text-center">
+                        <div className="w-16 h-16 bg-gold/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                          <span className="text-3xl">🏆</span>
+                        </div>
+                        <h3 className="font-heading text-xl text-navy mb-4">Excellence</h3>
+                        <p className="text-muted-foreground">
+                          We never settle for "good enough." Every product undergoes rigorous 
+                          testing to meet professional standards.
+                        </p>
+                      </div>
+                      <div className="bg-cream rounded-xl p-8 text-center">
+                        <div className="w-16 h-16 bg-gold/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                          <span className="text-3xl">🤝</span>
+                        </div>
+                        <h3 className="font-heading text-xl text-navy mb-4">Community</h3>
+                        <p className="text-muted-foreground">
+                          Football is more than a sport—it's a community. We're proud to 
+                          support athletes at every level.
+                        </p>
+                      </div>
+                      <div className="bg-cream rounded-xl p-8 text-center">
+                        <div className="w-16 h-16 bg-gold/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                          <span className="text-3xl">💪</span>
+                        </div>
+                        <h3 className="font-heading text-xl text-navy mb-4">Innovation</h3>
+                        <p className="text-muted-foreground">
+                          We continuously push boundaries, incorporating the latest technology 
+                          and materials into our products.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </>
+            )}
           </div>
         </section>
       </main>

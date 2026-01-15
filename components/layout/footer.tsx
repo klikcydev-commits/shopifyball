@@ -1,14 +1,13 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin } from 'lucide-react'
 
 const footerLinks = {
   shop: [
-    { name: 'Jerseys', path: '/search?collection=jerseys' },
-    { name: 'Kits', path: '/kit' },
-    { name: 'Scarves', path: '/search?collection=scarves' },
-    { name: 'Accessories', path: '/search?collection=accessories' },
-    { name: 'Collectibles', path: '/search?collection=collectibles' },
+    { name: 'Footballs', path: '/search?collection=footballs' },
+    { name: 'Helmets', path: '/search?collection=helmets' },
+    { name: 'Gloves', path: '/search?collection=gloves' },
+    { name: 'Cleats', path: '/search?collection=cleats' },
+    { name: 'Apparel', path: '/search?collection=apparel' },
   ],
   company: [
     { name: 'About Us', path: '/about' },
@@ -41,19 +40,16 @@ export function Footer() {
           {/* Brand Column */}
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-2 mb-6">
-              <div className="relative w-12 h-12">
-                <Image
-                  src="/logo.png"
-                  alt="LeMah Logo"
-                  fill
-                  className="object-contain"
-                  sizes="48px"
-                />
+              <div className="w-10 h-10 bg-gold rounded-lg flex items-center justify-center">
+                <span className="font-heading font-bold text-navy text-xl">L</span>
               </div>
+              <span className="font-heading text-2xl tracking-wide">
+                <span className="text-gold">LeMah</span>
+              </span>
             </Link>
             <p className="text-primary-foreground/70 mb-6 max-w-sm">
-              Official Real Madrid accessories and merchandise. Authentic jerseys, kits, scarves, and collectibles 
-              for true Madridistas. Show your support for Los Blancos.
+              Premium football gear for champions. From the training field to game day,
+              we equip athletes with the best equipment to dominate the competition.
             </p>
             <div className="flex gap-4">
               {socialLinks.map((social) => {

@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'All Products | LeMah',
-  description: 'Browse our complete collection of official Real Madrid accessories - jerseys, kits, scarves, and collectibles.',
+  description: 'Browse our complete collection of premium football gear - everything you need from training to game day.',
 }
 
 export default async function AllProductsPage() {
@@ -56,10 +56,10 @@ export default async function AllProductsPage() {
                 Complete Collection
               </span>
               <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-primary-foreground mb-4">
-                All Real Madrid Products
+                All Products
               </h1>
               <p className="text-xl md:text-2xl text-primary-foreground/80 max-w-3xl mx-auto">
-                Discover our complete range of official Real Madrid accessories. From jerseys to collectibles, everything for true Madridistas.
+                Discover our complete range of premium football gear. From training essentials to game day champions.
               </p>
             </div>
           </div>
@@ -70,7 +70,7 @@ export default async function AllProductsPage() {
           <div className="container-custom">
             <div className="mb-12 text-center">
               <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl text-navy mb-4">
-                Real Madrid Collection
+                Our Complete Collection
               </h2>
               {products.length > 0 && (
                 <p className="text-muted-foreground text-lg">

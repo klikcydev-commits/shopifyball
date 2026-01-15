@@ -3,6 +3,9 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
+  eslint: {
+    ignoreDuringBuilds: false,
+  },
   images: {
     domains: ['cdn.shopify.com', 'images.unsplash.com'],
     unoptimized: false,

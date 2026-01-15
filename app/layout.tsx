@@ -1,6 +1,7 @@
-import type React from "react"
+﻿import type React from "react"
 import type { Metadata, Viewport } from "next"
 import { Inter, Oswald } from "next/font/google"
+import Script from "next/script"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { CartProvider } from "@/components/cart/cart-context"
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
     description: "Accessories for the ritual. Stadium-to-street essentials.",
     type: "website",
   },
-    generator: 'v0.app'
+  generator: "v0.app",
 }
 
 export const viewport: Viewport = {
@@ -43,6 +44,19 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${oswald.variable}`}>
       <body className="font-sans antialiased">
+        {/* Google tag (gtag.js) */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-X86XPFY2SH"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-X86XPFY2SH');
+          `}
+        </Script>
         <CartProvider>
           {children}
           <Toaster />

@@ -3,7 +3,8 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import type { ShopifyProduct } from '@/lib/shopify/types'
-import { ProductCard } from '@/components/product/product-card'
+import { adaptShopifyProduct } from '@/lib/shopify/adapter'
+import { ProductCard } from '@/components/products/product-card'
 
 interface AllProductsClientProps {
   products: ShopifyProduct[]
@@ -59,7 +60,7 @@ function ProductCardWithAnimation({ product, index }: ProductCardWithAnimationPr
         ease: [0.25, 0.46, 0.45, 0.94], // Smooth easing
       }}
     >
-      <ProductCard product={product} />
+      <ProductCard product={adaptShopifyProduct(product)} />
     </motion.div>
   )
 }

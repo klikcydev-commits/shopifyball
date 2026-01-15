@@ -31,7 +31,7 @@ export function PageHero({ title, subtitle, badge }: PageHeroProps) {
       stopOnInteraction: false, 
       stopOnMouseEnter: false,
       playOnInit: true,
-    })
+    }) as any // Type assertion for embla-carousel-autoplay compatibility
   )
 
   return (

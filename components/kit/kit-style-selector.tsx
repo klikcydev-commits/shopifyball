@@ -1,0 +1,131 @@
+"use client"
+
+import { useState } from "react"
+import Image from "next/image"
+import { Check, ArrowRight } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { useScrollReveal } from "@/hooks/use-scroll-reveal"
+import { kitStyles } from "@/lib/mock-data"
+
+interface KitStyleSelectorProps {
+  onStyleSelect?: (styleId: string) => void
+}
+
+export function KitStyleSelector({ onStyleSelect }: KitStyleSelectorProps) {
+  const { ref, isRevealed } = useScrollReveal<HTMLElement>()
+  const [selectedStyle, setSelectedStyle] = useState<string | null>(null)
+
+  const handleSelect = (styleId: string) => {
+    setSelectedStyle(styleId)
+    onStyleSelect?.(styleId)
+  }
+
+  const scrollToBuilder = () => {
+    document.getElementById("kit-builder")?.scrollIntoView({ behavior: "smooth" })
+  }
+
+  return (
+    <section ref={ref} className="py-20 md:py-32 bg-background" id="kit-styles">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div
+          className={cn(
+            "text-center max-w-2xl mx-auto mb-16 transition-all duration-700",
+            isRevealed ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8",
+          )}
+        >
+          <span className="text-xs uppercase tracking-[0.2em] text-gold mb-4 block">Step 1</span>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">Choose Your Kit Style</h2>
+          <p className="text-muted-foreground text-lg">Three distinct aesthetics. One elevated standard.</p>
+        </div>
+
+        {/* Style cards */}
+        <div className="grid md:grid-cols-3 gap-6 lg:gap-8 mb-12">
+          {kitStyles.map((style, index) => (
+            <button
+              key={style.id}
+              onClick={() => handleSelect(style.id)}
+              className={cn(
+                "group relative text-left rounded-2xl overflow-hidden transition-all duration-500",
+                selectedStyle === style.id ? "ring-2 ring-gold ring-offset-4 ring-offset-background" : "",
+                isRevealed ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12",
+              )}
+              style={{ transitionDelay: isRevealed ? `${index * 150}ms` : "0ms" }}
+            >
+              {/* Background image */}
+              <div className="relative aspect-[3/4]">
+                <Image
+                  src={
+                    style.colorScheme === "white"
+                      ? "/kit-style-white-night-preview.jpg"
+                      : style.colorScheme === "navy"
+                        ? "/kit-style-navy-core-preview.jpg"
+                        : "/kit-style-gold-detail-preview.jpg"
+                  }
+                  alt={style.name}
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+
+                {/* Gradient overlay */}
+                <div
+                  className={cn(
+                    "absolute inset-0 bg-gradient-to-t to-transparent transition-opacity duration-300",
+                    style.colorScheme === "white"
+                      ? "from-white/90 via-white/30"
+                      : style.colorScheme === "navy"
+                        ? "from-primary/90 via-primary/30"
+                        : "from-gold/30 via-transparent",
+                  )}
+                />
+
+                {/* Selected check */}
+                {selectedStyle === style.id && (
+                  <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gold flex items-center justify-center animate-in zoom-in duration-200">
+                    <Check className="h-4 w-4 text-primary" />
+                  </div>
+                )}
+
+                {/* Content overlay */}
+                <div className="absolute inset-x-0 bottom-0 p-6">
+                  <h3
+                    className={cn(
+                      "text-2xl font-bold mb-2",
+                      style.colorScheme === "white" ? "text-primary" : "text-white",
+                    )}
+                  >
+                    {style.name}
+                  </h3>
+                  <p
+                    className={cn(
+                      "text-sm leading-relaxed",
+                      style.colorScheme === "white" ? "text-primary/70" : "text-white/70",
+                    )}
+                  >
+                    {style.description}
+                  </p>
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+
+        {/* Continue button */}
+        <div
+          className={cn(
+            "text-center transition-all duration-500",
+            selectedStyle ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none",
+          )}
+        >
+          <button
+            onClick={scrollToBuilder}
+            className="group inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-medium uppercase tracking-wider hover:bg-navy-light transition-all btn-press gold-glow"
+          >
+            Continue to Builder
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </button>
+        </div>
+      </div>
+    </section>
+  )
+}

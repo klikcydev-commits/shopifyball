@@ -3,7 +3,8 @@ import Image from 'next/image'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { getProducts } from '@/lib/shopify'
-import { ProductCard } from '@/components/product/product-card'
+import { adaptShopifyProduct } from '@/lib/shopify/adapter'
+import { ProductCard } from '@/components/products/product-card'
 import type { Metadata } from 'next'
 
 // Force dynamic rendering to avoid build-time API calls
@@ -101,7 +102,7 @@ export default async function KitPage() {
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {products.map((product) => (
-                    <ProductCard key={product.id} product={product} />
+                    <ProductCard key={product.id} product={adaptShopifyProduct(product)} />
                   ))}
                 </div>
               )}

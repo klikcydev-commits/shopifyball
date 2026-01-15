@@ -92,7 +92,7 @@ export function ContactForm() {
           </div>
           <Button
             type="submit"
-            variant="navy"
+            variant="default"
             size="lg"
             className="w-full"
             disabled={isSubmitting}

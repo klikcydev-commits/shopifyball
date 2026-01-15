@@ -1,35 +1,29 @@
-import { Suspense } from 'react'
-import { Header } from '@/components/layout/header'
-import { Footer } from '@/components/layout/footer'
-import { HeroSlider } from '@/components/home/hero-slider'
-import { FeaturedProducts } from '@/components/home/featured-products'
-import { FeaturedCategories } from '@/components/home/featured-categories'
-import { Testimonials } from '@/components/home/testimonials'
-import { Newsletter } from '@/components/home/newsletter'
-
-// Force dynamic rendering to avoid build-time Shopify API calls
-export const dynamic = 'force-dynamic'
+import { Header } from "@/components/layout/header"
+import { Footer } from "@/components/layout/footer"
+import { HeroSection } from "@/components/home/hero-section"
+import { CategoryStrip } from "@/components/home/category-strip"
+import { FeaturedCollections } from "@/components/home/featured-collections"
+import { FeaturedProducts } from "@/components/home/featured-products"
+import { ElevenKitTeaser } from "@/components/home/eleven-kit-teaser"
+import { BrandStory } from "@/components/home/brand-story"
+import { Testimonials } from "@/components/home/testimonials"
+import { Lookbook } from "@/components/home/lookbook"
 
 export default function HomePage() {
   return (
     <>
       <Header />
       <main>
-        <Suspense fallback={<div className="h-screen bg-navy" />}>
-          <HeroSlider />
-        </Suspense>
-        <Suspense fallback={<div className="section-padding bg-cream" />}>
-          <FeaturedProducts />
-        </Suspense>
-        <Suspense fallback={<div className="section-padding bg-background" />}>
-          <FeaturedCategories />
-        </Suspense>
+        <HeroSection />
+        <CategoryStrip />
+        <FeaturedCollections />
+        <FeaturedProducts />
+        <ElevenKitTeaser />
+        <BrandStory />
         <Testimonials />
-        <Newsletter />
+        <Lookbook />
       </main>
       <Footer />
     </>
   )
 }
-
-

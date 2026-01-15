@@ -4,7 +4,8 @@ import { useState, useEffect, useTransition } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getCollectionAction, getProductsAction } from '@/app/actions/product-actions'
 import type { ShopifyCollection, ShopifyProduct } from '@/lib/shopify/types'
-import { ProductCard } from '@/components/product/product-card'
+import { adaptShopifyProduct } from '@/lib/shopify/adapter'
+import { ProductCard } from '@/components/products/product-card'
 import { FilterList } from '@/components/search/filter-list'
 import { Button } from '@/components/ui/button'
 
@@ -106,14 +107,14 @@ export function SearchClient({ collectionHandle, query, collections }: SearchCli
             ) : products.length === 0 ? (
               <div className="text-center py-16">
                 <p className="text-xl text-muted-foreground mb-4">No products found</p>
-                <Button variant="navy" onClick={() => handleCollectionChange(null)}>
+                <Button variant="default" onClick={() => handleCollectionChange(null)}>
                   View All Products
                 </Button>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {products.map((product) => (
-                  <ProductCard key={product.id} product={product} />
+                  <ProductCard key={product.id} product={adaptShopifyProduct(product)} />
                 ))}
               </div>
             )}

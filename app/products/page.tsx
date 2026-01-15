@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { getProducts } from '@/lib/shopify'
-import { ProductCard } from '@/components/product/product-card'
+// ProductCard is now used via AllProductsClient
 import { AllProductsClient } from './all-products-client'
 import type { Metadata } from 'next'
 

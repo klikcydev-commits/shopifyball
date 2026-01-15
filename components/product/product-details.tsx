@@ -4,7 +4,9 @@ import { useState } from 'react'
 import Image from 'next/image'
 import type { ShopifyProduct } from '@/lib/shopify/types'
 import { Button } from '@/components/ui/button'
-import { useCart } from '@/components/cart/cart-provider'
+import { useCart } from '@/components/cart/cart-context'
+import { adaptShopifyProduct } from '@/lib/shopify/adapter'
+import type { ProductVariant } from '@/lib/shopify-types'
 import { ShoppingBag, Check, ExternalLink } from 'lucide-react'
 import { toast } from 'sonner'
 import { buildProductUrl } from '@/lib/shopify/checkout'
@@ -20,7 +22,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({})
   const [quantity, setQuantity] = useState(1)
   const [isAdding, setIsAdding] = useState(false)
-  const { addItem } = useCart()
+  const { addToCart } = useCart()
 
   const images = product.images.edges
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
@@ -41,7 +43,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     }
   }
 
-  const handleAddToCart = async () => {
+  const handleAddToCart = () => {
     if (!selectedVariant) return
 
     if (!selectedVariant.availableForSale) {
@@ -51,8 +53,16 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
     setIsAdding(true)
     try {
-      await addItem(selectedVariant.id, quantity)
-      toast.success('Added to cart!')
+      // Convert ShopifyProduct to Product type and find matching variant
+      const adaptedProduct = adaptShopifyProduct(product)
+      const matchingVariant = adaptedProduct.variants.find((v: ProductVariant) => v.id === selectedVariant.id)
+      
+      if (matchingVariant) {
+        addToCart(adaptedProduct, matchingVariant, quantity)
+        toast.success('Added to cart!')
+      } else {
+        toast.error('Variant not found')
+      }
     } catch (error) {
       toast.error('Failed to add to cart')
       console.error(error)
@@ -165,7 +175,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
             {/* Add to Cart */}
             <Button
-              variant="navy"
+              variant="default"
               size="lg"
               className="w-full mb-4"
               onClick={handleAddToCart}

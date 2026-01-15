@@ -29,7 +29,7 @@ export default function Error({
             We're sorry, but something unexpected happened. Please try again.
           </p>
           <div className="flex gap-4 justify-center">
-            <Button variant="navy" onClick={reset}>
+            <Button variant="default" onClick={reset}>
               Try Again
             </Button>
             <Button variant="outline" asChild>

@@ -1,289 +1,147 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { Menu, X, ShoppingBag, Search, User } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { motion, AnimatePresence } from 'framer-motion'
-import { useCart } from '@/components/cart/cart-provider'
-import { CartModal } from '@/components/cart/cart-modal'
-import { fetchMenu } from '@/app/actions/menu-actions'
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { Menu, X, ShoppingBag, Search } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { useCart } from "@/components/cart/cart-context"
+import { CartDrawer } from "@/components/cart/cart-drawer"
+import { SearchDialog } from "@/components/search/search-dialog"
 
-interface MenuItem {
-  id: string
-  title: string
-  url: string
-  items?: MenuItem[]
-}
-
-const defaultNavLinks: MenuItem[] = [
-  { id: 'home', title: 'Home', url: '/' },
-  { id: 'shop', title: 'Shop', url: '/search' },
-  { id: 'about', title: 'About', url: '/about' },
-  { id: 'contact', title: 'Contact', url: '/contact' },
+const navigation = [
+  { name: "Home", href: "/" },
+  { name: "Shop", href: "/shop" },
+  { name: "11Kit", href: "/11kit" },
+  { name: "About", href: "/about" },
+  { name: "Contact", href: "/contact" },
 ]
-
-// Convert Shopify URLs to local paths
-function normalizeUrl(url: string): string {
-  if (!url) return '/'
-  try {
-    const u = new URL(url)
-    let pathname = u.pathname
-    
-    // Convert Shopify collection URLs to search page
-    if (pathname.startsWith('/collections/')) {
-      const handle = pathname.replace('/collections/', '')
-      return `/search?collection=${handle}`
-    }
-    
-    // Convert /pages/ URLs to clean URLs
-    if (pathname.startsWith('/pages/')) {
-      const pageHandle = pathname.replace('/pages/', '')
-      // Map common page handles to routes
-      const pageMap: Record<string, string> = {
-        'the-11-kit': '/kit',
-        'contact': '/contact',
-        'about': '/about',
-        'about-us': '/about',
-        'contact-us': '/contact',
-      }
-      return pageMap[pageHandle] || pathname
-    }
-    
-    return pathname + u.search + u.hash
-  } catch {
-    // If it's already a relative URL
-    if (url.startsWith('/collections/')) {
-      const handle = url.replace('/collections/', '')
-      return `/search?collection=${handle}`
-    }
-    
-    // Handle /pages/ URLs in relative format
-    if (url.startsWith('/pages/')) {
-      const pageHandle = url.replace('/pages/', '')
-      const pageMap: Record<string, string> = {
-        'the-11-kit': '/kit',
-        'contact': '/contact',
-        'about': '/about',
-        'about-us': '/about',
-        'contact-us': '/contact',
-      }
-      return pageMap[pageHandle] || url
-    }
-    
-    return url
-  }
-}
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [isCartOpen, setIsCartOpen] = useState(false)
-  const [navLinks, setNavLinks] = useState<MenuItem[]>(defaultNavLinks)
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
   const pathname = usePathname()
-  const { cart } = useCart()
-
-  const cartItemCount = cart?.lines?.edges?.reduce((total, edge) => total + (edge?.node?.quantity ?? 0), 0) ?? 0
-
-  // Fetch menu from Shopify and merge with default links
-  useEffect(() => {
-    async function loadMenu() {
-      try {
-        const menu = await fetchMenu('main-menu')
-        if (menu && menu.items && menu.items.length > 0) {
-          const shopifyItems = menu.items.map((item) => ({
-            id: item.id,
-            title: item.title,
-            url: normalizeUrl(item.url),
-            items: item.items?.map((subItem) => ({
-              id: subItem.id,
-              title: subItem.title,
-              url: normalizeUrl(subItem.url),
-            })),
-          }))
-          
-          // Merge with default links - ensure essential items are always present
-          const mergedItems: MenuItem[] = [...shopifyItems]
-          
-          // Add default links that are missing from Shopify menu
-          defaultNavLinks.forEach((defaultLink) => {
-            const exists = mergedItems.some(
-              (item) => item.url === defaultLink.url || item.title.toLowerCase() === defaultLink.title.toLowerCase()
-            )
-            if (!exists) {
-              mergedItems.push({
-                id: defaultLink.id,
-                title: defaultLink.title,
-                url: defaultLink.url,
-                items: defaultLink.items,
-              })
-            }
-          })
-          
-          setNavLinks(mergedItems)
-        }
-      } catch (error) {
-        console.error('Error loading menu:', error)
-        // Keep default nav links on error
-      }
-    }
-    loadMenu()
-  }, [])
+  const { cart, isCartOpen, setIsCartOpen } = useCart()
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50)
+      setIsScrolled(window.scrollY > 20)
     }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
   }, [])
-
-  useEffect(() => {
-    setIsMobileMenuOpen(false)
-  }, [pathname])
 
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 bg-navy ${
-          isScrolled
-            ? 'backdrop-blur-md shadow-lg py-3'
-            : 'py-5'
-        }`}
+        className={cn(
+          "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
+          isScrolled ? "bg-background/95 backdrop-blur-md shadow-sm" : "bg-transparent",
+        )}
       >
-        <div className="container-custom">
-          <nav className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-10 h-10 bg-gold rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <span className="font-heading font-bold text-navy text-xl">L</span>
-              </div>
-              <span className="font-heading text-2xl text-primary-foreground tracking-wide">
-                <span className="text-gold">LeMah</span>
+        {/* Drop Ticker */}
+        <div className="bg-primary text-primary-foreground text-xs py-1.5 text-center overflow-hidden">
+          <div className="animate-wave-shimmer inline-block">
+            <span className="font-medium tracking-wider">NEXT DROP: 11KIT — LIMITED — </span>
+            <Link href="/11kit" className="underline underline-offset-2 hover:text-gold transition-colors">
+              JOIN LIST
+            </Link>
+          </div>
+        </div>
+
+        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 md:h-20">
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden p-2 -ml-2 text-foreground hover:text-gold transition-colors"
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+
+            {/* Logo */}
+            <Link href="/" className="flex items-center group">
+              <span className="text-2xl md:text-3xl font-bold tracking-tighter text-primary transition-colors group-hover:text-gold">
+                LEMAH
               </span>
             </Link>
 
-            <ul className="hidden lg:flex items-center gap-8">
-              {navLinks.map((link) => (
-                <li key={link.id} className="relative group">
-                  <Link
-                    href={link.url}
-                    className={`font-medium text-sm uppercase tracking-wider transition-colors duration-300 relative py-2 ${
-                      pathname === link.url
-                        ? 'text-gold'
-                        : 'text-primary-foreground hover:text-gold'
-                    }`}
-                  >
-                    {link.title}
-                    {pathname === link.url && (
-                      <motion.div
-                        layoutId="activeNav"
-                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-gold"
-                        transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                      />
-                    )}
-                  </Link>
-                  {link.items && link.items.length > 0 && (
-                    <div className="absolute left-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                      <div className="bg-navy border border-navy-light rounded-lg shadow-lg py-2 min-w-[200px]">
-                        {link.items.map((subLink) => (
-                          <Link
-                            key={subLink.id}
-                            href={subLink.url}
-                            className="block px-4 py-2 text-sm text-primary-foreground hover:text-gold hover:bg-navy-light transition-colors"
-                          >
-                            {subLink.title}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-8">
+              {navigation.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={cn(
+                    "text-sm font-medium tracking-wide uppercase transition-colors relative group",
+                    pathname === item.href ? "text-gold" : "text-foreground hover:text-gold",
                   )}
-                </li>
+                >
+                  {item.name}
+                  <span
+                    className={cn(
+                      "absolute -bottom-1 left-0 h-0.5 bg-gold transition-all duration-300",
+                      pathname === item.href ? "w-full" : "w-0 group-hover:w-full",
+                    )}
+                  />
+                </Link>
               ))}
-            </ul>
+            </div>
 
-            <div className="flex items-center gap-4">
-              <Link href="/search" className="text-primary-foreground hover:text-gold transition-colors hidden sm:block">
-                <Search className="w-5 h-5" />
-              </Link>
-              <button className="text-primary-foreground hover:text-gold transition-colors hidden sm:block">
-                <User className="w-5 h-5" />
+            {/* Actions */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsSearchOpen(true)}
+                className="p-2 text-foreground hover:text-gold transition-colors"
+                aria-label="Search"
+              >
+                <Search className="h-5 w-5" />
               </button>
               <button
                 onClick={() => setIsCartOpen(true)}
-                className="text-primary-foreground hover:text-gold transition-colors relative"
+                className="p-2 text-foreground hover:text-gold transition-colors relative"
+                aria-label="Cart"
               >
-                <ShoppingBag className="w-5 h-5" />
-                {cartItemCount > 0 && (
-                  <span className="absolute -top-2 -right-2 w-5 h-5 bg-gold text-navy text-xs font-bold rounded-full flex items-center justify-center">
-                    {cartItemCount}
+                <ShoppingBag className="h-5 w-5" />
+                {cart.totalQuantity > 0 && (
+                  <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-gold text-xs font-bold flex items-center justify-center text-primary">
+                    {cart.totalQuantity}
                   </span>
                 )}
               </button>
-
-              <button
-                className="lg:hidden text-primary-foreground"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              >
-                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
             </div>
-          </nav>
-        </div>
+          </div>
+        </nav>
 
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-              className="lg:hidden bg-navy border-t border-navy-light"
-            >
-              <div className="container-custom py-6">
-                <ul className="flex flex-col gap-4">
-                  {navLinks.map((link, index) => (
-                    <motion.li
-                      key={link.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                    >
-                      <Link
-                        href={link.url}
-                        className={`block py-2 font-heading text-lg uppercase tracking-wider ${
-                          pathname === link.url
-                            ? 'text-gold'
-                            : 'text-primary-foreground hover:text-gold'
-                        }`}
-                      >
-                        {link.title}
-                      </Link>
-                      {link.items && link.items.length > 0 && (
-                        <div className="pl-4 mt-2 space-y-2">
-                          {link.items.map((subLink) => (
-                            <Link
-                              key={subLink.id}
-                              href={subLink.url}
-                              className="block py-1 text-primary-foreground/70 hover:text-gold transition-colors"
-                            >
-                              {subLink.title}
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-                    </motion.li>
-                  ))}
-                </ul>
-                <Button variant="hero" size="lg" className="w-full mt-6" asChild>
-                  <Link href="/search">Shop Now</Link>
-                </Button>
-              </div>
-            </motion.div>
+        {/* Mobile menu */}
+        <div
+          className={cn(
+            "md:hidden overflow-hidden transition-all duration-300 bg-background",
+            isMobileMenuOpen ? "max-h-64" : "max-h-0",
           )}
-        </AnimatePresence>
+        >
+          <div className="px-4 py-4 space-y-2">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={cn(
+                  "block py-2 text-base font-medium tracking-wide uppercase transition-colors",
+                  pathname === item.href ? "text-gold" : "text-foreground hover:text-gold",
+                )}
+              >
+                {item.name}
+              </Link>
+            ))}
+          </div>
+        </div>
       </header>
-      <CartModal isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+
+      <CartDrawer open={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      <SearchDialog open={isSearchOpen} onOpenChange={setIsSearchOpen} />
     </>
   )
 }

@@ -29,18 +29,49 @@ function normalizeUrl(url: string): string {
   if (!url) return '/'
   try {
     const u = new URL(url)
+    let pathname = u.pathname
+    
     // Convert Shopify collection URLs to search page
-    if (u.pathname.startsWith('/collections/')) {
-      const handle = u.pathname.replace('/collections/', '')
+    if (pathname.startsWith('/collections/')) {
+      const handle = pathname.replace('/collections/', '')
       return `/search?collection=${handle}`
     }
-    return u.pathname + u.search + u.hash
+    
+    // Convert /pages/ URLs to clean URLs
+    if (pathname.startsWith('/pages/')) {
+      const pageHandle = pathname.replace('/pages/', '')
+      // Map common page handles to routes
+      const pageMap: Record<string, string> = {
+        'the-11-kit': '/kit',
+        'contact': '/contact',
+        'about': '/about',
+        'about-us': '/about',
+        'contact-us': '/contact',
+      }
+      return pageMap[pageHandle] || pathname
+    }
+    
+    return pathname + u.search + u.hash
   } catch {
     // If it's already a relative URL
     if (url.startsWith('/collections/')) {
       const handle = url.replace('/collections/', '')
       return `/search?collection=${handle}`
     }
+    
+    // Handle /pages/ URLs in relative format
+    if (url.startsWith('/pages/')) {
+      const pageHandle = url.replace('/pages/', '')
+      const pageMap: Record<string, string> = {
+        'the-11-kit': '/kit',
+        'contact': '/contact',
+        'about': '/about',
+        'about-us': '/about',
+        'contact-us': '/contact',
+      }
+      return pageMap[pageHandle] || url
+    }
+    
     return url
   }
 }

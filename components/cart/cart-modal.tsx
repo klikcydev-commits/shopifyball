@@ -7,6 +7,7 @@ import { useCart } from './cart-provider'
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import Link from 'next/link'
+import { convertCheckoutUrl, buildCheckoutUrl } from '@/lib/shopify/checkout'
 
 interface CartModalProps {
   isOpen: boolean
@@ -157,9 +158,14 @@ export function CartModal({ isOpen, onClose }: CartModalProps) {
                       variant="navy"
                       className="flex-1"
                       onClick={() => {
-                        if (cart?.checkoutUrl) {
-                          window.location.href = cart.checkoutUrl
-                        }
+                        // Build checkout URL for shop.lemah.store
+                        const items = cartItems.map(({ node: line }) => ({
+                          variantId: line.merchandise.id,
+                          quantity: line.quantity,
+                          productHandle: line.merchandise.product.handle,
+                        }))
+                        const checkoutUrl = buildCheckoutUrl(items)
+                        window.location.href = checkoutUrl
                       }}
                     >
                       Checkout

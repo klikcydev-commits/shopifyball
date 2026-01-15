@@ -5,8 +5,9 @@ import Image from 'next/image'
 import type { ShopifyProduct } from '@/lib/shopify/types'
 import { Button } from '@/components/ui/button'
 import { useCart } from '@/components/cart/cart-provider'
-import { ShoppingBag, Check } from 'lucide-react'
+import { ShoppingBag, Check, ExternalLink } from 'lucide-react'
 import { toast } from 'sonner'
+import { buildProductUrl } from '@/lib/shopify/checkout'
 
 interface ProductDetailsProps {
   product: ShopifyProduct
@@ -177,6 +178,21 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   ? 'Add to Cart'
                   : 'Sold Out'}
             </Button>
+
+            {/* Buy Now - Direct to shop.lemah.store */}
+            {selectedVariant?.availableForSale && (
+              <Button
+                variant="outline"
+                size="lg"
+                className="w-full mb-4"
+                onClick={() => {
+                  window.location.href = buildProductUrl(product.handle)
+                }}
+              >
+                <ExternalLink className="w-5 h-5 mr-2" />
+                Buy Now on Shop
+              </Button>
+            )}
 
             {selectedVariant?.availableForSale && (
               <p className="text-sm text-muted-foreground flex items-center gap-2">

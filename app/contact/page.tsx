@@ -1,6 +1,7 @@
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { PageHero } from '@/components/ui/page-hero'
+import { Button } from '@/components/ui/button'
 import { Mail, Phone, MapPin } from 'lucide-react'
 import { getPageByHandle } from '@/lib/shopify'
 import { ContactForm } from './contact-form'

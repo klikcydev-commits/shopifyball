@@ -3,7 +3,7 @@
  * This function MUST only be called from server-side code (RSC, Server Actions, Route Handlers).
  * The private storefront token is never exposed to the client.
  */
-type Variables = Record<string, any>
+type Variables = Record<string, unknown>
 
 export async function shopifyFetch<T>({
   query,
@@ -52,11 +52,11 @@ export async function shopifyFetch<T>({
       status: result.status,
       body,
     }
-  } catch (e: any) {
-    console.error('[Shopify] Fetch Error:', e?.message || e)
+  } catch (e: unknown) {
+    console.error('[Shopify] Fetch Error:', e instanceof Error ? e.message : String(e))
     const errorMessage = e instanceof Error ? e.message : 'Error fetching data'
     const error = new Error(errorMessage)
-    ;(error as any).status = 500
+    ;(error as Error & { status?: number }).status = 500
     throw error
   }
 }

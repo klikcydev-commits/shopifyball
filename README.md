@@ -181,11 +181,11 @@ Set up Shopify webhooks to revalidate pages when products/collections change:
 ## Styling
 
 The app uses Tailwind CSS with custom branding colors:
-- **Midnight Navy** (#0A1931) - Primary dark
-- **Deep Ocean** (#1A3D63) - Navy light
-- **Steel Blue** (#4A7FA7) - Accent color
-- **Powder Sky** (#B3CFE5) - Light accent
-- **Ice White** (#F6FAFD) - Background
+- **Midnight Navy** (#0A1931) - Primary dark / Foreground
+- **Deep Ocean** (#1A3D63) - Navy light / Secondary dark
+- **Steel Blue** (#4A7FA7) - Accent color / Primary accent
+- **Powder Sky** (#B3CFE5) - Light accent / Secondary / Borders
+- **Ice White** (#F6FAFD) - Background / Primary light
 
 ## SEO
 

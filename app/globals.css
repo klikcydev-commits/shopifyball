@@ -3,96 +3,96 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* LEMAH Brand Colors - Madrid Inspired */
+/* LEMAH Brand Colors - Blue Palette */
 :root {
-  /* Primary: Royal White */
-  --background: oklch(0.98 0.002 90);
-  --foreground: oklch(0.18 0.04 260);
+  /* Background: Very Light Blue-White (#F6FAFD) */
+  --background: #F6FAFD;
+  --foreground: #0A1931;
 
-  /* Navy - Primary contrast */
-  --primary: oklch(0.22 0.06 260);
-  --primary-foreground: oklch(0.98 0.002 90);
+  /* Primary: Dark Navy Blue (#0A1931) */
+  --primary: #0A1931;
+  --primary-foreground: #F6FAFD;
 
-  /* Gold - Premium accent */
-  --accent: oklch(0.72 0.14 80);
-  --accent-foreground: oklch(0.18 0.04 260);
+  /* Accent: Steel Blue (#4A7FA7) */
+  --accent: #4A7FA7;
+  --accent-foreground: #F6FAFD;
 
   /* Cards & Surfaces */
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.04 260);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.04 260);
+  --card: #F6FAFD;
+  --card-foreground: #0A1931;
+  --popover: #F6FAFD;
+  --popover-foreground: #0A1931;
 
-  /* Secondary - Light gray tones */
-  --secondary: oklch(0.96 0.002 90);
-  --secondary-foreground: oklch(0.22 0.06 260);
+  /* Secondary: Light Sky Blue (#B3CFE5) */
+  --secondary: #B3CFE5;
+  --secondary-foreground: #0A1931;
 
   /* Muted */
-  --muted: oklch(0.94 0.005 90);
-  --muted-foreground: oklch(0.5 0.02 260);
+  --muted: #B3CFE5;
+  --muted-foreground: #1A3D63;
 
   /* Borders & Inputs */
-  --border: oklch(0.9 0.01 90);
-  --input: oklch(0.92 0.005 90);
-  --ring: oklch(0.72 0.14 80);
+  --border: #B3CFE5;
+  --input: #B3CFE5;
+  --ring: #4A7FA7;
 
   /* Navy variants */
-  --navy: oklch(0.22 0.06 260);
-  --navy-light: oklch(0.32 0.05 260);
+  --navy: #0A1931;
+  --navy-light: #1A3D63;
 
-  /* Gold variants */
-  --gold: oklch(0.72 0.14 80);
-  --gold-light: oklch(0.82 0.1 80);
-  --gold-dark: oklch(0.58 0.14 80);
+  /* Accent variants (using steel blue palette) */
+  --gold: #4A7FA7;
+  --gold-light: #B3CFE5;
+  --gold-dark: #1A3D63;
 
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.577 0.245 27.325);
 
   --radius: 0.5rem;
 
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.18 0.04 260);
-  --sidebar-primary: oklch(0.22 0.06 260);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.96 0.002 90);
-  --sidebar-accent-foreground: oklch(0.22 0.06 260);
-  --sidebar-border: oklch(0.9 0.01 90);
-  --sidebar-ring: oklch(0.72 0.14 80);
+  --sidebar: #F6FAFD;
+  --sidebar-foreground: #0A1931;
+  --sidebar-primary: #0A1931;
+  --sidebar-primary-foreground: #F6FAFD;
+  --sidebar-accent: #B3CFE5;
+  --sidebar-accent-foreground: #0A1931;
+  --sidebar-border: #B3CFE5;
+  --sidebar-ring: #4A7FA7;
 }
 
 .dark {
-  --background: oklch(0.14 0.04 260);
-  --foreground: oklch(0.98 0.002 90);
-  --card: oklch(0.18 0.04 260);
-  --card-foreground: oklch(0.98 0.002 90);
-  --popover: oklch(0.18 0.04 260);
-  --popover-foreground: oklch(0.98 0.002 90);
-  --primary: oklch(0.98 0.002 90);
-  --primary-foreground: oklch(0.22 0.06 260);
-  --secondary: oklch(0.26 0.04 260);
-  --secondary-foreground: oklch(0.98 0.002 90);
-  --muted: oklch(0.26 0.04 260);
-  --muted-foreground: oklch(0.7 0.02 90);
-  --accent: oklch(0.72 0.14 80);
-  --accent-foreground: oklch(0.18 0.04 260);
+  --background: #0A1931;
+  --foreground: #F6FAFD;
+  --card: #1A3D63;
+  --card-foreground: #F6FAFD;
+  --popover: #1A3D63;
+  --popover-foreground: #F6FAFD;
+  --primary: #F6FAFD;
+  --primary-foreground: #0A1931;
+  --secondary: #1A3D63;
+  --secondary-foreground: #F6FAFD;
+  --muted: #1A3D63;
+  --muted-foreground: #B3CFE5;
+  --accent: #4A7FA7;
+  --accent-foreground: #F6FAFD;
   --destructive: oklch(0.396 0.141 25.723);
   --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.3 0.04 260);
-  --input: oklch(0.26 0.04 260);
-  --ring: oklch(0.72 0.14 80);
-  --navy: oklch(0.98 0.002 90);
-  --navy-light: oklch(0.9 0.01 90);
-  --gold: oklch(0.72 0.14 80);
-  --gold-light: oklch(0.78 0.12 80);
-  --gold-dark: oklch(0.62 0.14 80);
-  --sidebar: oklch(0.18 0.04 260);
-  --sidebar-foreground: oklch(0.98 0.002 90);
-  --sidebar-primary: oklch(0.72 0.14 80);
-  --sidebar-primary-foreground: oklch(0.98 0.002 90);
-  --sidebar-accent: oklch(0.26 0.04 260);
-  --sidebar-accent-foreground: oklch(0.98 0.002 90);
-  --sidebar-border: oklch(0.3 0.04 260);
-  --sidebar-ring: oklch(0.72 0.14 80);
+  --border: #1A3D63;
+  --input: #1A3D63;
+  --ring: #4A7FA7;
+  --navy: #F6FAFD;
+  --navy-light: #B3CFE5;
+  --gold: #4A7FA7;
+  --gold-light: #B3CFE5;
+  --gold-dark: #1A3D63;
+  --sidebar: #1A3D63;
+  --sidebar-foreground: #F6FAFD;
+  --sidebar-primary: #4A7FA7;
+  --sidebar-primary-foreground: #F6FAFD;
+  --sidebar-accent: #1A3D63;
+  --sidebar-accent-foreground: #F6FAFD;
+  --sidebar-border: #1A3D63;
+  --sidebar-ring: #4A7FA7;
 }
 
 @theme inline {
@@ -180,10 +180,10 @@
 @keyframes pulse-gold {
   0%,
   100% {
-    box-shadow: 0 0 0 0 oklch(0.72 0.14 80 / 0.4);
+    box-shadow: 0 0 0 0 #4A7FA780;
   }
   50% {
-    box-shadow: 0 0 20px 10px oklch(0.72 0.14 80 / 0);
+    box-shadow: 0 0 20px 10px #4A7FA700;
   }
 }
 
@@ -251,7 +251,7 @@
 
 .card-hover:hover {
   transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 25px 50px -12px oklch(0.18 0.04 260 / 0.15);
+  box-shadow: 0 25px 50px -12px #0A193126;
 }
 
 /* Button press effect */
@@ -269,13 +269,13 @@
 }
 
 .gold-glow:hover {
-  box-shadow: 0 0 30px oklch(0.72 0.14 80 / 0.3);
+  box-shadow: 0 0 30px #4A7FA74D;
 }
 
 /* Tactical grid pattern */
 .tactical-grid {
-  background-image: linear-gradient(oklch(0.72 0.14 80 / 0.1) 1px, transparent 1px),
-    linear-gradient(90deg, oklch(0.72 0.14 80 / 0.1) 1px, transparent 1px);
+  background-image: linear-gradient(#4A7FA71A 1px, transparent 1px),
+    linear-gradient(90deg, #4A7FA71A 1px, transparent 1px);
   background-size: 40px 40px;
 }
 

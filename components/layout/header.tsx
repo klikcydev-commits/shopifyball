@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { Menu, X, ShoppingBag, Search } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -63,9 +64,14 @@ export function Header() {
 
             {/* Logo */}
             <Link href="/" className="flex items-center group">
-              <span className="text-2xl md:text-3xl font-bold tracking-tighter text-primary transition-colors group-hover:text-gold">
-                LEMAH
-              </span>
+              <Image
+                src={isScrolled ? "/logo-sticky.png" : "/logo.png"}
+                alt="LeMah"
+                width={120}
+                height={40}
+                className="h-8 md:h-10 w-auto object-contain transition-all duration-300 group-hover:opacity-80"
+                priority
+              />
             </Link>
 
             {/* Desktop Navigation */}

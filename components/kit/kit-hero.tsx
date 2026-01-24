@@ -6,7 +6,7 @@ import { TacticalLines } from "@/components/animations/tactical-lines"
 
 export function KitHero() {
   const scrollToBuilder = () => {
-    document.getElementById("kit-styles")?.scrollIntoView({ behavior: "smooth" })
+    document.getElementById("kit-builder")?.scrollIntoView({ behavior: "smooth" })
   }
 
   return (

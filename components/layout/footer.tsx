@@ -1,4 +1,5 @@
-import Link from "next/link"
+﻿import Link from "next/link"
+import Image from "next/image"
 import { Instagram, Twitter } from "lucide-react"
 
 const footerLinks = {
@@ -24,7 +25,6 @@ const footerLinks = {
 export function Footer() {
   return (
     <footer className="bg-primary text-primary-foreground">
-      {/* Newsletter Section */}
       <div className="border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="max-w-xl">
@@ -48,23 +48,26 @@ export function Footer() {
         </div>
       </div>
 
-      {/* Main Footer */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-16">
-          {/* Brand */}
           <div className="col-span-2">
             <Link
               href="/"
-              className="text-3xl font-bold tracking-tighter mb-4 inline-block hover:text-gold transition-colors"
+              className="inline-block mb-4 hover:opacity-80 transition-opacity"
             >
-              LEMAH
+              <Image
+                src="/logo.png"
+                alt="LeMah"
+                width={140}
+                height={50}
+                className="h-10 w-auto object-contain"
+              />
             </Link>
             <p className="text-sm text-white/60 max-w-xs leading-relaxed">
-              Built around the ritual — the walk to the pitch, the light, the silence before noise.
+              Built around the ritual â€” the walk to the pitch, the light, the silence before noise.
             </p>
           </div>
 
-          {/* Shop */}
           <div>
             <h4 className="text-xs uppercase tracking-[0.2em] text-gold mb-4">Shop</h4>
             <ul className="space-y-3">
@@ -78,7 +81,6 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Support */}
           <div>
             <h4 className="text-xs uppercase tracking-[0.2em] text-gold mb-4">Support</h4>
             <ul className="space-y-3">
@@ -92,7 +94,6 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Company */}
           <div>
             <h4 className="text-xs uppercase tracking-[0.2em] text-gold mb-4">Company</h4>
             <ul className="space-y-3">
@@ -107,7 +108,6 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom */}
         <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-white/10">
           <div className="flex items-center gap-4 mb-4 md:mb-0">
             <a href="#" className="text-white/60 hover:text-gold transition-colors" aria-label="Instagram">
@@ -118,7 +118,7 @@ export function Footer() {
             </a>
           </div>
           <div className="flex items-center gap-6 text-xs text-white/40">
-            <span>© {new Date().getFullYear()} LEMAH</span>
+            <span>Â© {new Date().getFullYear()} LEMAH</span>
             <Link href="#" className="hover:text-white transition-colors">
               Privacy
             </Link>

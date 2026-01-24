@@ -37,28 +37,41 @@ export function FeaturedCollections() {
               )}
               style={{ transitionDelay: isRevealed ? `${index * 200}ms` : "0ms" }}
             >
-              {/* Image */}
-              <div
+              {/* 3D Card */}
+              <Link
+                href={`/#${collection.handle}`}
                 className={cn(
-                  "relative aspect-[4/5] rounded-lg overflow-hidden card-hover",
+                  "group card-3d relative aspect-[4/5] rounded-lg flex items-end justify-center pb-8 px-8",
                   index % 2 === 1 && "md:order-2",
                 )}
               >
-                <Image
-                  src={collection.image?.url || "/placeholder.svg"}
-                  alt={collection.title}
-                  fill
-                  className="object-cover transition-transform duration-700 hover:scale-105"
-                />
-                {/* Overlay gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-                {/* Collection badge */}
-                <div className="absolute bottom-6 left-6">
-                  <span className="px-3 py-1.5 bg-gold text-primary text-xs font-medium uppercase tracking-wider">
+                <div className="card-wrapper absolute inset-0 transition-all duration-500 z-0 rounded-lg overflow-hidden">
+                  <Image
+                    src="/collection-cover.jpg"
+                    alt={collection.title}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                
+                {/* Hover character image */}
+                <div className="card-character-wrapper absolute inset-0 z-2 pointer-events-none overflow-visible">
+                  <Image
+                    src="/collection-hover.png"
+                    alt={collection.title}
+                    width={600}
+                    height={800}
+                    className="card-character"
+                  />
+                </div>
+                
+                <div className="card-title relative z-10 text-center transition-transform duration-500">
+                  <h3 className="text-3xl md:text-4xl font-bold text-white mb-2">{collection.title}</h3>
+                  <span className="text-sm text-white/80 uppercase tracking-wider">
                     {collection.products.length} Products
                   </span>
                 </div>
-              </div>
+              </Link>
 
               {/* Content */}
               <div className={cn(index % 2 === 1 && "md:order-1")}>

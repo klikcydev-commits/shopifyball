@@ -8,9 +8,9 @@ import matter from 'gray-matter'
 import { MDXRemote } from 'next-mdx-remote/rsc'
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }
 
 function getPost(slug: string) {
@@ -40,7 +40,8 @@ function getPost(slug: string) {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const post = getPost(params.slug)
+  const { slug } = await params
+  const post = getPost(slug)
   
   if (!post) {
     return {
@@ -61,8 +62,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
-export default function BlogPostPage({ params }: PageProps) {
-  const post = getPost(params.slug)
+export default async function BlogPostPage({ params }: PageProps) {
+  const { slug } = await params
+  const post = getPost(slug)
 
   if (!post) {
     notFound()

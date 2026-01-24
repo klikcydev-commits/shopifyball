@@ -46,7 +46,15 @@ export async function generateMetadata({
 }
 
 export default async function ProductPage({ params }: { params: { handle: string } }) {
-  const product = await getProduct(params.handle)
+  let product
+  
+  try {
+    product = await getProduct(params.handle)
+  } catch (error) {
+    console.error('Error fetching product:', error)
+    // Re-throw to trigger error boundary
+    throw error
+  }
 
   if (!product) {
     notFound()

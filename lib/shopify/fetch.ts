@@ -20,12 +20,21 @@ export async function shopifyFetch<T>({
   const apiVersion = process.env.SHOPIFY_API_VERSION || '2024-01'
 
   if (!domain || !storefrontToken) {
-    throw new Error(
-      'Missing Shopify environment variables: SHOPIFY_STORE_DOMAIN and SHOPIFY_STOREFRONT_ACCESS_TOKEN are required'
+    const missingVars = []
+    if (!domain) missingVars.push('SHOPIFY_STORE_DOMAIN')
+    if (!storefrontToken) missingVars.push('SHOPIFY_STOREFRONT_ACCESS_TOKEN')
+    
+    const error = new Error(
+      `Missing Shopify environment variables: ${missingVars.join(' and ')} are required. Please check your .env.local file.`
     )
+    ;(error as Error & { code?: string }).code = 'MISSING_ENV_VARS'
+    throw error
   }
   
-  console.log('[Shopify] Token length:', storefrontToken?.length)
+  // Only log token length in development to avoid exposing sensitive info
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[Shopify] Token length:', storefrontToken?.length)
+  }
 
   const url = `https://${domain}/api/${apiVersion}/graphql.json`
   console.log('[Shopify] Fetching:', url)
@@ -41,11 +50,22 @@ export async function shopifyFetch<T>({
       cache,
     })
 
+    if (!result.ok) {
+      const errorText = await result.text()
+      console.error('[Shopify] HTTP Error:', result.status, errorText)
+      throw new Error(`Shopify API returned ${result.status}: ${errorText.substring(0, 200)}`)
+    }
+
     const body = await result.json()
 
     if (body.errors) {
       console.error('[Shopify] GraphQL Error:', JSON.stringify(body.errors, null, 2))
-      throw body.errors[0]
+      const firstError = body.errors[0]
+      const errorMessage = firstError?.message || JSON.stringify(firstError)
+      const error = new Error(`Shopify GraphQL Error: ${errorMessage}`)
+      ;(error as Error & { status?: number; code?: string }).status = result.status
+      ;(error as Error & { status?: number; code?: string }).code = firstError?.extensions?.code
+      throw error
     }
 
     return {
@@ -54,7 +74,12 @@ export async function shopifyFetch<T>({
     }
   } catch (e: unknown) {
     console.error('[Shopify] Fetch Error:', e instanceof Error ? e.message : String(e))
-    const errorMessage = e instanceof Error ? e.message : 'Error fetching data'
+    if (e instanceof Error) {
+      // Preserve the original error if it's already an Error
+      ;(e as Error & { status?: number }).status = (e as Error & { status?: number }).status || 500
+      throw e
+    }
+    const errorMessage = e instanceof Error ? e.message : 'Error fetching data from Shopify'
     const error = new Error(errorMessage)
     ;(error as Error & { status?: number }).status = 500
     throw error

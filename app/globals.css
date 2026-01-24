@@ -254,6 +254,114 @@
   box-shadow: 0 25px 50px -12px #0A193126;
 }
 
+/* 3D Card effects */
+.card-3d {
+  perspective: 2500px;
+  overflow: visible !important;
+}
+
+.card-wrapper {
+  transition: all 0.5s;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.card-wrapper::before,
+.card-wrapper::after {
+  content: "";
+  opacity: 0;
+  width: 100%;
+  height: 80px;
+  transition: all 0.5s;
+  position: absolute;
+  left: 0;
+  pointer-events: none;
+}
+
+.card-wrapper::before {
+  top: 0;
+  height: 100%;
+  background-image: linear-gradient(
+    to top,
+    transparent 46%,
+    rgba(12, 13, 19, 0.5) 68%,
+    rgba(12, 13, 19) 97%
+  );
+}
+
+.card-wrapper::after {
+  bottom: 0;
+  opacity: 1;
+  background-image: linear-gradient(
+    to bottom,
+    transparent 46%,
+    rgba(12, 13, 19, 0.5) 68%,
+    rgba(12, 13, 19) 97%
+  );
+}
+
+.card-3d:hover .card-wrapper {
+  transform: perspective(900px) translateY(-5%) rotateX(25deg) translateZ(0);
+  box-shadow: 2px 35px 32px -8px rgba(0, 0, 0, 0.75);
+}
+
+.card-3d:hover .card-wrapper::before,
+.card-3d:hover .card-wrapper::after {
+  opacity: 1;
+}
+
+.card-3d:hover .card-wrapper::after {
+  height: 120px;
+}
+
+.card-3d {
+  overflow: visible !important;
+}
+
+.card-character-wrapper {
+  overflow: visible !important;
+  margin: -20% -10%;
+  padding: 20% 10%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.card-character {
+  opacity: 0;
+  transition: all 0.5s;
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  object-fit: contain;
+  object-position: center center;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.8));
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) translateY(20%) scale(0.85);
+  width: auto;
+  height: auto;
+  max-width: 150%;
+  max-height: 150%;
+}
+
+.card-3d:hover .card-character {
+  opacity: 1;
+  transform: translate(-50%, -50%) translate3d(0%, -20%, 200px) scale(1.15);
+  filter: drop-shadow(0 25px 50px rgba(0, 0, 0, 0.9));
+}
+
+.card-title {
+  transition: transform 0.5s;
+}
+
+.card-3d:hover .card-title {
+  transform: translate3d(0%, -50px, 100px);
+}
+
 /* Button press effect */
 .btn-press {
   transition: transform 0.15s ease;
@@ -277,6 +385,18 @@
   background-image: linear-gradient(#4A7FA71A 1px, transparent 1px),
     linear-gradient(90deg, #4A7FA71A 1px, transparent 1px);
   background-size: 40px 40px;
+}
+
+/* Next.js Portal Fix */
+nextjs-portal,
+[nextjs-portal] {
+  position: static !important;
+  top: auto !important;
+  left: auto !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* Reduced motion support */

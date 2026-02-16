@@ -5,22 +5,27 @@ import { ArrowRight } from "lucide-react"
 import { FloatingParticles } from "@/components/animations/floating-particles"
 import { TacticalLines } from "@/components/animations/tactical-lines"
 
+const HERO_VIDEO_URL = process.env.NEXT_PUBLIC_HERO_VIDEO_URL
+
 export function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-primary">
-      {/* Background video */}
+      {/* Background video (only when URL is set – use CDN in production to avoid large deploy) */}
       <div className="absolute inset-0 z-0">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-          aria-hidden
-        >
-          <source src="/lemahs.mp4" type="video/mp4" />
-        </video>
-        {/* Dark overlay so text stays readable */}
+        {HERO_VIDEO_URL ? (
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+            aria-hidden
+          >
+            <source src={HERO_VIDEO_URL} type="video/mp4" />
+          </video>
+        ) : null}
+        {/* Gradient overlay (always; keeps text readable over video or when no video) */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-navy-light" />
         <div className="absolute inset-0 bg-primary/70 bg-gradient-to-br from-primary/80 via-primary/60 to-navy-light/90" />
       </div>
 

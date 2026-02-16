@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import type { ShopifyProduct } from '@/lib/shopify/types'
 import { Button } from '@/components/ui/button'
+import { ClientOnly } from '@/components/ui/client-only'
 import { useCart } from '@/components/cart/cart-context'
 import { adaptShopifyProduct } from '@/lib/shopify/adapter'
 import type { ProductVariant } from '@/lib/shopify-types'
@@ -93,27 +94,39 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               )}
             </div>
             {images.length > 1 && (
-              <div className="grid grid-cols-4 gap-4">
-                {images.map((image, index) => (
-                  <button
-                    key={image.node.id}
-                    onClick={() => setSelectedImageIndex(index)}
-                    className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${
-                      selectedImageIndex === index
-                        ? 'border-gold'
-                        : 'border-transparent hover:border-border'
-                    }`}
-                  >
-                    <Image
-                      src={image.node.url}
-                      alt={image.node.altText || product.title}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 1024px) 25vw, 12.5vw"
-                    />
-                  </button>
-                ))}
-              </div>
+              <ClientOnly
+                fallback={
+                  <div className="grid grid-cols-4 gap-4">
+                    {[1, 2, 3, 4].map((i) => (
+                      <div key={i} className="aspect-square rounded-lg bg-muted/50 animate-pulse" />
+                    ))}
+                  </div>
+                }
+              >
+                <div className="grid grid-cols-4 gap-4">
+                  {images.map((image, index) => (
+                    <button
+                      key={image.node.id}
+                      type="button"
+                      aria-label={`View image ${index + 1}`}
+                      onClick={() => setSelectedImageIndex(index)}
+                      className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${
+                        selectedImageIndex === index
+                          ? 'border-gold'
+                          : 'border-transparent hover:border-border'
+                      }`}
+                    >
+                      <Image
+                        src={image.node.url}
+                        alt={image.node.altText || product.title}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 1024px) 25vw, 12.5vw"
+                      />
+                    </button>
+                  ))}
+                </div>
+              </ClientOnly>
             )}
           </div>
 
@@ -129,88 +142,104 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
             />
 
-            {/* Options */}
-            {product.options.map((option) => (
-              <div key={option.id} className="mb-6">
-                <label className="block text-sm font-medium mb-2">{option.name}</label>
-                <div className="flex flex-wrap gap-2">
-                  {option.values.map((value) => {
-                    const isSelected = selectedOptions[option.name] === value
-                    return (
-                      <button
-                        key={value}
-                        onClick={() => handleOptionChange(option.name, value)}
-                        className={`px-4 py-2 rounded-md border-2 transition-all ${
-                          isSelected
-                            ? 'border-gold bg-gold/10 text-gold'
-                            : 'border-border hover:border-gold/50'
-                        }`}
-                      >
-                        {value}
-                      </button>
-                    )
-                  })}
+            <ClientOnly
+              fallback={
+                <div className="mb-6 space-y-6" style={{ minHeight: 280 }}>
+                  <div className="h-16 bg-muted/30 rounded animate-pulse" />
+                  <div className="h-14 bg-muted/30 rounded animate-pulse" />
+                  <div className="h-12 bg-muted/30 rounded animate-pulse" />
+                  <div className="h-12 bg-muted/30 rounded animate-pulse" />
+                </div>
+              }
+            >
+              {/* Options */}
+              {product.options.map((option) => (
+                <div key={option.id} className="mb-6">
+                  <label className="block text-sm font-medium mb-2">{option.name}</label>
+                  <div className="flex flex-wrap gap-2">
+                    {option.values.map((value) => {
+                      const isSelected = selectedOptions[option.name] === value
+                      return (
+                        <button
+                          key={value}
+                          type="button"
+                          onClick={() => handleOptionChange(option.name, value)}
+                          className={`px-4 py-2 rounded-md border-2 transition-all ${
+                            isSelected
+                              ? 'border-gold bg-gold/10 text-gold'
+                              : 'border-border hover:border-gold/50'
+                          }`}
+                        >
+                          {value}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              ))}
+
+              {/* Quantity */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium mb-2">Quantity</label>
+                <div className="flex items-center gap-4">
+                  <button
+                    type="button"
+                    aria-label="Decrease quantity"
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    className="w-10 h-10 flex items-center justify-center border border-border rounded hover:bg-muted"
+                  >
+                    −
+                  </button>
+                  <span className="text-lg font-medium w-12 text-center">{quantity}</span>
+                  <button
+                    type="button"
+                    aria-label="Increase quantity"
+                    onClick={() => setQuantity(quantity + 1)}
+                    className="w-10 h-10 flex items-center justify-center border border-border rounded hover:bg-muted"
+                  >
+                    +
+                  </button>
                 </div>
               </div>
-            ))}
 
-            {/* Quantity */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium mb-2">Quantity</label>
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-10 h-10 flex items-center justify-center border border-border rounded hover:bg-muted"
-                >
-                  −
-                </button>
-                <span className="text-lg font-medium w-12 text-center">{quantity}</span>
-                <button
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="w-10 h-10 flex items-center justify-center border border-border rounded hover:bg-muted"
-                >
-                  +
-                </button>
-              </div>
-            </div>
-
-            {/* Add to Cart */}
-            <Button
-              variant="default"
-              size="lg"
-              className="w-full mb-4"
-              onClick={handleAddToCart}
-              disabled={!selectedVariant?.availableForSale || isAdding}
-            >
-              <ShoppingBag className="w-5 h-5 mr-2" />
-              {isAdding
-                ? 'Adding...'
-                : selectedVariant?.availableForSale
-                  ? 'Add to Cart'
-                  : 'Sold Out'}
-            </Button>
-
-            {/* Buy Now - Direct to shop.lemah.store */}
-            {selectedVariant?.availableForSale && (
+              {/* Add to Cart */}
               <Button
-                variant="outline"
+                variant="default"
                 size="lg"
                 className="w-full mb-4"
-                onClick={() => {
-                  window.location.href = buildProductUrl(product.handle)
-                }}
+                onClick={handleAddToCart}
+                disabled={!selectedVariant?.availableForSale || isAdding}
               >
-                <ExternalLink className="w-5 h-5 mr-2" />
-                Buy Now on Shop
+                <ShoppingBag className="w-5 h-5 mr-2" />
+                {isAdding
+                  ? 'Adding...'
+                  : selectedVariant?.availableForSale
+                    ? 'Add to Cart'
+                    : 'Sold Out'}
               </Button>
-            )}
 
-            {selectedVariant?.availableForSale && (
-              <p className="text-sm text-muted-foreground flex items-center gap-2">
-                <Check className="w-4 h-4 text-green-500" />
-                In stock and ready to ship
-              </p>
-            )}
+              {/* Buy Now - Direct to shop.lemah.store */}
+              {selectedVariant?.availableForSale && (
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="w-full mb-4"
+                  onClick={() => {
+                    window.location.href = buildProductUrl(product.handle)
+                  }}
+                >
+                  <ExternalLink className="w-5 h-5 mr-2" />
+                  Buy Now on Shop
+                </Button>
+              )}
+
+              {selectedVariant?.availableForSale && (
+                <p className="text-sm text-muted-foreground flex items-center gap-2">
+                  <Check className="w-4 h-4 text-green-500" />
+                  In stock and ready to ship
+                </p>
+              )}
+            </ClientOnly>
           </div>
         </div>
       </div>

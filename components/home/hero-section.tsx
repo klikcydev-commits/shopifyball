@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { ArrowRight } from "lucide-react"
 import { FloatingParticles } from "@/components/animations/floating-particles"
 import { TacticalLines } from "@/components/animations/tactical-lines"
@@ -10,8 +11,17 @@ const HERO_VIDEO_URL = process.env.NEXT_PUBLIC_HERO_VIDEO_URL
 export function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-primary">
-      {/* Background video (only when URL is set – use CDN in production to avoid large deploy) */}
+      {/* Background: hero image + optional video */}
       <div className="absolute inset-0 z-0">
+        <Image
+          src="/hero-bg.png"
+          alt=""
+          fill
+          className="object-cover object-center"
+          priority
+          sizes="100vw"
+          aria-hidden
+        />
         {HERO_VIDEO_URL ? (
           <video
             autoPlay
@@ -24,9 +34,8 @@ export function HeroSection() {
             <source src={HERO_VIDEO_URL} type="video/mp4" />
           </video>
         ) : null}
-        {/* Gradient overlay (always; keeps text readable over video or when no video) */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-navy-light" />
-        <div className="absolute inset-0 bg-primary/70 bg-gradient-to-br from-primary/80 via-primary/60 to-navy-light/90" />
+        {/* Gradient overlay so text stays readable */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/70 to-navy-light/90" />
       </div>
 
       {/* Background layers */}

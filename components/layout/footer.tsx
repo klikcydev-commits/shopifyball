@@ -1,6 +1,9 @@
-﻿import Link from "next/link"
+"use client"
+
+import Link from "next/link"
 import Image from "next/image"
 import { Instagram, Twitter } from "lucide-react"
+import { ClientOnly } from "@/components/ui/client-only"
 
 const footerLinks = {
   shop: [
@@ -31,19 +34,29 @@ export function Footer() {
             <h3 className="text-xs uppercase tracking-[0.2em] text-gold mb-3">Newsletter</h3>
             <p className="text-2xl md:text-3xl font-light mb-6">Get the drop list.</p>
             <p className="text-sm text-white/60 mb-6">Early access to limited kits and exclusive releases.</p>
-            <form className="flex gap-3">
-              <input
-                type="email"
-                placeholder="Your email"
-                className="flex-1 bg-transparent border border-white/20 px-4 py-3 text-sm placeholder:text-white/40 focus:outline-none focus:border-gold transition-colors"
-              />
-              <button
-                type="submit"
-                className="px-6 py-3 bg-gold text-primary font-medium text-sm uppercase tracking-wider hover:bg-gold-light transition-colors btn-press"
-              >
-                Join
-              </button>
-            </form>
+            <ClientOnly
+              fallback={
+                <div className="flex gap-3">
+                  <div className="flex-1 h-12 bg-white/10 rounded animate-pulse" />
+                  <div className="w-24 h-12 bg-white/10 rounded animate-pulse" />
+                </div>
+              }
+            >
+              <form className="flex gap-3">
+                <input
+                  type="email"
+                  placeholder="Your email"
+                  autoComplete="email"
+                  className="flex-1 bg-transparent border border-white/20 px-4 py-3 text-sm placeholder:text-white/40 focus:outline-none focus:border-gold transition-colors"
+                />
+                <button
+                  type="submit"
+                  className="px-6 py-3 bg-gold text-primary font-medium text-sm uppercase tracking-wider hover:bg-gold-light transition-colors btn-press"
+                >
+                  Join
+                </button>
+              </form>
+            </ClientOnly>
           </div>
         </div>
       </div>
@@ -118,7 +131,7 @@ export function Footer() {
             </a>
           </div>
           <div className="flex items-center gap-6 text-xs text-white/40">
-            <span>Â© {new Date().getFullYear()} LEMAH</span>
+            <span suppressHydrationWarning>© {new Date().getFullYear()} LEMAH</span>
             <Link href="#" className="hover:text-white transition-colors">
               Privacy
             </Link>

@@ -5,6 +5,7 @@ import { Search, X } from "lucide-react"
 import { products } from "@/lib/mock-data"
 import Image from "next/image"
 import Link from "next/link"
+import { formatPrice } from "@/lib/utils"
 
 interface SearchDialogProps {
   open: boolean
@@ -87,7 +88,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-sm truncate">{product.title}</p>
-                        <p className="text-xs text-muted-foreground">€{product.price}</p>
+                        <p className="text-xs text-muted-foreground">{formatPrice(product.price, product.currencyCode || "EUR")}</p>
                       </div>
                     </Link>
                   ))}

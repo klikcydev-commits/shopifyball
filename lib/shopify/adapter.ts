@@ -14,11 +14,13 @@ export function adaptShopifyProduct(shopifyProduct: ShopifyProduct): Product {
     height: edge.node.height,
   }))
 
-  // Safely map variants
+  // Safely map variants with all price information
+  // Use exact currency from Shopify
   const variants: ProductVariant[] = (shopifyProduct.variants?.edges || []).map(edge => ({
     id: edge.node.id,
     title: edge.node.title,
-    price: edge.node.price?.amount || '0.00',
+    price: edge.node.price?.amount || shopifyProduct.priceRange?.minVariantPrice?.amount || '0.00',
+    currencyCode: edge.node.price?.currencyCode || shopifyProduct.priceRange?.minVariantPrice?.currencyCode || 'EUR',
     compareAtPrice: undefined, // Shopify doesn't always provide this in Storefront API
     availableForSale: edge.node.availableForSale || false,
     selectedOptions: edge.node.selectedOptions || [],
@@ -30,8 +32,9 @@ export function adaptShopifyProduct(shopifyProduct: ShopifyProduct): Product {
     tags.push('11kit')
   }
 
-  // Get price safely
+  // Get price safely with currency - use exact currency from Shopify
   const price = shopifyProduct.priceRange?.minVariantPrice?.amount || '0.00'
+  const currencyCode = shopifyProduct.priceRange?.minVariantPrice?.currencyCode || 'EUR'
 
   return {
     id: shopifyProduct.id,
@@ -40,12 +43,14 @@ export function adaptShopifyProduct(shopifyProduct: ShopifyProduct): Product {
     description: shopifyProduct.description || '',
     images: images.length > 0 ? images : [{ id: 'placeholder', url: '/placeholder.svg', altText: 'Product image', width: 600, height: 600 }],
     price,
+    currencyCode,
     compareAtPrice: undefined,
     tags,
     variants: variants.length > 0 ? variants : [{
       id: 'default',
       title: 'Default',
       price,
+      currencyCode,
       availableForSale: false,
       selectedOptions: [],
     }],

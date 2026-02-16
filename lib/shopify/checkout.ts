@@ -1,8 +1,8 @@
 /**
- * Helper functions for redirecting to shop.lemah.store for checkout
+ * Helper functions for redirecting to shop.leamah for checkout
  */
 
-const SHOPIFY_STORE_URL = 'https://shop.lemah.store'
+const SHOPIFY_STORE_URL = process.env.NEXT_PUBLIC_SHOPIFY_STORE_URL || 'https://shop.leamah.store'
 
 /**
  * Build checkout URL for shop.lemah.store

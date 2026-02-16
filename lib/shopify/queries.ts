@@ -43,6 +43,10 @@ export const getProductsQuery = `
               amount
               currencyCode
             }
+            maxVariantPrice {
+              amount
+              currencyCode
+            }
           }
           images(first: 5) {
             edges {
@@ -55,11 +59,24 @@ export const getProductsQuery = `
               }
             }
           }
-          variants(first: 1) {
+          variants(first: 100) {
             edges {
               node {
                 id
+                title
+                price {
+                  amount
+                  currencyCode
+                }
                 availableForSale
+                selectedOptions {
+                  name
+                  value
+                }
+                image {
+                  url
+                  altText
+                }
               }
             }
           }
@@ -85,6 +102,10 @@ export const getProductQuery = `
       descriptionHtml
       priceRange {
         minVariantPrice {
+          amount
+          currencyCode
+        }
+        maxVariantPrice {
           amount
           currencyCode
         }
@@ -162,6 +183,10 @@ export const getCollectionQuery = `
                 amount
                 currencyCode
               }
+              maxVariantPrice {
+                amount
+                currencyCode
+              }
             }
             images(first: 5) {
               edges {
@@ -174,11 +199,24 @@ export const getCollectionQuery = `
                 }
               }
             }
-            variants(first: 1) {
+            variants(first: 100) {
               edges {
                 node {
                   id
+                  title
+                  price {
+                    amount
+                    currencyCode
+                  }
                   availableForSale
+                  selectedOptions {
+                    name
+                    value
+                  }
+                  image {
+                    url
+                    altText
+                  }
                 }
               }
             }

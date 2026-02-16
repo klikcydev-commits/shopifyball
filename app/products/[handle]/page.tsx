@@ -11,10 +11,11 @@ export const dynamic = 'force-dynamic'
 export async function generateMetadata({
   params,
 }: {
-  params: { handle: string }
+  params: Promise<{ handle: string }>
 }): Promise<Metadata> {
   try {
-    const product = await getProduct(params.handle)
+    const { handle } = await params
+    const product = await getProduct(handle)
 
     if (!product) {
       return {
@@ -45,11 +46,12 @@ export async function generateMetadata({
   }
 }
 
-export default async function ProductPage({ params }: { params: { handle: string } }) {
+export default async function ProductPage({ params }: { params: Promise<{ handle: string }> }) {
+  const { handle } = await params
   let product
   
   try {
-    product = await getProduct(params.handle)
+    product = await getProduct(handle)
   } catch (error) {
     console.error('Error fetching product:', error)
     // Re-throw to trigger error boundary

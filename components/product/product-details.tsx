@@ -10,6 +10,7 @@ import type { ProductVariant } from '@/lib/shopify-types'
 import { ShoppingBag, Check, ExternalLink } from 'lucide-react'
 import { toast } from 'sonner'
 import { buildProductUrl } from '@/lib/shopify/checkout'
+import { formatPrice } from '@/lib/utils'
 
 interface ProductDetailsProps {
   product: ShopifyProduct
@@ -120,7 +121,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
           <div>
             <h1 className="font-heading text-4xl md:text-5xl text-navy mb-4">{product.title}</h1>
             <p className="text-gold text-3xl font-bold mb-6">
-              {price.amount} {price.currencyCode}
+              {formatPrice(price.amount, price.currencyCode)}
             </p>
 
             <div

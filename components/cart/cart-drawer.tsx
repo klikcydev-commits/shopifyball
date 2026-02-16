@@ -2,7 +2,8 @@
 import Image from "next/image"
 import { X, Minus, Plus, ShoppingBag } from "lucide-react"
 import { useCart } from "./cart-context"
-import { cn } from "@/lib/utils"
+import { cn, formatPrice } from "@/lib/utils"
+import { buildCheckoutUrl } from "@/lib/shopify/checkout"
 
 interface CartDrawerProps {
   open: boolean
@@ -96,7 +97,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                     </div>
                     <div className="text-right">
                       <p className="font-medium">
-                        €{(Number.parseFloat(line.variant.price) * line.quantity).toFixed(2)}
+                        {formatPrice((Number.parseFloat(line.variant.price) * line.quantity).toString(), line.variant.currencyCode || line.product.currencyCode || "EUR")}
                       </p>
                     </div>
                   </div>
@@ -107,19 +108,23 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
               <div className="p-6 border-t border-border bg-secondary/50">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-sm text-muted-foreground">Subtotal</span>
-                  <span className="text-lg font-semibold">€{cart.subtotal}</span>
+                  <span className="text-lg font-semibold">
+                    {cart.lines.length > 0 
+                      ? formatPrice(cart.subtotal, cart.lines[0]?.product?.currencyCode || cart.lines[0]?.variant?.currencyCode || "EUR")
+                      : formatPrice("0.00", "EUR")
+                    }
+                  </span>
                 </div>
                 <p className="text-xs text-muted-foreground mb-4">Shipping calculated at checkout</p>
                 <button 
                   onClick={() => {
-                    // Redirect to shop.lemah.store for checkout
+                    // Redirect to shop.leamah.store for checkout
                     const items = cart.lines.map(line => ({
                       variantId: line.variant.id,
                       quantity: line.quantity,
+                      productHandle: line.product.handle,
                     }))
-                    const checkoutUrl = items.length > 0 
-                      ? `https://shop.lemah.store/cart/${items.map(item => `${item.variantId}:${item.quantity}`).join(',')}`
-                      : 'https://shop.lemah.store/cart'
+                    const checkoutUrl = buildCheckoutUrl(items)
                     window.location.href = checkoutUrl
                   }}
                   className="w-full py-4 bg-primary text-primary-foreground font-medium text-sm uppercase tracking-wider hover:bg-navy-light transition-colors btn-press gold-glow"

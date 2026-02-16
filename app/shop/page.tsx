@@ -1,8 +1,8 @@
-import Image from 'next/image'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
-import { getProducts } from '@/lib/shopify'
+import { getProducts, getCollections } from '@/lib/shopify'
 import { AllProductsClient } from '@/components/shop/shop-products-client'
+import { ShopCollections } from '@/components/shop/shop-collections'
 import type { Metadata } from 'next'
 
 export const dynamic = 'force-dynamic'
@@ -14,17 +14,20 @@ export const metadata: Metadata = {
 
 export default async function ShopPage() {
   let products: Awaited<ReturnType<typeof getProducts>>['products'] = []
+  let collections: Awaited<ReturnType<typeof getCollections>> = []
   let error: Error | null = null
 
   try {
-    const result = await getProducts({
-      first: 100
-    })
-    products = result.products || []
+    const [productsResult, collectionsResult] = await Promise.all([
+      getProducts({ first: 100 }),
+      getCollections(20),
+    ])
+    products = productsResult.products ?? []
+    collections = collectionsResult ?? []
   } catch (err) {
-    console.error('Error fetching products:', err)
+    console.error('Error fetching shop data:', err)
     error = err instanceof Error ? err : new Error('Failed to fetch products')
-    // Continue with empty products array so page still renders
+    // Continue with empty arrays so page still renders
   }
 
   return (
@@ -72,6 +75,11 @@ export default async function ShopPage() {
         {/* Products Section */}
         <section className="py-20 md:py-32 bg-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {collections.length > 0 && (
+              <div className="mb-16">
+                <ShopCollections collections={collections} />
+              </div>
+            )}
             <div className="mb-12 text-center">
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
                 Our Complete Collection

@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react"
 import Image from "next/image"
 import { X, Check, Sparkles } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn, formatPrice } from "@/lib/utils"
 import { useScrollReveal } from "@/hooks/use-scroll-reveal"
 import { products } from "@/lib/mock-data"
 import type { Product } from "@/lib/shopify-types"
@@ -285,7 +285,7 @@ export function KitBuilder() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="font-medium text-sm truncate">{product.title.split("—")[0].trim()}</p>
-                          <p className="text-xs text-primary-foreground/50">€{product.price}</p>
+                          <p className="text-xs text-primary-foreground/50">{formatPrice(product.price, product.currencyCode || "EUR")}</p>
                         </div>
                         {isSelected && (
                           <div className="w-6 h-6 rounded-full bg-gold flex items-center justify-center flex-shrink-0">
@@ -317,7 +317,7 @@ export function KitBuilder() {
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium truncate">{item.product.title.split("—")[0].trim()}</p>
                           </div>
-                          <span className="text-sm text-gold">€{item.product.price}</span>
+                          <span className="text-sm text-gold">{formatPrice(item.product.price, item.product.currencyCode || "EUR")}</span>
                           <button
                             onClick={() => handleRemoveProduct(item.slotId)}
                             className="p-1 hover:bg-white/10 rounded transition-colors"

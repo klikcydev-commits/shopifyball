@@ -8,11 +8,24 @@ import { TacticalLines } from "@/components/animations/tactical-lines"
 export function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-primary">
-      {/* Background layers */}
-      <div className="absolute inset-0">
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-navy-light" />
+      {/* Background video */}
+      <div className="absolute inset-0 z-0">
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          aria-hidden
+        >
+          <source src="/lemahs.mp4" type="video/mp4" />
+        </video>
+        {/* Dark overlay so text stays readable */}
+        <div className="absolute inset-0 bg-primary/70 bg-gradient-to-br from-primary/80 via-primary/60 to-navy-light/90" />
+      </div>
 
+      {/* Background layers */}
+      <div className="absolute inset-0 z-[1]">
         {/* Tactical lines */}
         <TacticalLines />
 

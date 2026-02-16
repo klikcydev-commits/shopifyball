@@ -6,6 +6,7 @@ export interface Product {
   description: string
   images: ProductImage[]
   price: string
+  currencyCode?: string
   compareAtPrice?: string
   tags: string[]
   variants: ProductVariant[]
@@ -25,6 +26,7 @@ export interface ProductVariant {
   id: string
   title: string
   price: string
+  currencyCode?: string
   compareAtPrice?: string
   availableForSale: boolean
   selectedOptions: { name: string; value: string }[]

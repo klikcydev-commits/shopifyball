@@ -6,7 +6,7 @@ import { X, Minus, Plus } from "lucide-react"
 import type { Product, ProductVariant } from "@/lib/shopify-types"
 import { useCart } from "@/components/cart/cart-context"
 import { useToast } from "@/hooks/use-toast"
-import { cn } from "@/lib/utils"
+import { cn, formatPrice } from "@/lib/utils"
 
 interface QuickViewModalProps {
   product: Product
@@ -64,9 +64,9 @@ export function QuickViewModal({ product, open, onClose }: QuickViewModalProps) 
             </span>
             <h2 className="text-2xl font-semibold mb-2">{product.title}</h2>
             <div className="flex items-center gap-3 mb-4">
-              <span className="text-xl font-semibold">€{selectedVariant.price}</span>
+              <span className="text-xl font-semibold">{formatPrice(selectedVariant.price, selectedVariant.currencyCode || product.currencyCode || "EUR")}</span>
               {selectedVariant.compareAtPrice && (
-                <span className="text-muted-foreground line-through">€{selectedVariant.compareAtPrice}</span>
+                <span className="text-muted-foreground line-through">{formatPrice(selectedVariant.compareAtPrice, selectedVariant.currencyCode || product.currencyCode || "EUR")}</span>
               )}
             </div>
             <p className="text-sm text-muted-foreground mb-6 leading-relaxed">{product.description}</p>
@@ -123,7 +123,7 @@ export function QuickViewModal({ product, open, onClose }: QuickViewModalProps) 
               onClick={handleAddToCart}
               className="mt-auto w-full py-4 bg-primary text-primary-foreground font-medium uppercase tracking-wider hover:bg-navy-light transition-colors btn-press gold-glow"
             >
-              Add to Cart — €{(Number.parseFloat(selectedVariant.price) * quantity).toFixed(2)}
+              Add to Cart — {formatPrice((Number.parseFloat(selectedVariant.price) * quantity).toString(), selectedVariant.currencyCode || product.currencyCode || "EUR")}
             </button>
           </div>
         </div>

@@ -14,10 +14,11 @@ export const metadata = {
 }
 
 export default async function SearchPage({
-  searchParams,
+  searchParams: searchParamsPromise,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined }
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
+  const searchParams = await searchParamsPromise
   const collectionHandle = typeof searchParams.collection === 'string' ? searchParams.collection : undefined
   const query = typeof searchParams.q === 'string' ? searchParams.q : undefined
 

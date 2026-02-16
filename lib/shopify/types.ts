@@ -10,6 +10,12 @@ export interface ShopifyProduct {
       currencyCode: string
     }
   }
+  compareAtPriceRange?: {
+    minVariantPrice: {
+      amount: string
+      currencyCode: string
+    }
+  } | null
   images: {
     edges: Array<{
       node: {
@@ -30,6 +36,10 @@ export interface ShopifyProduct {
           amount: string
           currencyCode: string
         }
+        compareAtPrice?: {
+          amount: string
+          currencyCode: string
+        } | null
         availableForSale: boolean
         selectedOptions: Array<{
           name: string
@@ -106,6 +116,7 @@ export interface ShopifyPage {
 export interface ShopifyCart {
   id: string
   checkoutUrl: string
+  totalQuantity?: number
   cost: {
     totalAmount: {
       amount: string
@@ -120,6 +131,10 @@ export interface ShopifyCart {
       currencyCode: string
     }
   }
+  discountCodes?: Array<{ code: string; applicable: boolean }>
+  discountAllocations?: Array<{
+    discountedAmount: { amount: string; currencyCode: string }
+  }>
   lines: {
     edges: Array<{
       node: {

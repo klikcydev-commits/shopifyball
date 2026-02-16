@@ -3,7 +3,6 @@ import Image from "next/image"
 import { X, Minus, Plus, ShoppingBag } from "lucide-react"
 import { useCart } from "./cart-context"
 import { cn, formatPrice } from "@/lib/utils"
-import { buildCheckoutUrl } from "@/lib/shopify/checkout"
 
 interface CartDrawerProps {
   open: boolean
@@ -11,7 +10,7 @@ interface CartDrawerProps {
 }
 
 export function CartDrawer({ open, onClose }: CartDrawerProps) {
-  const { cart, removeFromCart, updateQuantity } = useCart()
+  const { cart, removeFromCart, updateQuantity, isLoading } = useCart()
 
   return (
     <>
@@ -105,31 +104,73 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
               </div>
 
               {/* Footer */}
-              <div className="p-6 border-t border-border bg-secondary/50">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm text-muted-foreground">Subtotal</span>
-                  <span className="text-lg font-semibold">
-                    {cart.lines.length > 0 
-                      ? formatPrice(cart.subtotal, cart.lines[0]?.product?.currencyCode || cart.lines[0]?.variant?.currencyCode || "EUR")
-                      : formatPrice("0.00", "EUR")
-                    }
-                  </span>
-                </div>
-                <p className="text-xs text-muted-foreground mb-4">Shipping calculated at checkout</p>
-                <button 
-                  onClick={() => {
-                    // Redirect to shop.leamah.store for checkout
-                    const items = cart.lines.map(line => ({
-                      variantId: line.variant.id,
-                      quantity: line.quantity,
-                      productHandle: line.product.handle,
-                    }))
-                    const checkoutUrl = buildCheckoutUrl(items)
-                    window.location.href = checkoutUrl
-                  }}
-                  className="w-full py-4 bg-primary text-primary-foreground font-medium text-sm uppercase tracking-wider hover:bg-navy-light transition-colors btn-press gold-glow"
+              <div className="p-6 border-t border-border bg-secondary/50 space-y-4">
+                {Number(cart.discountAmount ?? 0) > 0 && (
+                  <div className="rounded-lg bg-green-500/10 border border-green-500/30 px-3 py-2">
+                    <p className="text-sm font-semibold text-green-700 dark:text-green-400">
+                      Discount applied: {cart.discountCode} (−{formatPrice(cart.discountAmount!, cart.currencyCode ?? "AED")})
+                    </p>
+                    <p className="text-xs text-green-600/80 dark:text-green-400/80 mt-0.5">
+                      Total savings: {formatPrice(cart.discountAmount!, cart.currencyCode ?? "AED")}
+                    </p>
+                  </div>
+                )}
+
+                <div
+                  className={cn(
+                    "rounded-lg border px-3 py-2",
+                    cart.totalQuantity >= 2
+                      ? "bg-green-500/10 border-green-500/30"
+                      : "bg-amber-500/10 border-amber-500/30"
+                  )}
                 >
-                  Checkout
+                  {cart.totalQuantity >= 2 ? (
+                    <p className="text-sm font-semibold text-green-700 dark:text-green-400">
+                      Free delivery unlocked
+                    </p>
+                  ) : (
+                    <>
+                      <p className="text-sm font-semibold text-amber-800 dark:text-amber-400">
+                        Add {2 - cart.totalQuantity} more item{2 - cart.totalQuantity > 1 ? "s" : ""} for free delivery
+                      </p>
+                      <p className="text-xs text-amber-700/80 dark:text-amber-400/80 mt-0.5">
+                        Free shipping on orders with 2+ items
+                      </p>
+                    </>
+                  )}
+                </div>
+
+                <div className="border-t border-border pt-3 space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Subtotal</span>
+                    <span>{formatPrice(cart.subtotal, cart.currencyCode ?? cart.lines[0]?.variant?.currencyCode ?? "EUR")}</span>
+                  </div>
+                  {Number(cart.discountAmount ?? 0) > 0 && (
+                    <div className="flex justify-between text-sm text-green-600 dark:text-green-400">
+                      <span>Discount{cart.discountCode ? ` (${cart.discountCode})` : ""}</span>
+                      <span>−{formatPrice(cart.discountAmount!, cart.currencyCode ?? "EUR")}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Shipping</span>
+                    <span>{cart.totalQuantity >= 2 ? "FREE" : "Calculated at checkout"}</span>
+                  </div>
+                  <div className="flex justify-between text-sm pt-2 border-t border-border font-semibold">
+                    <span>Total</span>
+                    <span>
+                      {formatPrice(cart.totalAmount ?? cart.subtotal, cart.currencyCode ?? cart.lines[0]?.variant?.currencyCode ?? "EUR")}
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => {
+                    if (cart.checkoutUrl) window.location.href = cart.checkoutUrl
+                  }}
+                  disabled={isLoading || !cart.checkoutUrl}
+                  className="w-full py-4 bg-primary text-primary-foreground font-medium text-sm uppercase tracking-wider hover:bg-navy-light transition-colors btn-press gold-glow disabled:opacity-60 disabled:pointer-events-none"
+                >
+                  {isLoading ? "Updating…" : "Proceed to Checkout"}
                 </button>
               </div>
             </>

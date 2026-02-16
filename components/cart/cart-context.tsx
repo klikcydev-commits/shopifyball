@@ -1,107 +1,161 @@
 "use client"
 
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react"
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+  type ReactNode,
+} from "react"
 import type { Cart, CartLine, Product, ProductVariant } from "@/lib/shopify-types"
+import { shopifyCartToCart } from "@/lib/shopify/cart-adapter"
+import {
+  getCartAction,
+  addToCartAction,
+  updateCartAction,
+  removeFromCartAction,
+} from "@/app/actions/cart-actions"
+
+const CART_ID_KEY = "lemah_cart_id"
 
 interface CartContextType {
   cart: Cart
-  addToCart: (product: Product, variant: ProductVariant, quantity?: number) => void
-  removeFromCart: (lineId: string) => void
-  updateQuantity: (lineId: string, quantity: number) => void
-  clearCart: () => void
+  cartId: string | null
   isCartOpen: boolean
   setIsCartOpen: (open: boolean) => void
+  isLoading: boolean
+  addToCart: (product: Product, variant: ProductVariant, quantity?: number) => Promise<void>
+  removeFromCart: (lineId: string) => Promise<void>
+  updateQuantity: (lineId: string, quantity: number) => Promise<void>
+  clearCart: () => void
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
 
-const initialCart: Cart = {
-  id: "cart_1",
+const emptyCart: Cart = {
+  id: "",
   lines: [],
   totalQuantity: 0,
   subtotal: "0.00",
-  checkoutUrl: "/checkout",
+  checkoutUrl: "",
+}
+
+function loadCartId(): string | null {
+  if (typeof window === "undefined") return null
+  return localStorage.getItem(CART_ID_KEY)
+}
+
+function saveCartId(id: string | null) {
+  if (typeof window === "undefined") return
+  if (id) localStorage.setItem(CART_ID_KEY, id)
+  else localStorage.removeItem(CART_ID_KEY)
 }
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [cart, setCart] = useState<Cart>(initialCart)
+  const [cart, setCart] = useState<Cart>(emptyCart)
+  const [cartId, setCartIdState] = useState<string | null>(null)
   const [isCartOpen, setIsCartOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
-  const calculateSubtotal = (lines: CartLine[]): string => {
-    const total = lines.reduce((sum, line) => {
-      return sum + Number.parseFloat(line.variant.price) * line.quantity
-    }, 0)
-    return total.toFixed(2)
-  }
-
-  const addToCart = useCallback((product: Product, variant: ProductVariant, quantity = 1) => {
-    setCart((prev) => {
-      const existingLineIndex = prev.lines.findIndex((line) => line.variant.id === variant.id)
-
-      let newLines: CartLine[]
-      if (existingLineIndex >= 0) {
-        newLines = prev.lines.map((line, index) =>
-          index === existingLineIndex ? { ...line, quantity: line.quantity + quantity } : line,
-        )
-      } else {
-        const newLine: CartLine = {
-          id: `line_${Date.now()}`,
-          quantity,
-          product,
-          variant,
-        }
-        newLines = [...prev.lines, newLine]
-      }
-
-      return {
-        ...prev,
-        lines: newLines,
-        totalQuantity: newLines.reduce((sum, line) => sum + line.quantity, 0),
-        subtotal: calculateSubtotal(newLines),
-      }
-    })
-    setIsCartOpen(true)
+  const setCartFromShopify = useCallback((shopifyCart: { id: string; checkoutUrl: string; cost?: { subtotalAmount?: { amount: string } }; lines?: { edges: unknown[] } } | null) => {
+    if (!shopifyCart) {
+      setCart(emptyCart)
+      setCartIdState(null)
+      saveCartId(null)
+      return
+    }
+    setCart(shopifyCartToCart(shopifyCart as Parameters<typeof shopifyCartToCart>[0]))
+    setCartIdState(shopifyCart.id)
+    saveCartId(shopifyCart.id)
   }, [])
 
-  const removeFromCart = useCallback((lineId: string) => {
-    setCart((prev) => {
-      const newLines = prev.lines.filter((line) => line.id !== lineId)
-      return {
-        ...prev,
-        lines: newLines,
-        totalQuantity: newLines.reduce((sum, line) => sum + line.quantity, 0),
-        subtotal: calculateSubtotal(newLines),
+  useEffect(() => {
+    const id = loadCartId()
+    if (!id) return
+    setCartIdState(id)
+    getCartAction(id)
+      .then((shopifyCart) => {
+        if (shopifyCart) setCartFromShopify(shopifyCart)
+        else saveCartId(null)
+      })
+      .catch(() => saveCartId(null))
+  }, [setCartFromShopify])
+
+  const addToCart = useCallback(
+    async (product: Product, variant: ProductVariant, quantity = 1) => {
+      setIsLoading(true)
+      try {
+        const shopifyCart = await addToCartAction(cartId, variant.id, quantity)
+        if (shopifyCart) setCartFromShopify(shopifyCart)
+        setIsCartOpen(true)
+      } catch (err) {
+        console.error("Add to cart failed:", err)
+        throw err
+      } finally {
+        setIsLoading(false)
       }
-    })
-  }, [])
+    },
+    [cartId, setCartFromShopify]
+  )
+
+  const removeFromCart = useCallback(
+    async (lineId: string) => {
+      if (!cartId) return
+      setIsLoading(true)
+      try {
+        const shopifyCart = await removeFromCartAction(cartId, lineId)
+        if (shopifyCart) setCartFromShopify(shopifyCart)
+      } catch (err) {
+        console.error("Remove from cart failed:", err)
+        throw err
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [cartId, setCartFromShopify]
+  )
 
   const updateQuantity = useCallback(
-    (lineId: string, quantity: number) => {
+    async (lineId: string, quantity: number) => {
+      if (!cartId) return
       if (quantity < 1) {
-        removeFromCart(lineId)
+        await removeFromCart(lineId)
         return
       }
-
-      setCart((prev) => {
-        const newLines = prev.lines.map((line) => (line.id === lineId ? { ...line, quantity } : line))
-        return {
-          ...prev,
-          lines: newLines,
-          totalQuantity: newLines.reduce((sum, line) => sum + line.quantity, 0),
-          subtotal: calculateSubtotal(newLines),
-        }
-      })
+      setIsLoading(true)
+      try {
+        const shopifyCart = await updateCartAction(cartId, lineId, quantity)
+        if (shopifyCart) setCartFromShopify(shopifyCart)
+      } catch (err) {
+        console.error("Update quantity failed:", err)
+        throw err
+      } finally {
+        setIsLoading(false)
+      }
     },
-    [removeFromCart],
+    [cartId, removeFromCart, setCartFromShopify]
   )
 
   const clearCart = useCallback(() => {
-    setCart(initialCart)
+    setCart(emptyCart)
+    setCartIdState(null)
+    saveCartId(null)
   }, [])
 
   return (
     <CartContext.Provider
-      value={{ cart, addToCart, removeFromCart, updateQuantity, clearCart, isCartOpen, setIsCartOpen }}
+      value={{
+        cart,
+        cartId,
+        isCartOpen,
+        setIsCartOpen,
+        isLoading,
+        addToCart,
+        removeFromCart,
+        updateQuantity,
+        clearCart,
+      }}
     >
       {children}
     </CartContext.Provider>

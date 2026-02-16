@@ -22,13 +22,17 @@ export function QuickViewModal({ product, open, onClose }: QuickViewModalProps) 
 
   if (!open) return null
 
-  const handleAddToCart = () => {
-    addToCart(product, selectedVariant, quantity)
-    toast({
-      title: "Added to cart",
-      description: `${product.title} (${selectedVariant.title}) has been added to your cart.`,
-    })
-    onClose()
+  const handleAddToCart = async () => {
+    try {
+      await addToCart(product, selectedVariant, quantity)
+      onClose()
+    } catch {
+      toast({
+        title: "Error",
+        description: "Failed to add to cart.",
+        variant: "destructive",
+      })
+    }
   }
 
   return (

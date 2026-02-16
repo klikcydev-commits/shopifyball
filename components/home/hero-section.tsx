@@ -2,7 +2,6 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowRight } from "lucide-react"
 import { FloatingParticles } from "@/components/animations/floating-particles"
 import { TacticalLines } from "@/components/animations/tactical-lines"
 
@@ -59,21 +58,11 @@ export function HeroSection() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20 text-center">
         {/* Eyebrow */}
         <div className="mb-6 animate-stagger-in" style={{ animationDelay: "0.1s" }}>
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 border border-gold/30 rounded-full text-xs uppercase tracking-[0.2em] text-gold">
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 border border-gold/30 rounded-full text-[15px] uppercase tracking-[0.2em] text-white">
             <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
             Premium Football Accessories
           </span>
         </div>
-
-        {/* Main headline */}
-        <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-primary-foreground tracking-tighter mb-6">
-          <span className="block animate-stagger-in" style={{ animationDelay: "0.2s" }}>
-            ELEVEN
-          </span>
-          <span className="block animate-stagger-in text-gold" style={{ animationDelay: "0.4s" }}>
-            READY.
-          </span>
-        </h1>
 
         {/* Subheadline */}
         <p
@@ -88,13 +77,6 @@ export function HeroSection() {
           className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-stagger-in"
           style={{ animationDelay: "0.8s" }}
         >
-          <Link
-            href="/11kit"
-            className="group flex items-center gap-2 px-8 py-4 bg-gold text-primary font-medium uppercase tracking-wider hover:bg-gold-light transition-all btn-press gold-glow"
-          >
-            Explore 11Kit
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </Link>
           <Link
             href="#products"
             className="flex items-center gap-2 px-8 py-4 border border-primary-foreground/30 text-primary-foreground font-medium uppercase tracking-wider hover:bg-primary-foreground/10 transition-colors btn-press"

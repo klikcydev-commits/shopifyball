@@ -1,7 +1,6 @@
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { HeroSection } from "@/components/home/hero-section"
-import { CategoryStrip } from "@/components/home/category-strip"
 import { FeaturedCollections } from "@/components/home/featured-collections"
 import { FeaturedProducts } from "@/components/home/featured-products"
 import { ElevenKitTeaser } from "@/components/home/eleven-kit-teaser"
@@ -15,7 +14,6 @@ export default function HomePage() {
       <Header />
       <main>
         <HeroSection />
-        <CategoryStrip />
         <FeaturedCollections />
         <FeaturedProducts />
         <ElevenKitTeaser />

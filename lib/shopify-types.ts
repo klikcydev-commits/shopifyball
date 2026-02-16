@@ -53,7 +53,13 @@ export interface Cart {
   lines: CartLine[]
   totalQuantity: number
   subtotal: string
+  totalAmount?: string
+  currencyCode?: string
   checkoutUrl: string
+  /** Applied discount code (first applicable) */
+  discountCode?: string
+  /** Sum of discounted amount across all allocations */
+  discountAmount?: string
 }
 
 // 11Kit Types

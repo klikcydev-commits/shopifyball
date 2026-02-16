@@ -323,13 +323,13 @@ export const products: Product[] = [
 export const collections: Collection[] = [
   {
     id: "col_1",
-    title: "White Night",
+    title: "CR7",
     handle: "white-night",
     description: "Clean. Minimal. Bright. The essence of match day purity.",
     image: {
       id: "col_img_1",
       url: "/premium-white-minimalist-football-accessories-coll.jpg",
-      altText: "White Night Collection",
+      altText: "CR7 Collection",
       width: 600,
       height: 800,
     },
@@ -337,13 +337,13 @@ export const collections: Collection[] = [
   },
   {
     id: "col_2",
-    title: "Navy Core",
+    title: "M9",
     handle: "navy-core",
     description: "Deep. Understated. Stealth mode for the focused.",
     image: {
       id: "col_img_2",
       url: "/premium-navy-blue-football-accessories-collection.jpg",
-      altText: "Navy Core Collection",
+      altText: "M9 Collection",
       width: 600,
       height: 800,
     },
@@ -351,13 +351,13 @@ export const collections: Collection[] = [
   },
   {
     id: "col_3",
-    title: "Gold Detail",
+    title: "The Legends",
     handle: "gold-detail",
     description: "Premium accents. Limited pieces. The finishing touch.",
     image: {
       id: "col_img_3",
       url: "/premium-gold-accent-football-accessories-collectio.jpg",
-      altText: "Gold Detail Collection",
+      altText: "The Legends Collection",
       width: 600,
       height: 800,
     },
@@ -368,21 +368,21 @@ export const collections: Collection[] = [
 export const kitStyles: KitStyle[] = [
   {
     id: "kit_1",
-    name: "White Night",
+    name: "CR7",
     description: "Clean, minimal, bright. For those who arrive in light.",
     colorScheme: "white",
     products: products.slice(0, 6),
   },
   {
     id: "kit_2",
-    name: "Navy Core",
+    name: "M9",
     description: "Deep, understated, stealth. Focus mode activated.",
     colorScheme: "navy",
     products: products.slice(3, 9),
   },
   {
     id: "kit_3",
-    name: "Gold Detail",
+    name: "The Legends",
     description: "Premium accents, limited drops. The finishing touch.",
     colorScheme: "gold",
     products: products.slice(6, 12),

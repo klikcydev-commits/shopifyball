@@ -45,7 +45,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     }
   }
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!selectedVariant) return
 
     if (!selectedVariant.availableForSale) {
@@ -55,16 +55,13 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
     setIsAdding(true)
     try {
-      // Convert ShopifyProduct to Product type and find matching variant
       const adaptedProduct = adaptShopifyProduct(product)
       const matchingVariant = adaptedProduct.variants.find((v: ProductVariant) => v.id === selectedVariant.id)
-      
-      if (matchingVariant) {
-        addToCart(adaptedProduct, matchingVariant, quantity)
-        toast.success('Added to cart!')
-      } else {
+      if (!matchingVariant) {
         toast.error('Variant not found')
+        return
       }
+      await addToCart(adaptedProduct, matchingVariant, quantity)
     } catch (error) {
       toast.error('Failed to add to cart')
       console.error(error)

@@ -68,16 +68,20 @@ export function KitBuilder() {
     return selectedItems.reduce((sum, item) => sum + Number.parseFloat(item.product.price), 0).toFixed(2)
   }
 
-  const handleAddKitToCart = () => {
-    for (const item of selectedItems) {
-      addToCart(item.product, item.product.variants[0], 1)
+  const handleAddKitToCart = async () => {
+    try {
+      for (const item of selectedItems) {
+        await addToCart(item.product, item.product.variants[0], 1)
+      }
+      setIsAddedToCart(true)
+      setTimeout(() => setIsAddedToCart(false), 3000)
+    } catch {
+      toast({
+        title: "Error",
+        description: "Failed to add kit to cart.",
+        variant: "destructive",
+      })
     }
-    setIsAddedToCart(true)
-    toast({
-      title: "11Kit Added to Cart!",
-      description: `${selectedItems.length} items have been added to your cart.`,
-    })
-    setTimeout(() => setIsAddedToCart(false), 3000)
   }
 
   const activeSlotData = activeSlot ? formationSlots.find((s) => s.id === activeSlot) : null

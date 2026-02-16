@@ -48,6 +48,12 @@ export const getProductsQuery = `
               currencyCode
             }
           }
+          compareAtPriceRange {
+            minVariantPrice {
+              amount
+              currencyCode
+            }
+          }
           images(first: 5) {
             edges {
               node {
@@ -65,6 +71,10 @@ export const getProductsQuery = `
                 id
                 title
                 price {
+                  amount
+                  currencyCode
+                }
+                compareAtPrice {
                   amount
                   currencyCode
                 }
@@ -110,6 +120,12 @@ export const getProductQuery = `
           currencyCode
         }
       }
+      compareAtPriceRange {
+        minVariantPrice {
+          amount
+          currencyCode
+        }
+      }
       images(first: 10) {
         edges {
           node {
@@ -127,6 +143,10 @@ export const getProductQuery = `
             id
             title
             price {
+              amount
+              currencyCode
+            }
+            compareAtPrice {
               amount
               currencyCode
             }
@@ -188,6 +208,12 @@ export const getCollectionQuery = `
                 currencyCode
               }
             }
+            compareAtPriceRange {
+              minVariantPrice {
+                amount
+                currencyCode
+              }
+            }
             images(first: 5) {
               edges {
                 node {
@@ -205,6 +231,10 @@ export const getCollectionQuery = `
                   id
                   title
                   price {
+                    amount
+                    currencyCode
+                  }
+                  compareAtPrice {
                     amount
                     currencyCode
                   }
@@ -258,6 +288,9 @@ export const createCartMutation = `
       cart {
         id
         checkoutUrl
+        totalQuantity
+        discountCodes { code applicable }
+        discountAllocations { discountedAmount { amount currencyCode } }
         cost {
           totalAmount {
             amount
@@ -328,6 +361,9 @@ export const addToCartMutation = `
       cart {
         id
         checkoutUrl
+        totalQuantity
+        discountCodes { code applicable }
+        discountAllocations { discountedAmount { amount currencyCode } }
         cost {
           totalAmount {
             amount
@@ -398,6 +434,9 @@ export const updateCartMutation = `
       cart {
         id
         checkoutUrl
+        totalQuantity
+        discountCodes { code applicable }
+        discountAllocations { discountedAmount { amount currencyCode } }
         cost {
           totalAmount {
             amount
@@ -468,6 +507,9 @@ export const removeFromCartMutation = `
       cart {
         id
         checkoutUrl
+        totalQuantity
+        discountCodes { code applicable }
+        discountAllocations { discountedAmount { amount currencyCode } }
         cost {
           totalAmount {
             amount
@@ -537,6 +579,7 @@ export const getCartQuery = `
     cart(id: $id) {
       id
       checkoutUrl
+      totalQuantity
       cost {
         totalAmount {
           amount
@@ -547,6 +590,16 @@ export const getCartQuery = `
           currencyCode
         }
         totalTaxAmount {
+          amount
+          currencyCode
+        }
+      }
+      discountCodes {
+        code
+        applicable
+      }
+      discountAllocations {
+        discountedAmount {
           amount
           currencyCode
         }

@@ -43,7 +43,7 @@ export function ElevenKitTeaser() {
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
               Build Your
               <br />
-              <span className="text-gold">Eleven.</span>
+              <span className="text-gold">11Kit.</span>
             </h2>
             <p className="text-lg text-primary-foreground/70 mb-8 leading-relaxed max-w-lg">
               11Kit is your curated accessory system for match day, travel, and street. Eleven essential items, arranged

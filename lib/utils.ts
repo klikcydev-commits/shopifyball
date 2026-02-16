@@ -30,3 +30,23 @@ export function formatPrice(amount: string | number, currencyCode: string = 'AED
   // Always display as Dhs. regardless of currency from Shopify
   return `Dhs. ${formattedAmount}`
 }
+
+/**
+ * Format price using Intl.NumberFormat for proper locale/currency display (e.g. AED).
+ * Use for product pricing when showing compare-at and current price.
+ */
+export function formatPriceWithCurrency(amount: string | number | null | undefined, currencyCode: string = 'AED'): string {
+  if (amount == null || amount === '') return formatPrice('0', currencyCode)
+  const numAmount = typeof amount === 'string' ? parseFloat(amount) : Number(amount)
+  if (Number.isNaN(numAmount)) return formatPrice('0', currencyCode)
+  try {
+    return new Intl.NumberFormat('en-AE', {
+      style: 'currency',
+      currency: currencyCode || 'AED',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(numAmount)
+  } catch {
+    return formatPrice(String(numAmount), currencyCode)
+  }
+}

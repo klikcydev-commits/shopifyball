@@ -26,25 +26,26 @@ export function FeaturedCollections() {
         </div>
 
         {/* Collections */}
-        <div className="space-y-16 md:space-y-24">
+        <div className="space-y-12 md:space-y-20">
           {collections.map((collection, index) => (
             <div
               key={collection.id}
               className={cn(
-                "grid md:grid-cols-2 gap-8 md:gap-16 items-center transition-all duration-700",
+                "grid md:grid-cols-2 gap-6 md:gap-12 items-center transition-all duration-700",
                 index % 2 === 1 && "md:flex-row-reverse",
                 isRevealed ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12",
               )}
               style={{ transitionDelay: isRevealed ? `${index * 200}ms` : "0ms" }}
             >
-              {/* 3D Card */}
-              <Link
-                href={`/#${collection.handle}`}
-                className={cn(
-                  "group card-3d relative aspect-[4/5] rounded-lg flex items-end justify-center pb-8 px-8",
-                  index % 2 === 1 && "md:order-2",
-                )}
-              >
+              {/* 3D Card - constrained size for mobile/laptop */}
+              <div className="w-full max-w-[220px] sm:max-w-[260px] md:max-w-[320px] mx-auto md:mx-0">
+                <Link
+                  href={`/#${collection.handle}`}
+                  className={cn(
+                    "group card-3d relative aspect-[4/5] rounded-lg flex items-end justify-center pb-6 px-4 block w-full",
+                    index % 2 === 1 && "md:order-2",
+                  )}
+                >
                 <div className="card-wrapper absolute inset-0 transition-all duration-500 z-0 rounded-lg overflow-hidden">
                   <Image
                     src="/collection-cover.jpg"
@@ -53,7 +54,11 @@ export function FeaturedCollections() {
                     className="object-cover"
                   />
                 </div>
-                
+                {/* Dark overlay on image - stronger on hover */}
+                <div
+                  className="absolute inset-0 z-[1] rounded-lg pointer-events-none bg-black/40 transition-all duration-500 group-hover:bg-black/80"
+                  aria-hidden
+                />
                 {/* Hover character image */}
                 <div className="card-character-wrapper absolute inset-0 z-2 pointer-events-none overflow-visible">
                   <Image
@@ -64,14 +69,8 @@ export function FeaturedCollections() {
                     className="card-character"
                   />
                 </div>
-                
-                <div className="card-title relative z-10 text-center transition-transform duration-500">
-                  <h3 className="text-3xl md:text-4xl font-bold text-white mb-2">{collection.title}</h3>
-                  <span className="text-sm text-white/80 uppercase tracking-wider">
-                    {collection.products.length} Products
-                  </span>
-                </div>
-              </Link>
+                </Link>
+              </div>
 
               {/* Content */}
               <div className={cn(index % 2 === 1 && "md:order-1")}>

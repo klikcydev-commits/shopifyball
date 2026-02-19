@@ -33,7 +33,7 @@ export function adaptShopifyProduct(shopifyProduct: ShopifyProduct): Product {
     (shopifyProduct.variants?.edges || []).map((e) => e.node)
   const variants: ProductVariant[] = variantNodes.map((node) => ({
     id: node.id,
-    title: 'title' in node ? node.title : 'Default',
+    title: String('title' in node ? node.title : 'Default'),
     price:
       node.price?.amount ||
       shopifyProduct.priceRange?.minVariantPrice?.amount ||
@@ -44,7 +44,7 @@ export function adaptShopifyProduct(shopifyProduct: ShopifyProduct): Product {
       'EUR',
     compareAtPrice: node.compareAtPrice?.amount ?? undefined,
     availableForSale: node.availableForSale ?? false,
-    selectedOptions: 'selectedOptions' in node ? node.selectedOptions || [] : [],
+    selectedOptions: ('selectedOptions' in node ? node.selectedOptions || [] : []) as { name: string; value: string }[],
   }))
 
   // Extract tags and collection IDs from collections

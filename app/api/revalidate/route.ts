@@ -17,6 +17,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "Invalid secret" }, { status: 401 })
   }
 
-  revalidateTag("discounts")
+  revalidateTag("discounts", "max")
   return NextResponse.json({ revalidated: true, now: Date.now() })
 }

@@ -46,20 +46,50 @@ export function ProductCard({ product, size = "default", reviewCount }: ProductC
   }
 
   const isAvailable = product.availableForSale && product.variants?.some((v) => v.availableForSale)
-  // Current price: product price or first variant fallback (ensure we always show the discounted/selling price)
-  const currentPriceAmount = product.price ?? product.variants?.[0]?.price ?? "0"
-  const price = parseFloat(String(currentPriceAmount))
-  const compareAtPriceRaw = product.compareAtPrice ?? product.variants?.[0]?.compareAtPrice
-  const compareAtPrice = compareAtPriceRaw ? parseFloat(String(compareAtPriceRaw)) : null
-  const hasDiscount =
-    compareAtPrice != null && !Number.isNaN(compareAtPrice) && !Number.isNaN(price) && compareAtPrice > price
-  const currencyCode = product.currencyCode || product.variants?.[0]?.currencyCode || "AED"
-  const savePercent =
-    hasDiscount && compareAtPrice > 0 ? Math.round(((compareAtPrice - price) / compareAtPrice) * 100) : 0
+  const rawVariants = (product as { variants?: { nodes?: unknown[]; edges?: { node: unknown }[] } & unknown[] }).variants
+  const displayVariant =
+    rawVariants?.nodes?.[0] ?? rawVariants?.edges?.[0]?.node ?? product.variants?.[0] ?? null
+  const priceAmount =
+    displayVariant != null && typeof (displayVariant as { price?: { amount?: string } }).price === "object"
+      ? (displayVariant as { price: { amount: string } }).price.amount
+      : (displayVariant as { price?: string })?.price
+  const compareAtAmount =
+    displayVariant != null && (displayVariant as { compareAtPrice?: { amount?: string } | null }).compareAtPrice != null
+      ? typeof (displayVariant as { compareAtPrice: { amount: string } }).compareAtPrice === "object"
+        ? (displayVariant as { compareAtPrice: { amount: string } }).compareAtPrice.amount
+        : (displayVariant as { compareAtPrice?: string }).compareAtPrice
+      : null
+  const priceNum = priceAmount != null && priceAmount !== "" ? Number(priceAmount) : NaN
+  const compareNum = compareAtAmount != null && compareAtAmount !== "" ? Number(compareAtAmount) : null
+  const onSale =
+    compareNum != null &&
+    !Number.isNaN(compareNum) &&
+    !Number.isNaN(priceNum) &&
+    compareNum > priceNum
+  const currencyCode =
+    (displayVariant != null && typeof (displayVariant as { price?: { currencyCode?: string } }).price === "object"
+      ? (displayVariant as { price: { currencyCode?: string } }).price.currencyCode
+      : (displayVariant as { currencyCode?: string })?.currencyCode) ||
+    product.currencyCode ||
+    "AED"
+
+  // FINAL DISPLAY PRICE = variant.price only. No extra discount applied (Shopify price is already discounted when compare-at is set).
+  const anyComputedDiscount = undefined
+  if (typeof window !== "undefined") {
+    console.log(
+      "price",
+      displayVariant != null ? (displayVariant as { price?: { amount?: string } }).price?.amount ?? (displayVariant as { price?: string }).price : null,
+      "compareAt",
+      displayVariant != null ? (displayVariant as { compareAtPrice?: { amount?: string } }).compareAtPrice?.amount ?? (displayVariant as { compareAtPrice?: string }).compareAtPrice : null,
+      "computed",
+      anyComputedDiscount
+    )
+  }
+
   const imageUrl = product.images?.[0]?.url || "/placeholder.svg"
   const category = product.category || product.tags?.[0] || "Product"
   const description = product.description?.replace(/<[^>]*>/g, "").trim() || ""
-  const features = product.tags?.filter((t) => t.length < 25).slice(0, 3) || []
+  const features = (product.tags ?? []).filter((t) => typeof t === "string" && t.length < 25).slice(0, 3)
 
   return (
     <>
@@ -76,17 +106,12 @@ export function ProductCard({ product, size = "default", reviewCount }: ProductC
         >
           {/* Badge – top right */}
           <div className="absolute top-[15px] right-[15px] z-10 flex flex-wrap justify-end gap-1.5">
-            {hasDiscount && (
-              <span className="product-badge rounded-xl bg-gradient-to-br from-zinc-900 to-zinc-800 text-white px-3 py-1.5 text-xs font-semibold uppercase tracking-wider shadow-lg">
-                Sale
-              </span>
-            )}
             {(product.tags?.includes("11kit") || product.tags?.includes("premium")) && (
               <span className="product-badge rounded-xl bg-gradient-to-br from-zinc-900 to-zinc-800 text-white px-3 py-1.5 text-xs font-semibold uppercase tracking-wider shadow-lg">
                 Premium
               </span>
             )}
-            {!hasDiscount && !product.tags?.includes("11kit") && !product.tags?.includes("premium") && product.tags?.[0] && (
+            {!onSale && !product.tags?.includes("11kit") && !product.tags?.includes("premium") && product.tags?.[0] && (
               <span className="product-badge rounded-xl bg-gradient-to-br from-zinc-900 to-zinc-800 text-white px-3 py-1.5 text-xs font-semibold uppercase tracking-wider shadow-lg">
                 {product.tags[0]}
               </span>
@@ -106,6 +131,11 @@ export function ProductCard({ product, size = "default", reviewCount }: ProductC
                 size === "large" ? "h-[280px] max-[400px]:h-[220px]" : "h-[240px] max-[400px]:h-[200px]"
               )}
             >
+              {onSale && (
+                <span className="sale-badge absolute top-[12px] left-[12px] z-10 rounded-md bg-red-600 text-white text-xs font-bold uppercase tracking-wider px-2.5 py-1 shadow-lg">
+                  Sale
+                </span>
+              )}
               <Link href={`/products/${product.handle}`} className="block absolute inset-0 z-0">
                 <Image
                   src={imageUrl}
@@ -147,23 +177,26 @@ export function ProductCard({ product, size = "default", reviewCount }: ProductC
             )}
 
             <div className="product-bottom">
-              <div className="product-price">
-                {/* Original price (strikethrough) – only when compare-at exists and is greater than current price */}
-                {hasDiscount && compareAtPriceRaw && (
-                  <span className="price-was" data-price-type="compare-at">
-                    {formatPriceWithCurrency(compareAtPriceRaw, currencyCode)}
+              {onSale && compareNum != null && !Number.isNaN(priceNum) ? (
+                <div className="product-price flex flex-col gap-0.5">
+                  <span className="price-was text-sm text-zinc-500 dark:text-zinc-400 line-through">
+                    {formatPriceWithCurrency(String(compareNum), currencyCode)}
                   </span>
-                )}
-                {/* Current / discounted price – always shown */}
-                <span className="price-now" data-price-type="current">
-                  {formatPriceWithCurrency(currentPriceAmount, currencyCode)}
+                  <span className="price-now font-bold text-zinc-900 dark:text-zinc-100 text-xl">
+                    {formatPriceWithCurrency(String(priceNum), currencyCode)}
+                  </span>
+                  <span className="text-xs text-green-600 dark:text-green-400 font-medium">
+                    Save {formatPriceWithCurrency((compareNum - priceNum).toFixed(2), currencyCode)} (
+                    {Math.round(((compareNum - priceNum) / compareNum) * 100)}%)
+                  </span>
+                </div>
+              ) : (
+                <span className="product-price font-semibold text-xl text-zinc-900 dark:text-zinc-100">
+                  {priceAmount != null && priceAmount !== ""
+                    ? formatPriceWithCurrency(priceAmount, currencyCode)
+                    : formatPriceWithCurrency(product.price ?? "0", product.currencyCode ?? "AED")}
                 </span>
-                {hasDiscount && savePercent > 0 && (
-                  <span className="bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 text-sm font-medium px-2.5 py-0.5 rounded mt-1">
-                    Save {savePercent}%
-                  </span>
-                )}
-              </div>
+              )}
               <button
                 type="button"
                 onClick={handleAddToCart}

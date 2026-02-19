@@ -1,0 +1,96 @@
+{
+  "clusters": {
+    "football_gifts": {
+      "primary": [
+        "football gifts dubai",
+        "football gifts uae",
+        "gifts for football fans dubai",
+        "gifts for football lovers uae",
+        "football gift for him dubai",
+        "unique football gifts dubai"
+      ],
+      "secondary": [
+        "football birthday gift dubai",
+        "football gifts online uae",
+        "football wall art dubai",
+        "football room decor uae",
+        "football bedroom decor dubai",
+        "football gifts for teens dubai",
+        "football gifts for boys uae"
+      ]
+    },
+    "football_accessories": {
+      "primary": [
+        "football accessories dubai",
+        "football accessories uae",
+        "football gear dubai",
+        "football gear uae",
+        "football shop dubai",
+        "football store uae"
+      ],
+      "secondary": [
+        "football training accessories uae",
+        "football socks dubai",
+        "football shin guards dubai",
+        "football boots dubai",
+        "football boots uae",
+        "football gloves dubai",
+        "football ball dubai",
+        "football bag dubai"
+      ]
+    },
+    "ronaldo": {
+      "primary": [
+        "ronaldo accessories dubai",
+        "ronaldo accessories uae",
+        "ronaldo gifts dubai",
+        "cr7 accessories dubai"
+      ],
+      "secondary": [
+        "ronaldo poster dubai",
+        "ronaldo wall art uae",
+        "ronaldo room decor uae"
+      ]
+    },
+    "messi": {
+      "primary": [
+        "messi accessories dubai",
+        "messi accessories uae",
+        "messi gifts dubai",
+        "lionel messi merchandise uae"
+      ],
+      "secondary": [
+        "messi jersey dubai",
+        "messi boots uae",
+        "messi poster dubai",
+        "messi framed poster uae"
+      ]
+    },
+    "real_madrid": {
+      "primary": [
+        "real madrid accessories dubai",
+        "real madrid accessories uae",
+        "real madrid gifts dubai",
+        "real madrid merchandise uae"
+      ],
+      "secondary": [
+        "real madrid socks uae",
+        "real madrid kit dubai",
+        "real madrid jersey dubai",
+        "real madrid mini kit kids uae"
+      ]
+    },
+    "teen_intent": {
+      "primary": [
+        "football accessories for teens dubai",
+        "football gifts for teens dubai",
+        "football gifts for boys uae"
+      ],
+      "secondary": [
+        "football room decor for teens uae",
+        "football wall art for boys dubai",
+        "football gift for teenage boy dubai"
+      ]
+    }
+  }
+}

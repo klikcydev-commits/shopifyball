@@ -5,7 +5,7 @@ import { Search, X } from "lucide-react"
 import { products } from "@/lib/mock-data"
 import Image from "next/image"
 import Link from "next/link"
-import { formatPrice } from "@/lib/utils"
+import { ProductPrice } from "@/components/products/product-price"
 
 interface SearchDialogProps {
   open: boolean
@@ -88,7 +88,17 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-sm truncate">{product.title}</p>
-                        <p className="text-xs text-muted-foreground">{formatPrice(product.price, product.currencyCode || "EUR")}</p>
+                        <div className="text-xs">
+                          <ProductPrice
+                            price={product.price}
+                            compareAtPrice={"compareAtPrice" in product ? (product as { compareAtPrice?: string }).compareAtPrice : undefined}
+                            currencyCode={product.currencyCode || "AED"}
+                            showWasNow
+                            showPercentOff={false}
+                            showSavings
+                            size="sm"
+                          />
+                        </div>
                       </div>
                     </Link>
                   ))}

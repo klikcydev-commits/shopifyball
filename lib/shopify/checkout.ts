@@ -1,5 +1,5 @@
 /**
- * Helper functions for redirecting to shop.lemah.com for checkout.
+ * Helper functions for redirecting to shop.lemah.store for checkout.
  * Cart is passed via Shopify cart permalink: /cart/variantId:qty,variantId:qty
  * Shopify expects numeric variant IDs (Storefront API returns GIDs).
  */
@@ -7,7 +7,7 @@
 // Must match your live Shopify store URL (with valid SSL). Set in .env.local:
 // NEXT_PUBLIC_SHOPIFY_STORE_URL=https://your-store.myshopify.com or your custom domain
 const SHOPIFY_STORE_URL =
-  process.env.NEXT_PUBLIC_SHOPIFY_STORE_URL || 'https://shop.leamah.store'
+  process.env.NEXT_PUBLIC_SHOPIFY_STORE_URL || 'https://shop.lemah.store'
 
 /**
  * Convert Shopify GID to numeric ID for cart URL.
@@ -21,7 +21,7 @@ function toNumericVariantId(id: string): string {
 }
 
 /**
- * Build checkout URL for shop.lemah.com.
+ * Build checkout URL for shop.lemah.store.
  * Sends the customer's cart to Shopify so the same items open in the store cart.
  * Format: /cart/[numeric-variant-id]:[quantity],[numeric-variant-id]:[quantity]
  */
@@ -39,7 +39,7 @@ export function buildCheckoutUrl(
 }
 
 /**
- * Build product URL for shop.lemah.com
+ * Build product URL for shop.lemah.store
  */
 export function buildProductUrl(handle: string): string {
   return `${SHOPIFY_STORE_URL}/products/${handle}`
@@ -47,7 +47,7 @@ export function buildProductUrl(handle: string): string {
 
 /**
  * Build checkout URL from Shopify cart checkout URL.
- * Redirects to shop.lemah.com cart.
+ * Redirects to shop.lemah.store cart.
  */
 export function convertCheckoutUrl(shopifyCheckoutUrl: string | null | undefined): string {
   if (!shopifyCheckoutUrl) {
@@ -56,7 +56,7 @@ export function convertCheckoutUrl(shopifyCheckoutUrl: string | null | undefined
   
   // Extract cart ID from checkout URL if possible
   // Shopify checkout URLs are typically: https://checkout.shopify.com/carts/[cart-id]/checkouts/[checkout-id]
-  // Redirect to cart on shop.lemah.com
+  // Redirect to cart on shop.lemah.store
   try {
     const url = new URL(shopifyCheckoutUrl)
     // If it's a checkout URL, redirect to cart page

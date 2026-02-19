@@ -25,7 +25,8 @@ export function ProductCTA({
       <div className="flex flex-wrap items-center justify-center gap-3">
         <Link
           href="/shop"
-          className="inline-flex items-center justify-center px-5 py-2.5 rounded-md bg-gold text-[#2d4b62] font-medium text-sm hover:bg-gold/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
+          className="inline-flex items-center justify-center px-5 py-2.5 rounded-md bg-gold font-medium text-sm hover:bg-gold/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
+          style={{ color: 'rgb(45, 75, 98)' }}
         >
           Shop Now
         </Link>

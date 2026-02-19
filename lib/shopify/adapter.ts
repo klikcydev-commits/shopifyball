@@ -27,22 +27,33 @@ export function adaptShopifyProduct(shopifyProduct: ShopifyProduct): Product {
     height: edge.node.height,
   }))
 
-  // Safely map variants with all price information including compareAtPrice for discounts
-  const variants: ProductVariant[] = (shopifyProduct.variants?.edges || []).map(edge => ({
-    id: edge.node.id,
-    title: edge.node.title,
-    price: edge.node.price?.amount || shopifyProduct.priceRange?.minVariantPrice?.amount || '0.00',
-    currencyCode: edge.node.price?.currencyCode || shopifyProduct.priceRange?.minVariantPrice?.currencyCode || 'EUR',
-    compareAtPrice: edge.node.compareAtPrice?.amount ?? undefined,
-    availableForSale: edge.node.availableForSale || false,
-    selectedOptions: edge.node.selectedOptions || [],
+  // Prefer variants.nodes (products list query) then edges (full variant detail)
+  const variantNodes =
+    shopifyProduct.variants?.nodes ??
+    (shopifyProduct.variants?.edges || []).map((e) => e.node)
+  const variants: ProductVariant[] = variantNodes.map((node) => ({
+    id: node.id,
+    title: 'title' in node ? node.title : 'Default',
+    price:
+      node.price?.amount ||
+      shopifyProduct.priceRange?.minVariantPrice?.amount ||
+      '0.00',
+    currencyCode:
+      node.price?.currencyCode ||
+      shopifyProduct.priceRange?.minVariantPrice?.currencyCode ||
+      'EUR',
+    compareAtPrice: node.compareAtPrice?.amount ?? undefined,
+    availableForSale: node.availableForSale ?? false,
+    selectedOptions: 'selectedOptions' in node ? node.selectedOptions || [] : [],
   }))
 
-  // Extract tags from collections or use empty array
-  const tags: string[] = (shopifyProduct.collections?.edges || []).map(edge => edge.node.handle) || []
+  // Extract tags and collection IDs from collections
+  const collectionEdges = shopifyProduct.collections?.edges || []
+  const tags: string[] = collectionEdges.map(edge => edge.node.handle)
   if (tags.includes('kit') || shopifyProduct.title?.toLowerCase().includes('kit')) {
     tags.push('11kit')
   }
+  const collectionIds: string[] = collectionEdges.map(edge => edge.node.id)
 
   // Get price safely: selling price from priceRange, fallback to first variant (current price = what customer pays)
   const price =
@@ -73,6 +84,7 @@ export function adaptShopifyProduct(shopifyProduct: ShopifyProduct): Product {
     currencyCode,
     compareAtPrice,
     tags,
+    collectionIds: collectionIds.length > 0 ? collectionIds : undefined,
     variants: variants.length > 0 ? variants : [{
       id: 'default',
       title: 'Default',

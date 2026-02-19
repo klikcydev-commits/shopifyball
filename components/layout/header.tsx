@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils"
 import { useCart } from "@/components/cart/cart-context"
 import { CartDrawer } from "@/components/cart/cart-drawer"
 import { SearchDialog } from "@/components/search/search-dialog"
+import { getHeaderPromoAction } from "@/app/actions/promo-actions"
 
 const navigation = [
   { name: "Home", href: "/" },
@@ -22,6 +23,7 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [promo, setPromo] = useState<{ hasDeals: boolean; saleCount: number } | null>(null)
   const pathname = usePathname()
   const { cart, isCartOpen, setIsCartOpen } = useCart()
 
@@ -33,6 +35,12 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
+  useEffect(() => {
+    getHeaderPromoAction()
+      .then(setPromo)
+      .catch(() => setPromo({ hasDeals: false, saleCount: 0 }))
+  }, [])
+
   return (
     <>
       <header
@@ -41,13 +49,27 @@ export function Header() {
           isScrolled ? "bg-background/95 backdrop-blur-md shadow-sm" : "bg-transparent",
         )}
       >
-        {/* Drop Ticker */}
+        {/* Promo / Deals banner – from Shopify sale products, else default drop */}
         <div className="bg-primary text-primary-foreground text-xs py-1.5 text-center overflow-hidden">
           <div className="animate-wave-shimmer inline-block">
-            <span className="font-medium tracking-wider">NEXT DROP: 11KIT — LIMITED — </span>
-            <Link href="/11kit" className="underline underline-offset-2 hover:text-gold transition-colors">
-              JOIN LIST
-            </Link>
+            {promo?.hasDeals ? (
+              <>
+                <span className="font-medium tracking-wider">SALE — </span>
+                <span className="font-medium tracking-wider">
+                  {promo.saleCount} product{promo.saleCount !== 1 ? "s" : ""} with deals —
+                </span>
+                <Link href="/shop" className="underline underline-offset-2 hover:text-gold transition-colors ml-0.5">
+                  SHOP NOW
+                </Link>
+              </>
+            ) : (
+              <>
+                <span className="font-medium tracking-wider">NEXT DROP: 11KIT — LIMITED — </span>
+                <Link href="/11kit" className="underline underline-offset-2 hover:text-gold transition-colors">
+                  JOIN LIST
+                </Link>
+              </>
+            )}
           </div>
         </div>
 

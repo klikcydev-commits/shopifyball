@@ -12,6 +12,8 @@ export interface Product {
   variants: ProductVariant[]
   availableForSale: boolean
   category?: string
+  /** Collection IDs (GIDs) for matching Admin API discounts by collection */
+  collectionIds?: string[]
 }
 
 export interface ProductImage {
@@ -46,20 +48,33 @@ export interface CartLine {
   quantity: number
   product: Product
   variant: ProductVariant
+  /** Line total from Shopify (after line-level discounts). Use for display to match checkout. */
+  lineTotal?: string
+  /** Compare-at price per unit from Shopify (for sale display in cart). */
+  compareAtPrice?: string | null
+}
+
+export interface CartDiscountCode {
+  code: string
+  applicable: boolean
 }
 
 export interface Cart {
   id: string
   lines: CartLine[]
   totalQuantity: number
+  /** Subtotal from Shopify cost.subtotalAmount (before cart-level discounts). */
   subtotal: string
+  /** Total from Shopify cost.totalAmount (after discounts; matches checkout). */
   totalAmount?: string
   currencyCode?: string
   checkoutUrl: string
-  /** Applied discount code (first applicable) */
-  discountCode?: string
-  /** Sum of discounted amount across all allocations */
+  /** Discount codes applied to cart (from Shopify). */
+  discountCodes?: CartDiscountCode[]
+  /** Total discount amount from Shopify discountAllocations. */
   discountAmount?: string
+  /** Tax amount from Shopify if available; otherwise "Calculated at checkout". */
+  totalTaxAmount?: string | null
 }
 
 // 11Kit Types

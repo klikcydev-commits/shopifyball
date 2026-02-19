@@ -11,6 +11,7 @@ import {
   updateCartMutation,
   removeFromCartMutation,
   getCartQuery,
+  cartDiscountCodesUpdateMutation,
 } from './queries'
 import type { ShopifyProduct, ShopifyCollection, ShopifyMenu, ShopifyPage, ShopifyCart } from './types'
 
@@ -244,6 +245,34 @@ export async function getCart(cartId: string): Promise<ShopifyCart | null> {
   })
 
   return res.body.data.cart
+}
+
+/**
+ * Update discount codes on the cart. Replaces all codes; pass [] to remove all.
+ * Use discountCodes: [code] to apply one code; [code1, code2] for multiple; [] to clear.
+ */
+export async function applyDiscountCodes(
+  cartId: string,
+  discountCodes: string[]
+): Promise<ShopifyCart | null> {
+  const res = await shopifyFetch<{
+    data: {
+      cartDiscountCodesUpdate: {
+        cart: ShopifyCart | null
+        userErrors: Array<{ field: string[]; message: string }>
+      }
+    }
+  }>({
+    query: cartDiscountCodesUpdateMutation,
+    variables: { cartId, discountCodes },
+    cache: 'no-store',
+  })
+
+  const payload = res.body.data.cartDiscountCodesUpdate
+  if (payload.userErrors.length > 0) {
+    throw new Error(payload.userErrors[0].message)
+  }
+  return payload.cart
 }
 
 

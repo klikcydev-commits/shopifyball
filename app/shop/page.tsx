@@ -3,13 +3,19 @@ import { Footer } from '@/components/layout/footer'
 import { getProducts, getCollections } from '@/lib/shopify'
 import { AllProductsClient } from '@/components/shop/shop-products-client'
 import { ShopCollections } from '@/components/shop/shop-collections'
+import { ShopFaq } from '@/components/shop/shop-faq'
 import type { Metadata } from 'next'
 
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Shop | LeMah',
-  description: 'Browse our complete collection of premium football accessories - everything you need from training to game day.',
+  title: 'Football Gifts & Accessories Dubai | Shop Lemah',
+  description:
+    'Browse football gifts, accessories, and wall art in Dubai & UAE. Ronaldo, Messi, Real Madrid gifts. Fast UAE delivery.',
+  openGraph: {
+    title: 'Football Gifts & Accessories Dubai | Shop Lemah',
+    description: 'Football gifts, accessories, wall art. Dubai & UAE delivery.',
+  },
 }
 
 export default async function ShopPage() {
@@ -53,12 +59,12 @@ export default async function ShopPage() {
             </div>
 
             {/* Main headline */}
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-primary-foreground tracking-tighter mb-6">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-primary-foreground tracking-tight mb-6">
               <span className="block animate-stagger-in" style={{ animationDelay: "0.1s" }}>
-                SHOP
+                Shop Football Gifts
               </span>
               <span className="block animate-stagger-in text-gold" style={{ animationDelay: "0.3s" }}>
-                ALL PRODUCTS
+                & Accessories
               </span>
             </h1>
 
@@ -67,7 +73,7 @@ export default async function ShopPage() {
               className="max-w-2xl mx-auto text-lg md:text-xl text-primary-foreground/70 mb-12 animate-stagger-in leading-relaxed"
               style={{ animationDelay: "0.5s" }}
             >
-              Discover our complete range of premium football accessories. From training essentials to game day champions.
+              Premium football gifts and accessories for Dubai & UAE. Ronaldo, Messi, Real Madrid, wall art, and more. Fast UAE delivery.
             </p>
           </div>
         </section>
@@ -80,12 +86,27 @@ export default async function ShopPage() {
                 <ShopCollections collections={collections} />
               </div>
             )}
-            <div className="mb-12 text-center">
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
-                Our Complete Collection
+
+            {/* Intro copy + internal links */}
+            <div className="mb-12 max-w-3xl mx-auto text-center">
+              <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-4">
+                Football Gifts & Accessories in Dubai & UAE
               </h2>
+              <p className="text-muted-foreground text-lg mb-6">
+                Our complete collection of football gifts, accessories, and wall art. Perfect for football lovers, teens, and collectors. Explore by interest:{" "}
+                <a href="/football-gifts-dubai" className="text-foreground font-medium underline underline-offset-2 hover:text-gold">football gifts Dubai</a>
+                ,{" "}
+                <a href="/football-gifts-uae" className="text-foreground font-medium underline underline-offset-2 hover:text-gold">football gifts UAE</a>
+                ,{" "}
+                <a href="/ronaldo-gifts-dubai" className="text-foreground font-medium underline underline-offset-2 hover:text-gold">Ronaldo gifts</a>
+                ,{" "}
+                <a href="/messi-gifts-dubai" className="text-foreground font-medium underline underline-offset-2 hover:text-gold">Messi gifts</a>
+                ,{" "}
+                <a href="/football-gifts-for-teens-dubai" className="text-foreground font-medium underline underline-offset-2 hover:text-gold">gifts for teens</a>
+                .
+              </p>
               {products.length > 0 && (
-                <p className="text-muted-foreground text-lg">
+                <p className="text-muted-foreground">
                   {products.length} {products.length === 1 ? 'product' : 'products'} available
                 </p>
               )}
@@ -106,6 +127,8 @@ export default async function ShopPage() {
             ) : (
               <AllProductsClient products={products} />
             )}
+
+            <ShopFaq />
           </div>
         </section>
       </main>

@@ -39,6 +39,13 @@ export function AboutHero() {
           <p>We live the ritual.</p>
         </div>
 
+        <p
+          className="mt-6 text-base md:text-lg text-primary-foreground/60 max-w-xl mx-auto animate-stagger-in"
+          style={{ animationDelay: "0.5s" }}
+        >
+          Premium football accessories and collectible gifts. UAE delivery, gift-ready packaging — for fans in Dubai and across the UAE.
+        </p>
+
         {/* Decorative line */}
         <div className="mt-12 flex justify-center animate-stagger-in" style={{ animationDelay: "0.6s" }}>
           <div className="w-px h-20 bg-gradient-to-b from-gold to-transparent" />

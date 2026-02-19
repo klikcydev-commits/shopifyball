@@ -20,44 +20,99 @@ interface BlogPost {
   theme: string
 }
 
+interface IndexPost {
+  slug: string
+  title: string
+  city: string
+  focusKeyword: string
+  date: string
+  description?: string
+}
+
 function getAllPosts(): BlogPost[] {
   try {
-    const postsDirectory = join(process.cwd(), 'content/blog')
+    const blogDir = join(process.cwd(), 'content/blog')
+    const postsDir = join(blogDir, 'posts')
     const fs = require('fs')
-    
-    // Check if directory exists
-    if (!fs.existsSync(postsDirectory)) {
-      return []
+    const seenSlugs = new Set<string>()
+    const result: BlogPost[] = []
+
+    // 1. Load indexed posts from content/blog/index.json (UAE city blogs)
+    const indexPath = join(blogDir, 'index.json')
+    if (fs.existsSync(indexPath)) {
+      const indexRaw = fs.readFileSync(indexPath, 'utf8')
+      const indexPosts: IndexPost[] = JSON.parse(indexRaw)
+      for (const p of indexPosts) {
+        seenSlugs.add(p.slug)
+        result.push({
+          slug: p.slug,
+          title: p.title,
+          date: p.date,
+          meta_description: p.description || '',
+          focus_keyword: p.focusKeyword || '',
+          theme: p.city || 'UAE Gifts',
+        })
+      }
     }
-    
-    const files = fs.readdirSync(postsDirectory)
-    
-    const posts = files
-      .filter((file: string) => file.endsWith('.mdx') || file.endsWith('.md'))
-      .map((file: string) => {
+
+    // 2. Legacy: content/blog/*.mdx and *.md (exclude slugs already in index)
+    if (fs.existsSync(blogDir)) {
+      const files = fs.readdirSync(blogDir)
+      for (const file of files) {
+        if (!file.endsWith('.mdx') && !file.endsWith('.md')) continue
+        const slug = file.replace(/\.(mdx|md)$/, '')
+        if (seenSlugs.has(slug)) continue
         try {
-          const filePath = join(postsDirectory, file)
+          const filePath = join(blogDir, file)
           const fileContents = fs.readFileSync(filePath, 'utf8')
           const { data } = matter(fileContents)
-          return {
-            slug: data.slug || file.replace(/\.(mdx|md)$/, ''),
+          const postSlug = data.slug || slug
+          if (seenSlugs.has(postSlug)) continue
+          seenSlugs.add(postSlug)
+          result.push({
+            slug: postSlug,
             title: data.title || '',
             date: data.date || new Date().toISOString(),
             meta_description: data.meta_description || '',
             focus_keyword: data.focus_keyword || '',
             theme: data.theme || 'Accessories',
-          }
+          })
         } catch (error) {
           console.error(`Error reading blog post ${file}:`, error)
-          return null
         }
-      })
-      .filter((post: BlogPost | null): post is BlogPost => post !== null)
-      .sort((a: BlogPost, b: BlogPost) => {
-        return new Date(b.date).getTime() - new Date(a.date).getTime()
-      })
-    
-    return posts
+      }
+    }
+
+    // 3. Legacy: content/blog/posts/*.mdx not already in index (e.g. if index was partial)
+    if (fs.existsSync(postsDir)) {
+      const postFiles = fs.readdirSync(postsDir)
+      for (const file of postFiles) {
+        if (!file.endsWith('.mdx') && !file.endsWith('.md')) continue
+        const slug = file.replace(/\.(mdx|md)$/, '')
+        if (seenSlugs.has(slug)) continue
+        try {
+          const filePath = join(postsDir, file)
+          const fileContents = fs.readFileSync(filePath, 'utf8')
+          const { data } = matter(fileContents)
+          const postSlug = data.slug || slug
+          if (seenSlugs.has(postSlug)) continue
+          seenSlugs.add(postSlug)
+          result.push({
+            slug: postSlug,
+            title: data.title || '',
+            date: data.date || new Date().toISOString(),
+            meta_description: data.meta_description || '',
+            focus_keyword: data.focus_keyword || '',
+            theme: data.theme || data.city || 'UAE Gifts',
+          })
+        } catch (error) {
+          console.error(`Error reading blog post ${file}:`, error)
+        }
+      }
+    }
+
+    result.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    return result
   } catch (error) {
     console.error('Error reading blog posts:', error)
     return []

@@ -1,8 +1,10 @@
 import type { ShopifyCart } from './types'
-import type { Cart, CartLine, Product, ProductVariant, ProductImage } from '@/lib/shopify-types'
+import type { Cart, CartLine, CartDiscountCode, Product, ProductVariant, ProductImage } from '@/lib/shopify-types'
 
 /**
- * Convert Storefront API cart to UI Cart shape so existing components keep working.
+ * Convert Storefront API cart to UI Cart shape.
+ * All pricing and discount values come from Shopify (cost, discountAllocations, line.cost).
+ * We do NOT recalculate totals or apply any discount locally. Cart totals = Shopify Cart API only.
  */
 export function shopifyCartToCart(shopifyCart: ShopifyCart): Cart {
   const lines: CartLine[] = (shopifyCart.lines?.edges ?? []).map(({ node }) => {
@@ -30,27 +32,42 @@ export function shopifyCartToCart(shopifyCart: ShopifyCart): Cart {
       title: m.title,
       price: m.price.amount,
       currencyCode: m.price.currencyCode,
+      compareAtPrice: m.compareAtPrice?.amount ?? undefined,
       availableForSale: true,
       selectedOptions: m.selectedOptions ?? [],
     }
+    const lineTotal = node.cost?.totalAmount?.amount
     return {
       id: node.id,
       quantity: node.quantity,
       product,
       variant,
+      lineTotal: lineTotal ?? (Number.parseFloat(m.price.amount) * node.quantity).toFixed(2),
+      compareAtPrice: m.compareAtPrice?.amount ?? undefined,
     }
   })
 
-  const totalQuantity = shopifyCart.totalQuantity ?? lines.reduce((sum, line) => sum + line.quantity, 0)
+  const totalQuantity =
+    shopifyCart.totalQuantity ?? lines.reduce((sum, line) => sum + line.quantity, 0)
+  const currencyCode =
+    shopifyCart.cost?.subtotalAmount?.currencyCode ??
+    shopifyCart.cost?.totalAmount?.currencyCode ??
+    'AED'
+
   const subtotal = shopifyCart.cost?.subtotalAmount?.amount ?? '0.00'
   const totalAmount = shopifyCart.cost?.totalAmount?.amount ?? subtotal
-  const currencyCode = shopifyCart.cost?.subtotalAmount?.currencyCode ?? shopifyCart.cost?.totalAmount?.currencyCode
-
   const discountAllocations = shopifyCart.discountAllocations ?? []
   const discountAmount = discountAllocations
-    .reduce((sum, a) => sum + Number.parseFloat(a.discountedAmount?.amount ?? '0'), 0)
+    .reduce((sum, a) => sum + Number.parseFloat(a.discountedAmount.amount), 0)
     .toFixed(2)
-  const discountCode = shopifyCart.discountCodes?.find((c) => c.applicable)?.code
+  const discountCodes: CartDiscountCode[] = (shopifyCart.discountCodes ?? []).map((d) => ({
+    code: d.code,
+    applicable: d.applicable,
+  }))
+  const totalTaxAmount =
+    shopifyCart.cost?.totalTaxAmount?.amount != null && shopifyCart.cost.totalTaxAmount.amount !== ''
+      ? shopifyCart.cost.totalTaxAmount.amount
+      : null
 
   return {
     id: shopifyCart.id,
@@ -60,7 +77,8 @@ export function shopifyCartToCart(shopifyCart: ShopifyCart): Cart {
     totalAmount,
     currencyCode,
     checkoutUrl: shopifyCart.checkoutUrl ?? '',
-    discountCode: discountCode ?? undefined,
-    discountAmount: Number(discountAmount) > 0 ? discountAmount : undefined,
+    discountCodes: discountCodes.length > 0 ? discountCodes : undefined,
+    discountAmount: Number.parseFloat(discountAmount) > 0 ? discountAmount : undefined,
+    totalTaxAmount: totalTaxAmount ?? undefined,
   }
 }

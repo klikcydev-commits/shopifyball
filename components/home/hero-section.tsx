@@ -60,16 +60,30 @@ export function HeroSection() {
         <div className="mb-6 animate-stagger-in" style={{ animationDelay: "0.1s" }}>
           <span className="inline-flex items-center gap-2 px-4 py-1.5 border border-gold/30 rounded-full text-[15px] uppercase tracking-[0.2em] text-white">
             <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
-            Premium Football Accessories
+            Premium Football Gifts & Accessories
           </span>
         </div>
 
-        {/* Subheadline */}
-        <p
-          className="max-w-xl mx-auto text-lg md:text-xl text-primary-foreground/70 mb-10 animate-stagger-in leading-relaxed"
-          style={{ animationDelay: "0.6s" }}
+        {/* H1 */}
+        <h1
+          className="text-4xl sm:text-5xl md:text-6xl font-bold text-primary-foreground tracking-tight mb-6 animate-stagger-in"
+          style={{ animationDelay: "0.2s" }}
         >
-          Accessories for the ritual. Stadium-to-street essentials crafted for those who live the game.
+          Football Gifts & Wall Art in Dubai & UAE
+        </h1>
+
+        {/* Hook */}
+        <p
+          className="max-w-2xl mx-auto text-lg md:text-xl text-primary-foreground/80 mb-4 animate-stagger-in leading-relaxed"
+          style={{ animationDelay: "0.4s" }}
+        >
+          Premium accessories and collectible frames for football lovers. Perfect for gifts, teen rooms, and match day.
+        </p>
+        <p
+          className="max-w-xl mx-auto text-base md:text-lg text-primary-foreground/70 mb-10 animate-stagger-in"
+          style={{ animationDelay: "0.5s" }}
+        >
+          Delivered across the UAE. Ronaldo, Messi, Real Madrid and more — all in one football shop.
         </p>
 
         {/* CTAs */}
@@ -78,10 +92,16 @@ export function HeroSection() {
           style={{ animationDelay: "0.8s" }}
         >
           <Link
+            href="/shop"
+            className="flex items-center gap-2 px-8 py-4 bg-gold text-primary font-medium uppercase tracking-wider hover:bg-gold/90 transition-colors btn-press"
+          >
+            Shop Football Gifts
+          </Link>
+          <Link
             href="#products"
             className="flex items-center gap-2 px-8 py-4 border border-primary-foreground/30 text-primary-foreground font-medium uppercase tracking-wider hover:bg-primary-foreground/10 transition-colors btn-press"
           >
-            Shop Accessories
+            See Picks
           </Link>
         </div>
 

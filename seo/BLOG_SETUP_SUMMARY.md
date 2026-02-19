@@ -113,7 +113,7 @@ focus_keyword: "primary keyword"
 secondary_keywords: [...]
 tags: [...]
 theme: "Accessories|Jerseys|Goalkeeper"
-canonical_url: "https://lemah.com/blog/slug"
+canonical_url: "https://lemah.store/blog/slug"
 ---
 
 # H1 Title

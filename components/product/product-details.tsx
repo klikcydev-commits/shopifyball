@@ -11,7 +11,9 @@ import type { ProductVariant } from '@/lib/shopify-types'
 import { ShoppingBag, Check, ExternalLink } from 'lucide-react'
 import { toast } from 'sonner'
 import { buildProductUrl } from '@/lib/shopify/checkout'
-import { formatPrice } from '@/lib/utils'
+import { getSaleState } from '@/lib/sale-helpers'
+import { ProductSeoBlock } from '@/components/product/product-seo-block'
+import { ProductFaq } from '@/components/product/product-faq'
 
 interface ProductDetailsProps {
   product: ShopifyProduct
@@ -70,7 +72,26 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     }
   }
 
-  const price = selectedVariant?.price || product.priceRange.minVariantPrice
+  // FINAL DISPLAY PRICE = variant.price only. No extra discount (Shopify price is already the selling price).
+  const variantForSale = selectedVariant
+    ? {
+        price: selectedVariant.price,
+        compareAtPrice: selectedVariant.compareAtPrice ?? undefined,
+        currencyCode: selectedVariant.price?.currencyCode,
+      }
+    : null
+  const saleState = getSaleState(variantForSale)
+  const anyComputedDiscount = undefined
+  if (typeof window !== "undefined" && selectedVariant) {
+    console.log(
+      "price",
+      selectedVariant.price?.amount,
+      "compareAt",
+      selectedVariant.compareAtPrice?.amount,
+      "computed",
+      anyComputedDiscount
+    )
+  }
 
   return (
     <div className="section-padding bg-cream">
@@ -79,6 +100,11 @@ export function ProductDetails({ product }: ProductDetailsProps) {
           {/* Images */}
           <div>
             <div className="relative aspect-square rounded-lg overflow-hidden bg-muted mb-4">
+              {saleState.onSale && (
+                <span className="absolute top-4 left-4 z-10 rounded-md bg-red-600 text-white text-sm font-bold uppercase tracking-wider px-3 py-1.5 shadow-lg">
+                  Sale
+                </span>
+              )}
               {images[selectedImageIndex] && (
                 <Image
                   src={images[selectedImageIndex].node.url}
@@ -130,14 +156,33 @@ export function ProductDetails({ product }: ProductDetailsProps) {
           {/* Product Info */}
           <div>
             <h1 className="font-heading text-4xl md:text-5xl text-navy mb-4">{product.title}</h1>
-            <p className="text-gold text-3xl font-bold mb-6">
-              {formatPrice(price.amount, price.currencyCode)}
-            </p>
+            <div className="mb-6">
+              {saleState.onSale ? (
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-lg text-zinc-500 dark:text-zinc-400 line-through">
+                    {saleState.compareAtText}
+                  </span>
+                  <span className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+                    {saleState.priceText}
+                  </span>
+                  <span className="text-sm text-green-600 dark:text-green-400 font-medium">
+                    Save {saleState.saveAmountText} ({saleState.savePercentText})
+                  </span>
+                </div>
+              ) : (
+                <span className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+                  {saleState.priceText}
+                </span>
+              )}
+            </div>
 
             <div
               className="prose prose-sm max-w-none mb-8 text-muted-foreground"
               dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
             />
+
+            <ProductSeoBlock title={product.title} handle={product.handle} />
+            <ProductFaq />
 
             <ClientOnly
               fallback={

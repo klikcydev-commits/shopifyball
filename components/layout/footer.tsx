@@ -7,10 +7,17 @@ import { ClientOnly } from "@/components/ui/client-only"
 
 const footerLinks = {
   shop: [
-    { name: "All Products", href: "/#products" },
+    { name: "All Products", href: "/shop" },
     { name: "11Kit", href: "/11kit" },
     { name: "Collections", href: "/#collections" },
     { name: "New Arrivals", href: "/#new" },
+  ],
+  dubaiUae: [
+    { name: "Football Gifts Dubai", href: "/football-gifts-dubai" },
+    { name: "Football Gifts UAE", href: "/football-gifts-uae" },
+    { name: "Ronaldo Gifts Dubai", href: "/ronaldo-gifts-dubai" },
+    { name: "Messi Gifts Dubai", href: "/messi-gifts-dubai" },
+    { name: "Gifts for Teens Dubai", href: "/football-gifts-for-teens-dubai" },
   ],
   support: [
     { name: "Contact", href: "/contact" },
@@ -62,7 +69,7 @@ export function Footer() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-16">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-8 mb-16">
           <div className="col-span-2">
             <Link
               href="/"
@@ -85,6 +92,19 @@ export function Footer() {
             <h4 className="text-xs uppercase tracking-[0.2em] text-gold mb-4">Shop</h4>
             <ul className="space-y-3">
               {footerLinks.shop.map((link) => (
+                <li key={link.name}>
+                  <Link href={link.href} className="text-sm text-white/60 hover:text-white transition-colors">
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-xs uppercase tracking-[0.2em] text-gold mb-4">Dubai & UAE</h4>
+            <ul className="space-y-3">
+              {footerLinks.dubaiUae.map((link) => (
                 <li key={link.name}>
                   <Link href={link.href} className="text-sm text-white/60 hover:text-white transition-colors">
                     {link.name}

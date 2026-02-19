@@ -28,27 +28,21 @@ export interface ShopifyProduct {
     }>
   }
   variants: {
+    nodes?: Array<{
+      id: string
+      availableForSale: boolean
+      price: { amount: string; currencyCode: string }
+      compareAtPrice?: { amount: string; currencyCode: string } | null
+    }>
     edges: Array<{
       node: {
         id: string
         title: string
-        price: {
-          amount: string
-          currencyCode: string
-        }
-        compareAtPrice?: {
-          amount: string
-          currencyCode: string
-        } | null
+        price: { amount: string; currencyCode: string }
+        compareAtPrice?: { amount: string; currencyCode: string } | null
         availableForSale: boolean
-        selectedOptions: Array<{
-          name: string
-          value: string
-        }>
-        image?: {
-          url: string
-          altText: string | null
-        }
+        selectedOptions: Array<{ name: string; value: string }>
+        image?: { url: string; altText: string | null }
       }
     }>
   }
@@ -170,6 +164,10 @@ export interface ShopifyCart {
             amount: string
             currencyCode: string
           }
+          compareAtPrice?: {
+            amount: string
+            currencyCode: string
+          } | null
         }
       }
     }>

@@ -7,6 +7,7 @@ import type { Product, ProductVariant } from "@/lib/shopify-types"
 import { useCart } from "@/components/cart/cart-context"
 import { useToast } from "@/hooks/use-toast"
 import { cn, formatPrice } from "@/lib/utils"
+import { ProductPrice } from "./product-price"
 
 interface QuickViewModalProps {
   product: Product
@@ -67,11 +68,43 @@ export function QuickViewModal({ product, open, onClose }: QuickViewModalProps) 
               {product.category || "Accessories"}
             </span>
             <h2 className="text-2xl font-semibold mb-2">{product.title}</h2>
-            <div className="flex items-center gap-3 mb-4">
-              <span className="text-xl font-semibold">{formatPrice(selectedVariant.price, selectedVariant.currencyCode || product.currencyCode || "EUR")}</span>
-              {selectedVariant.compareAtPrice && (
-                <span className="text-muted-foreground line-through">{formatPrice(selectedVariant.compareAtPrice, selectedVariant.currencyCode || product.currencyCode || "EUR")}</span>
-              )}
+            <div className="mb-4">
+              {(() => {
+                const compareNum =
+                  selectedVariant.compareAtPrice != null &&
+                  selectedVariant.compareAtPrice !== ""
+                    ? parseFloat(selectedVariant.compareAtPrice)
+                    : null
+                const priceNum = parseFloat(selectedVariant.price)
+                const isOnSale =
+                  compareNum != null &&
+                  !Number.isNaN(compareNum) &&
+                  compareNum > 0 &&
+                  !Number.isNaN(priceNum) &&
+                  compareNum > priceNum
+                return (
+                  <>
+                    {isOnSale && (
+                      <span className="inline-block rounded-md bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 text-xs font-semibold uppercase tracking-wider px-2.5 py-1 mb-2">
+                        Sale
+                      </span>
+                    )}
+                    <ProductPrice
+                      price={selectedVariant.price}
+                      compareAtPrice={selectedVariant.compareAtPrice ?? undefined}
+                      currencyCode={
+                        selectedVariant.currencyCode ||
+                        product.currencyCode ||
+                        "AED"
+                      }
+                      showWasNow
+                      showPercentOff
+                      showSavings
+                      size="default"
+                    />
+                  </>
+                )
+              })()}
             </div>
             <p className="text-sm text-muted-foreground mb-6 leading-relaxed">{product.description}</p>
 

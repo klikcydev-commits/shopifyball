@@ -1,4 +1,4 @@
-﻿import type React from "react"
+import type React from "react"
 import type { Metadata, Viewport } from "next"
 import { Inter, Oswald } from "next/font/google"
 import Script from "next/script"
@@ -18,16 +18,26 @@ const oswald = Oswald({
 })
 
 export const metadata: Metadata = {
-  title: "LEMAH | Premium Football Accessories",
-  description: "Accessories for the ritual. Stadium-to-street essentials crafted for the elite football lifestyle.",
-  keywords: ["football accessories", "premium sports", "match day essentials", "football lifestyle"],
-  authors: [{ name: "LEMAH" }],
+  title: {
+    default: "Football Gifts Dubai & UAE | Lemah",
+    template: "%s | Lemah",
+  },
+  description:
+    "Shop premium football gifts, wall art, and collectible frames in Dubai & UAE. Perfect for teens and football fans. Fast UAE delivery.",
+  keywords: [
+    "football gifts dubai",
+    "football gifts uae",
+    "football accessories dubai",
+    "gifts for football fans dubai",
+    "ronaldo gift dubai",
+    "real madrid gifts uae",
+  ],
+  authors: [{ name: "Lemah" }],
   openGraph: {
-    title: "LEMAH | Premium Football Accessories",
-    description: "Accessories for the ritual. Stadium-to-street essentials.",
+    title: "Football Gifts Dubai & UAE | Lemah",
+    description: "Premium football gifts, wall art & collectibles in Dubai & UAE. Perfect for teens and football lovers.",
     type: "website",
   },
-  generator: "v0.app",
 }
 
 export const viewport: Viewport = {

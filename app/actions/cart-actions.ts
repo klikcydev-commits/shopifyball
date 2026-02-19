@@ -6,6 +6,7 @@ import {
   updateCart,
   removeFromCart,
   createCart,
+  applyDiscountCodes,
 } from '@/lib/shopify'
 import type { ShopifyCart } from '@/lib/shopify/types'
 
@@ -45,6 +46,17 @@ export async function createCartAction(
   quantity: number = 1
 ): Promise<ShopifyCart | null> {
   return createCart(variantId, quantity)
+}
+
+/**
+ * Apply or replace discount codes on the cart. Pass full list of codes to keep (e.g. add one or remove one).
+ * Replaces all existing codes. Throws on Shopify userErrors (e.g. invalid code).
+ */
+export async function applyDiscountCodesAction(
+  cartId: string,
+  discountCodes: string[]
+): Promise<ShopifyCart | null> {
+  return applyDiscountCodes(cartId, discountCodes)
 }
 
 

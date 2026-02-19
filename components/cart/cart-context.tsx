@@ -15,6 +15,7 @@ import {
   addToCartAction,
   updateCartAction,
   removeFromCartAction,
+  applyDiscountCodesAction,
 } from "@/app/actions/cart-actions"
 
 const CART_ID_KEY = "lemah_cart_id"
@@ -28,6 +29,8 @@ interface CartContextType {
   addToCart: (product: Product, variant: ProductVariant, quantity?: number) => Promise<void>
   removeFromCart: (lineId: string) => Promise<void>
   updateQuantity: (lineId: string, quantity: number) => Promise<void>
+  applyDiscountCode: (code: string) => Promise<{ success: boolean; error?: string }>
+  removeDiscountCode: (code: string) => Promise<void>
   clearCart: () => void
 }
 
@@ -38,6 +41,7 @@ const emptyCart: Cart = {
   lines: [],
   totalQuantity: 0,
   subtotal: "0.00",
+  totalAmount: "0.00",
   checkoutUrl: "",
 }
 
@@ -137,6 +141,50 @@ export function CartProvider({ children }: { children: ReactNode }) {
     [cartId, removeFromCart, setCartFromShopify]
   )
 
+  const applyDiscountCode = useCallback(
+    async (code: string): Promise<{ success: boolean; error?: string }> => {
+      if (!cartId) return { success: false, error: "No cart" }
+      const trimmed = code.trim()
+      if (!trimmed) return { success: false, error: "Enter a discount code" }
+      const currentCodes = (cart.discountCodes ?? []).map((d) => d.code)
+      if (currentCodes.map((c) => c.toLowerCase()).includes(trimmed.toLowerCase())) {
+        return { success: true }
+      }
+      setIsLoading(true)
+      try {
+        const shopifyCart = await applyDiscountCodesAction(cartId, [...currentCodes, trimmed])
+        if (shopifyCart) setCartFromShopify(shopifyCart)
+        return { success: true }
+      } catch (err) {
+        const message = err instanceof Error ? err.message : "Failed to apply code"
+        return { success: false, error: message }
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [cartId, cart.discountCodes, setCartFromShopify]
+  )
+
+  const removeDiscountCode = useCallback(
+    async (codeToRemove: string) => {
+      if (!cartId) return
+      const currentCodes = (cart.discountCodes ?? []).map((d) => d.code)
+      const nextCodes = currentCodes.filter((c) => c.toLowerCase() !== codeToRemove.toLowerCase())
+      if (nextCodes.length === currentCodes.length) return
+      setIsLoading(true)
+      try {
+        const shopifyCart = await applyDiscountCodesAction(cartId, nextCodes)
+        if (shopifyCart) setCartFromShopify(shopifyCart)
+      } catch (err) {
+        console.error("Remove discount code failed:", err)
+        throw err
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [cartId, cart.discountCodes, setCartFromShopify]
+  )
+
   const clearCart = useCallback(() => {
     setCart(emptyCart)
     setCartIdState(null)
@@ -154,6 +202,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
         addToCart,
         removeFromCart,
         updateQuantity,
+        applyDiscountCode,
+        removeDiscountCode,
         clearCart,
       }}
     >

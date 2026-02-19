@@ -65,28 +65,29 @@ export const getProductsQuery = `
               }
             }
           }
-          variants(first: 100) {
+          variants(first: 1) {
+            nodes {
+              id
+              availableForSale
+              price { amount currencyCode }
+              compareAtPrice { amount currencyCode }
+            }
             edges {
               node {
                 id
                 title
-                price {
-                  amount
-                  currencyCode
-                }
-                compareAtPrice {
-                  amount
-                  currencyCode
-                }
+                price { amount currencyCode }
+                compareAtPrice { amount currencyCode }
                 availableForSale
-                selectedOptions {
-                  name
-                  value
-                }
-                image {
-                  url
-                  altText
-                }
+                selectedOptions { name value }
+                image { url altText }
+              }
+            }
+          }
+          collections(first: 10) {
+            edges {
+              node {
+                id
               }
             }
           }
@@ -225,28 +226,29 @@ export const getCollectionQuery = `
                 }
               }
             }
-            variants(first: 100) {
+            variants(first: 1) {
+              nodes {
+                id
+                availableForSale
+                price { amount currencyCode }
+                compareAtPrice { amount currencyCode }
+              }
               edges {
                 node {
                   id
                   title
-                  price {
-                    amount
-                    currencyCode
-                  }
-                  compareAtPrice {
-                    amount
-                    currencyCode
-                  }
+                  price { amount currencyCode }
+                  compareAtPrice { amount currencyCode }
                   availableForSale
-                  selectedOptions {
-                    name
-                    value
-                  }
-                  image {
-                    url
-                    altText
-                  }
+                  selectedOptions { name value }
+                  image { url altText }
+                }
+              }
+            }
+            collections(first: 10) {
+              edges {
+                node {
+                  id
                 }
               }
             }
@@ -341,6 +343,10 @@ export const createCartMutation = `
                     amount
                     currencyCode
                   }
+                  compareAtPrice {
+                    amount
+                    currencyCode
+                  }
                 }
               }
             }
@@ -411,6 +417,10 @@ export const addToCartMutation = `
                     }
                   }
                   price {
+                    amount
+                    currencyCode
+                  }
+                  compareAtPrice {
                     amount
                     currencyCode
                   }
@@ -487,6 +497,10 @@ export const updateCartMutation = `
                     amount
                     currencyCode
                   }
+                  compareAtPrice {
+                    amount
+                    currencyCode
+                  }
                 }
               }
             }
@@ -557,6 +571,10 @@ export const removeFromCartMutation = `
                     }
                   }
                   price {
+                    amount
+                    currencyCode
+                  }
+                  compareAtPrice {
                     amount
                     currencyCode
                   }
@@ -640,11 +658,59 @@ export const getCartQuery = `
                   amount
                   currencyCode
                 }
+                compareAtPrice {
+                  amount
+                  currencyCode
+                }
               }
             }
           }
         }
       }
+    }
+  }
+`
+
+export const cartDiscountCodesUpdateMutation = `
+  mutation cartDiscountCodesUpdate($cartId: ID!, $discountCodes: [String!]!) {
+    cartDiscountCodesUpdate(cartId: $cartId, discountCodes: $discountCodes) {
+      cart {
+        id
+        checkoutUrl
+        totalQuantity
+        discountCodes { code applicable }
+        discountAllocations { discountedAmount { amount currencyCode } }
+        cost {
+          totalAmount { amount currencyCode }
+          subtotalAmount { amount currencyCode }
+          totalTaxAmount { amount currencyCode }
+        }
+        lines(first: 100) {
+          edges {
+            node {
+              id
+              quantity
+              cost { totalAmount { amount currencyCode } }
+              merchandise {
+                ... on ProductVariant {
+                  id
+                  title
+                  selectedOptions { name value }
+                  product {
+                    id
+                    title
+                    handle
+                    images(first: 1) { edges { node { url altText } } }
+                  }
+                  price { amount currencyCode }
+                  compareAtPrice { amount currencyCode }
+                }
+              }
+            }
+          }
+        }
+      }
+      userErrors { field message }
     }
   }
 `

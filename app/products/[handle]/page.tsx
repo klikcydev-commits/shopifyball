@@ -19,16 +19,19 @@ export async function generateMetadata({
 
     if (!product) {
       return {
-        title: 'Product Not Found | LeMah',
+        title: 'Product Not Found | Lemah',
       }
     }
 
+    const desc =
+      (product.description?.replace(/<[^>]*>/g, '').slice(0, 120).trim() || product.title) +
+      ' — Dubai & UAE delivery.'
     return {
-      title: `${product.title} | LeMah`,
-      description: product.description,
+      title: `${product.title} | Football Gifts Dubai | Lemah`,
+      description: desc,
       openGraph: {
-        title: product.title,
-        description: product.description,
+        title: `${product.title} | Football Gifts Dubai | Lemah`,
+        description: desc,
         images: product.images.edges[0]?.node.url
           ? [
               {
@@ -41,7 +44,7 @@ export async function generateMetadata({
     }
   } catch (error) {
     return {
-      title: 'Product | LeMah',
+      title: 'Product | Lemah',
     }
   }
 }

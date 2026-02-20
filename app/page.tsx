@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { getCollections } from "@/lib/shopify"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { HeroSection } from "@/components/home/hero-section"
@@ -21,13 +22,20 @@ export const metadata: Metadata = {
   },
 }
 
-export default function HomePage() {
+export default async function HomePage() {
+  let collections: Awaited<ReturnType<typeof getCollections>> = []
+  try {
+    collections = await getCollections(6)
+  } catch (e) {
+    console.error("Home: failed to fetch collections", e)
+  }
+
   return (
     <>
       <Header />
       <main>
         <HeroSection />
-        <FeaturedCollections />
+        <FeaturedCollections collections={collections} />
         <HomeSeoSections />
         <FeaturedProducts />
         <HomeFaq />

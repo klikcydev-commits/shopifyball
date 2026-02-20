@@ -81,17 +81,6 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       }
     : null
   const saleState = getSaleState(variantForSale)
-  const anyComputedDiscount = undefined
-  if (typeof window !== "undefined" && selectedVariant) {
-    console.log(
-      "price",
-      selectedVariant.price?.amount,
-      "compareAt",
-      selectedVariant.compareAtPrice?.amount,
-      "computed",
-      anyComputedDiscount
-    )
-  }
 
   return (
     <div className="section-padding bg-cream">
@@ -160,7 +149,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               {saleState.onSale ? (
                 <div className="flex flex-col gap-0.5">
                   <span className="text-lg text-zinc-500 dark:text-zinc-400 line-through">
-                    {saleState.compareAtText}
+                    <del>{saleState.compareAtText}</del>
                   </span>
                   <span className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
                     {saleState.priceText}
@@ -168,6 +157,14 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   <span className="text-sm text-green-600 dark:text-green-400 font-medium">
                     Save {saleState.saveAmountText} ({saleState.savePercentText})
                   </span>
+                  {saleState.percentOff > 0 && (
+                    <span className="text-sm font-semibold text-red-600 dark:text-red-400">
+                      {saleState.percentOff}% OFF
+                    </span>
+                  )}
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Sale pricing shown based on compare-at price.
+                  </p>
                 </div>
               ) : (
                 <span className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">

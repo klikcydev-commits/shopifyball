@@ -41,7 +41,7 @@ export function adaptShopifyProduct(shopifyProduct: ShopifyProduct): Product {
     currencyCode:
       node.price?.currencyCode ||
       shopifyProduct.priceRange?.minVariantPrice?.currencyCode ||
-      'EUR',
+      'AED',
     compareAtPrice: node.compareAtPrice?.amount ?? undefined,
     availableForSale: node.availableForSale ?? false,
     selectedOptions: ('selectedOptions' in node ? node.selectedOptions || [] : []) as { name: string; value: string }[],
@@ -63,7 +63,7 @@ export function adaptShopifyProduct(shopifyProduct: ShopifyProduct): Product {
   const currencyCode =
     shopifyProduct.priceRange?.minVariantPrice?.currencyCode ||
     variants[0]?.currencyCode ||
-    'EUR'
+    'AED'
   // Compare-at (original) price: from compareAtPriceRange or any variant where compare-at > selling price
   const rangeCompareAt = shopifyProduct.compareAtPriceRange?.minVariantPrice?.amount
   const variantOnSale = variants.find(

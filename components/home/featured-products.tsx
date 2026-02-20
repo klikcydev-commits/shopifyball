@@ -5,9 +5,11 @@ import { ProductCard } from "@/components/products/product-card"
 import { SectionHeader } from "@/components/ui/section-header"
 import { cn } from "@/lib/utils"
 import { useScrollReveal } from "@/hooks/use-scroll-reveal"
-import { getProductsAction } from "@/app/actions/product-actions"
+import { getFeaturedProductsAction } from "@/app/actions/product-actions"
 import { adaptShopifyProduct } from "@/lib/shopify/adapter"
 import type { Product } from "@/lib/shopify-types"
+
+const FEATURED_COUNT = 6
 
 export function FeaturedProducts() {
   const { ref, isRevealed } = useScrollReveal<HTMLElement>()
@@ -16,11 +18,11 @@ export function FeaturedProducts() {
   useEffect(() => {
     async function loadProducts() {
       try {
-        const result = await getProductsAction({ first: 8 })
+        const result = await getFeaturedProductsAction()
         const adaptedProducts = result.products.map(adaptShopifyProduct)
         setProducts(adaptedProducts)
       } catch (error) {
-        console.error('Error loading products:', error)
+        console.error('Error loading featured products:', error)
       }
     }
     loadProducts()
@@ -53,8 +55,8 @@ export function FeaturedProducts() {
           style={{ transitionDelay: isRevealed ? "200ms" : "0ms" }}
         >
           {products.length === 0 ? (
-            // Loading skeletons
-            Array.from({ length: 8 }).map((_, index) => (
+            // Loading skeletons (6 = 2 per collection × 3 collections)
+            Array.from({ length: FEATURED_COUNT }).map((_, index) => (
               <div key={index} className="aspect-square bg-secondary rounded-lg animate-pulse" />
             ))
           ) : (

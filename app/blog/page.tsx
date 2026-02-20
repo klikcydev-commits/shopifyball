@@ -34,83 +34,65 @@ function getAllPosts(): BlogPost[] {
     const blogDir = join(process.cwd(), 'content/blog')
     const postsDir = join(blogDir, 'posts')
     const fs = require('fs')
-    const seenSlugs = new Set<string>()
-    const result: BlogPost[] = []
+    const bySlug = new Map<string, BlogPost>()
 
-    // 1. Load indexed posts from content/blog/index.json (UAE city blogs)
+    function addFromFile(dir: string, file: string, defaultTheme: string) {
+      if (!file.endsWith('.mdx') && !file.endsWith('.md')) return
+      const slugFromFile = file.replace(/\.(mdx|md)$/, '')
+      try {
+        const filePath = join(dir, file)
+        const fileContents = fs.readFileSync(filePath, 'utf8')
+        const { data } = matter(fileContents)
+        const slug = data.slug || slugFromFile
+        bySlug.set(slug, {
+          slug,
+          title: data.title || slug,
+          date: data.date || new Date().toISOString(),
+          meta_description: data.meta_description || '',
+          focus_keyword: data.focus_keyword || '',
+          theme: data.theme || data.city || defaultTheme,
+        })
+      } catch (error) {
+        console.error(`Error reading blog post ${file}:`, error)
+      }
+    }
+
+    // 1. Load every .mdx/.md from content/blog (buying guides, etc.)
+    if (fs.existsSync(blogDir)) {
+      const files = fs.readdirSync(blogDir)
+      for (const file of files) {
+        if (file === 'index.json') continue
+        addFromFile(blogDir, file, 'Accessories')
+      }
+    }
+
+    // 2. Load every .mdx/.md from content/blog/posts (city variants)
+    if (fs.existsSync(postsDir)) {
+      const postFiles = fs.readdirSync(postsDir)
+      for (const file of postFiles) {
+        addFromFile(postsDir, file, 'UAE Gifts')
+      }
+    }
+
+    // 3. Overlay index.json so indexed posts get title/description/city from index
     const indexPath = join(blogDir, 'index.json')
     if (fs.existsSync(indexPath)) {
       const indexRaw = fs.readFileSync(indexPath, 'utf8')
       const indexPosts: IndexPost[] = JSON.parse(indexRaw)
       for (const p of indexPosts) {
-        seenSlugs.add(p.slug)
-        result.push({
+        const existing = bySlug.get(p.slug)
+        bySlug.set(p.slug, {
           slug: p.slug,
           title: p.title,
-          date: p.date,
-          meta_description: p.description || '',
-          focus_keyword: p.focusKeyword || '',
+          date: p.date || existing?.date || new Date().toISOString(),
+          meta_description: p.description ?? existing?.meta_description ?? '',
+          focus_keyword: p.focusKeyword ?? existing?.focus_keyword ?? '',
           theme: p.city || 'UAE Gifts',
         })
       }
     }
 
-    // 2. Legacy: content/blog/*.mdx and *.md (exclude slugs already in index)
-    if (fs.existsSync(blogDir)) {
-      const files = fs.readdirSync(blogDir)
-      for (const file of files) {
-        if (!file.endsWith('.mdx') && !file.endsWith('.md')) continue
-        const slug = file.replace(/\.(mdx|md)$/, '')
-        if (seenSlugs.has(slug)) continue
-        try {
-          const filePath = join(blogDir, file)
-          const fileContents = fs.readFileSync(filePath, 'utf8')
-          const { data } = matter(fileContents)
-          const postSlug = data.slug || slug
-          if (seenSlugs.has(postSlug)) continue
-          seenSlugs.add(postSlug)
-          result.push({
-            slug: postSlug,
-            title: data.title || '',
-            date: data.date || new Date().toISOString(),
-            meta_description: data.meta_description || '',
-            focus_keyword: data.focus_keyword || '',
-            theme: data.theme || 'Accessories',
-          })
-        } catch (error) {
-          console.error(`Error reading blog post ${file}:`, error)
-        }
-      }
-    }
-
-    // 3. Legacy: content/blog/posts/*.mdx not already in index (e.g. if index was partial)
-    if (fs.existsSync(postsDir)) {
-      const postFiles = fs.readdirSync(postsDir)
-      for (const file of postFiles) {
-        if (!file.endsWith('.mdx') && !file.endsWith('.md')) continue
-        const slug = file.replace(/\.(mdx|md)$/, '')
-        if (seenSlugs.has(slug)) continue
-        try {
-          const filePath = join(postsDir, file)
-          const fileContents = fs.readFileSync(filePath, 'utf8')
-          const { data } = matter(fileContents)
-          const postSlug = data.slug || slug
-          if (seenSlugs.has(postSlug)) continue
-          seenSlugs.add(postSlug)
-          result.push({
-            slug: postSlug,
-            title: data.title || '',
-            date: data.date || new Date().toISOString(),
-            meta_description: data.meta_description || '',
-            focus_keyword: data.focus_keyword || '',
-            theme: data.theme || data.city || 'UAE Gifts',
-          })
-        } catch (error) {
-          console.error(`Error reading blog post ${file}:`, error)
-        }
-      }
-    }
-
+    const result = Array.from(bySlug.values())
     result.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     return result
   } catch (error) {
@@ -130,6 +112,13 @@ export default function BlogPage() {
     acc[theme].push(post)
     return acc
   }, {} as Record<string, BlogPost[]>)
+
+  // Show "Accessories" (buying guides) first, then other themes alphabetically
+  const themeOrder = Object.keys(groupedByTheme).sort((a, b) => {
+    if (a === 'Accessories') return -1
+    if (b === 'Accessories') return 1
+    return a.localeCompare(b)
+  })
 
   return (
     <>
@@ -153,7 +142,10 @@ export default function BlogPage() {
         {/* Blog Posts */}
         <section className="py-20 md:py-32">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {Object.entries(groupedByTheme).map(([theme, themePosts]) => (
+            {themeOrder.map((theme) => {
+                const themePosts = groupedByTheme[theme]
+                if (!themePosts?.length) return null
+                return (
               <div key={theme} className="mb-16">
                 <h2 className="text-3xl font-bold mb-8 capitalize">{theme}</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -187,7 +179,8 @@ export default function BlogPage() {
                   ))}
                 </div>
               </div>
-            ))}
+                )
+              })}
 
             {posts.length === 0 && (
               <div className="text-center py-16">

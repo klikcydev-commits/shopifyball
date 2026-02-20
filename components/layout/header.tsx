@@ -14,6 +14,7 @@ import { getHeaderPromoAction } from "@/app/actions/promo-actions"
 const navigation = [
   { name: "Home", href: "/" },
   { name: "Shop", href: "/shop" },
+  { name: "Blog", href: "/blog" },
   { name: "11Kit", href: "/11kit" },
   { name: "About", href: "/about" },
   { name: "Contact", href: "/contact" },

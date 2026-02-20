@@ -1,18 +1,31 @@
+import { createHmac, timingSafeEqual } from "crypto"
+import { revalidatePath, revalidateTag } from "next/cache"
 import { NextResponse } from "next/server"
 
 /**
- * Shopify webhook: discount create/update/delete.
- * Configure in Shopify Admin: Settings → Notifications → Webhooks →
- *   "Discount creation" / "Discount deletion" → URL: https://your-domain.com/api/webhooks/shopify/discounts
+ * Verify Shopify webhook signature using HMAC-SHA256.
+ * Body must be the raw request body; secret = SHOPIFY_WEBHOOK_SECRET.
+ */
+function verifyShopifyHmac(body: string, hmacHeader: string, secret: string): boolean {
+  if (!secret) return false
+  const computed = createHmac("sha256", secret).update(body, "utf8").digest("base64")
+  try {
+    const a = Buffer.from(computed, "utf8")
+    const b = Buffer.from(hmacHeader, "utf8")
+    return a.length === b.length && timingSafeEqual(a, b)
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Shopify webhook: discount create / update / delete.
+ * Configure in Shopify Admin: Settings → Notifications → Webhooks:
+ *   - Event: Discount creation, Discount update, Discount deletion
+ *   - URL: https://your-domain.com/api/webhooks/shopify/discounts
  *
- * When a discount is activated you can:
- * - Fetch products in the discount's collections
- * - Calculate discounted prices
- * - Call updateProductVariantPrice (lib/shopify-admin) to set compareAtPrice and price
- *
- * When a discount is deactivated you can reset compareAtPrice.
- *
- * Verify webhook with X-Shopify-Hmac-Sha256 before processing.
+ * ENV: SHOPIFY_WEBHOOK_SECRET (webhook signing secret from Shopify).
+ * On receive we purge promo cache so the storefront shows/hides discounts automatically.
  */
 export async function POST(request: Request) {
   const hmac = request.headers.get("x-shopify-hmac-sha256")
@@ -21,9 +34,15 @@ export async function POST(request: Request) {
   }
 
   const rawBody = await request.text()
-  // TODO: verify HMAC using SHOPIFY_WEBHOOK_SECRET
-  // const valid = verifyShopifyWebhook(rawBody, hmac, process.env.SHOPIFY_WEBHOOK_SECRET!)
-  // if (!valid) return NextResponse.json({ error: "Invalid HMAC" }, { status: 401 })
+  const secret = process.env.SHOPIFY_WEBHOOK_SECRET
+  if (!secret) {
+    console.error("[webhooks/discounts] SHOPIFY_WEBHOOK_SECRET not set")
+    return NextResponse.json({ error: "Server misconfiguration" }, { status: 500 })
+  }
+
+  if (!verifyShopifyHmac(rawBody, hmac, secret)) {
+    return NextResponse.json({ error: "Invalid HMAC" }, { status: 401 })
+  }
 
   let payload: { id?: number; status?: string; [key: string]: unknown }
   try {
@@ -32,16 +51,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 })
   }
 
-  const status = payload.status
-
-  if (status === "active") {
-    // Discount activated: optionally update product compare-at prices via Admin API
-    // Example: get discount's target collections, fetch variants, set compareAtPrice = current price, price = discounted price
-  }
-
-  if (status === "expired" || status === "disabled") {
-    // Discount deactivated: optionally reset compareAtPrice on affected variants
-  }
+  // Purge promotions cache so next request refetches active discounts
+  revalidateTag("promotions")
+  revalidatePath("/")
 
   return NextResponse.json({ received: true })
 }

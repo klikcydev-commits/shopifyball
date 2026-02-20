@@ -1,15 +1,18 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { ShoppingBag } from "lucide-react"
+import { ShoppingBag, Eye } from "lucide-react"
 import { Star } from "lucide-react"
 import type { Product } from "@/lib/shopify-types"
 import { useCart } from "@/components/cart/cart-context"
+import { usePromotions } from "@/components/cart/promotions-context"
 import { useToast } from "@/hooks/use-toast"
 import { cn, formatPriceWithCurrency } from "@/lib/utils"
+import { getSaleState } from "@/lib/sale-helpers"
+import { QuickViewModal } from "@/components/products/quick-view-modal"
 
 interface ProductCardProps {
   product: Product
@@ -21,8 +24,17 @@ interface ProductCardProps {
 export function ProductCard({ product, size = "default", reviewCount }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
+  const [quickViewOpen, setQuickViewOpen] = useState(false)
+  const quickViewTriggerRef = useRef<HTMLButtonElement>(null)
   const { addToCart } = useCart()
+  const { hasActivePromos, isLoading: promosLoading } = usePromotions()
   const { toast } = useToast()
+
+  const openQuickView = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setQuickViewOpen(true)
+  }
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault()
@@ -46,45 +58,17 @@ export function ProductCard({ product, size = "default", reviewCount }: ProductC
   }
 
   const isAvailable = product.availableForSale && product.variants?.some((v) => v.availableForSale)
-  const rawVariants = (product as { variants?: { nodes?: unknown[]; edges?: { node: unknown }[] } & unknown[] }).variants
   const displayVariant =
-    rawVariants?.nodes?.[0] ?? rawVariants?.edges?.[0]?.node ?? product.variants?.[0] ?? null
-  const priceAmount =
-    displayVariant != null && typeof (displayVariant as { price?: { amount?: string } }).price === "object"
-      ? (displayVariant as { price: { amount: string } }).price.amount
-      : (displayVariant as { price?: string })?.price
-  const compareAtAmount =
-    displayVariant != null && (displayVariant as { compareAtPrice?: { amount?: string } | null }).compareAtPrice != null
-      ? typeof (displayVariant as { compareAtPrice: { amount: string } }).compareAtPrice === "object"
-        ? (displayVariant as { compareAtPrice: { amount: string } }).compareAtPrice.amount
-        : (displayVariant as { compareAtPrice?: string }).compareAtPrice
-      : null
-  const priceNum = priceAmount != null && priceAmount !== "" ? Number(priceAmount) : NaN
-  const compareNum = compareAtAmount != null && compareAtAmount !== "" ? Number(compareAtAmount) : null
-  const onSale =
-    compareNum != null &&
-    !Number.isNaN(compareNum) &&
-    !Number.isNaN(priceNum) &&
-    compareNum > priceNum
-  const currencyCode =
-    (displayVariant != null && typeof (displayVariant as { price?: { currencyCode?: string } }).price === "object"
-      ? (displayVariant as { price: { currencyCode?: string } }).price.currencyCode
-      : (displayVariant as { currencyCode?: string })?.currencyCode) ||
-    product.currencyCode ||
-    "AED"
-
-  // FINAL DISPLAY PRICE = variant.price only. No extra discount applied (Shopify price is already discounted when compare-at is set).
-  const anyComputedDiscount = undefined
-  if (typeof window !== "undefined") {
-    console.log(
-      "price",
-      displayVariant != null ? (displayVariant as { price?: { amount?: string } }).price?.amount ?? (displayVariant as { price?: string }).price : null,
-      "compareAt",
-      displayVariant != null ? (displayVariant as { compareAtPrice?: { amount?: string } }).compareAtPrice?.amount ?? (displayVariant as { compareAtPrice?: string }).compareAtPrice : null,
-      "computed",
-      anyComputedDiscount
-    )
-  }
+    product.variants?.find((v) => v.availableForSale) ?? product.variants?.[0] ?? null
+  const variantForSale = displayVariant
+    ? {
+        price: displayVariant.price,
+        compareAtPrice: displayVariant.compareAtPrice ?? undefined,
+        currencyCode: displayVariant.currencyCode ?? product.currencyCode ?? "AED",
+      }
+    : { price: product.price, compareAtPrice: product.compareAtPrice, currencyCode: product.currencyCode ?? "AED" }
+  const saleState = getSaleState(variantForSale)
+  const onSale = saleState.isOnSale
 
   const imageUrl = product.images?.[0]?.url || "/placeholder.svg"
   const category = product.category || product.tags?.[0] || "Product"
@@ -148,6 +132,22 @@ export function ProductCard({ product, size = "default", reviewCount }: ProductC
                   sizes="(max-width: 400px) 90vw, 360px"
                 />
               </Link>
+              <button
+                ref={quickViewTriggerRef}
+                type="button"
+                onClick={openQuickView}
+                className={cn(
+                  "absolute inset-0 z-[1] flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-200",
+                  "focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-gold focus:ring-inset",
+                  isHovered && "opacity-100"
+                )}
+                aria-label={`Quick view ${product.title}`}
+              >
+                <span className="flex items-center gap-2 rounded-md bg-background px-4 py-2 text-sm font-medium text-foreground shadow-lg">
+                  <Eye className="h-4 w-4" />
+                  Quick view
+                </span>
+              </button>
             </div>
           </div>
 
@@ -177,24 +177,31 @@ export function ProductCard({ product, size = "default", reviewCount }: ProductC
             )}
 
             <div className="product-bottom">
-              {onSale && compareNum != null && !Number.isNaN(priceNum) ? (
+              {saleState.isOnSale ? (
                 <div className="product-price flex flex-col gap-0.5">
-                  <span className="price-was text-sm text-zinc-500 dark:text-zinc-400 line-through">
-                    {formatPriceWithCurrency(String(compareNum), currencyCode)}
-                  </span>
+                  <del className="price-was block text-sm text-zinc-500 dark:text-zinc-400">
+                    {saleState.compareAtText}
+                  </del>
                   <span className="price-now font-bold text-zinc-900 dark:text-zinc-100 text-xl">
-                    {formatPriceWithCurrency(String(priceNum), currencyCode)}
+                    {saleState.priceText}
                   </span>
                   <span className="text-xs text-green-600 dark:text-green-400 font-medium">
-                    Save {formatPriceWithCurrency((compareNum - priceNum).toFixed(2), currencyCode)} (
-                    {Math.round(((compareNum - priceNum) / compareNum) * 100)}%)
+                    Save {saleState.saveAmountText} ({saleState.savePercentText})
                   </span>
+                  {saleState.percentOff > 0 && (
+                    <span className="text-xs font-semibold text-red-600 dark:text-red-400">
+                      {saleState.percentOff}% OFF
+                    </span>
+                  )}
                 </div>
               ) : (
                 <span className="product-price font-semibold text-xl text-zinc-900 dark:text-zinc-100">
-                  {priceAmount != null && priceAmount !== ""
-                    ? formatPriceWithCurrency(priceAmount, currencyCode)
-                    : formatPriceWithCurrency(product.price ?? "0", product.currencyCode ?? "AED")}
+                  {saleState.priceText}
+                </span>
+              )}
+              {!promosLoading && hasActivePromos && (
+                <span className="text-xs text-muted-foreground">
+                  Deal available at checkout
                 </span>
               )}
               <button
@@ -262,6 +269,12 @@ export function ProductCard({ product, size = "default", reviewCount }: ProductC
         </div>
       </motion.article>
 
+      <QuickViewModal
+        product={product}
+        open={quickViewOpen}
+        onClose={() => setQuickViewOpen(false)}
+        triggerRef={quickViewTriggerRef}
+      />
     </>
   )
 }

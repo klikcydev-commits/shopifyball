@@ -3,9 +3,11 @@
 import Image from "next/image"
 import { X, Minus, Plus, ShoppingBag } from "lucide-react"
 import { useCart } from "./cart-context"
+import { usePromotions } from "./promotions-context"
 import { CartSummary } from "./cart-summary"
 import { CartDiscountCodeInput } from "./cart-discount-code"
 import { cn, formatPriceWithCurrency } from "@/lib/utils"
+import { getSaleState } from "@/lib/sale-helpers"
 
 interface CartDrawerProps {
   open: boolean
@@ -21,6 +23,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
     removeDiscountCode,
     isLoading,
   } = useCart()
+  const { hasFreeShipping } = usePromotions()
 
   const currencyCode =
     cart.currencyCode ?? cart.lines[0]?.variant?.currencyCode ?? "AED"
@@ -78,19 +81,15 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                     (
                       Number.parseFloat(line.variant.price) * line.quantity
                     ).toFixed(2)
-                  const compareAt = line.compareAtPrice ?? line.variant.compareAtPrice
-                  const priceNum = Number.parseFloat(line.variant.price)
-                  const compareNum =
-                    compareAt != null && compareAt !== ""
-                      ? Number.parseFloat(compareAt)
-                      : null
-                  const hasSale =
-                    compareNum != null &&
-                    !Number.isNaN(compareNum) &&
-                    compareNum > 0 &&
-                    compareNum > priceNum
-                  const wasTotal = hasSale
-                    ? (compareNum! * line.quantity).toFixed(2)
+                  const lineVariantForSale = {
+                    price: line.variant.price,
+                    compareAtPrice: line.compareAtPrice ?? line.variant.compareAtPrice ?? undefined,
+                    currencyCode: line.variant.currencyCode ?? cart.currencyCode ?? "AED",
+                  }
+                  const saleState = getSaleState(lineVariantForSale)
+                  const hasSale = saleState.isOnSale
+                  const wasTotal = hasSale && saleState.compareAt
+                    ? (Number.parseFloat(saleState.compareAt) * line.quantity).toFixed(2)
                     : null
                   const savingsTotal =
                     hasSale && wasTotal
@@ -99,17 +98,6 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                           Number.parseFloat(lineTotal)
                         ).toFixed(2)
                       : null
-                  const percentOff =
-                    hasSale &&
-                    wasTotal &&
-                    Number.parseFloat(wasTotal) > 0 &&
-                    savingsTotal
-                      ? Math.round(
-                          (Number.parseFloat(savingsTotal) /
-                            Number.parseFloat(wasTotal)) *
-                            100
-                        )
-                      : 0
 
                   return (
                     <div key={line.id} className="flex gap-4">
@@ -183,14 +171,14 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                             </p>
                             {savingsTotal &&
                               Number.parseFloat(savingsTotal) > 0 &&
-                              percentOff > 0 && (
+                              saleState.percentOff > 0 && (
                                 <p className="text-xs text-green-600 dark:text-green-400 font-medium mt-0.5">
                                   Save{" "}
                                   {formatPriceWithCurrency(
                                     savingsTotal,
                                     currencyCode
                                   )}{" "}
-                                  ({percentOff}%)
+                                  ({saleState.percentOff}%)
                                 </p>
                               )}
                           </>
@@ -217,22 +205,10 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                   isLoading={isLoading}
                 />
 
-                {cart.totalQuantity >= 2 ? (
-                  <div className="rounded-lg border border-green-500/30 bg-green-500/10 px-3 py-2">
-                    <p className="text-sm font-semibold text-green-700 dark:text-green-400">
-                      Free delivery unlocked
-                    </p>
-                  </div>
-                ) : (
-                  <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2">
-                    <p className="text-sm font-semibold text-amber-800 dark:text-amber-400">
-                      Add {2 - cart.totalQuantity} more item
-                      {2 - cart.totalQuantity > 1 ? "s" : ""} for free delivery
-                    </p>
-                    <p className="text-xs text-amber-700/80 dark:text-amber-400/80 mt-0.5">
-                      Free shipping on orders with 2+ items
-                    </p>
-                  </div>
+                {hasFreeShipping && (
+                  <p className="text-xs text-muted-foreground">
+                    Free shipping offer may apply at checkout.
+                  </p>
                 )}
 
                 <CartSummary cart={cart} />

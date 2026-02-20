@@ -5,6 +5,8 @@ import Script from "next/script"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { CartProvider } from "@/components/cart/cart-context"
+import { PromotionsProvider } from "@/components/cart/promotions-context"
+import { PromoBanner } from "@/components/PromoBanner"
 import { Toaster } from "@/components/ui/toaster"
 
 const inter = Inter({
@@ -33,6 +35,10 @@ export const metadata: Metadata = {
     "real madrid gifts uae",
   ],
   authors: [{ name: "Lemah" }],
+  icons: {
+    icon: "/favicon.png",
+    apple: "/favicon.png",
+  },
   openGraph: {
     title: "Football Gifts Dubai & UAE | Lemah",
     description: "Premium football gifts, wall art & collectibles in Dubai & UAE. Perfect for teens and football lovers.",
@@ -67,10 +73,13 @@ export default function RootLayout({
             gtag('config', 'G-X86XPFY2SH');
           `}
         </Script>
-        <CartProvider>
-          {children}
-          <Toaster />
-        </CartProvider>
+        <PromotionsProvider>
+          <PromoBanner />
+          <CartProvider>
+            {children}
+            <Toaster />
+          </CartProvider>
+        </PromotionsProvider>
         <Analytics />
       </body>
     </html>

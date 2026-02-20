@@ -51,8 +51,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 })
   }
 
-  // Purge promotions cache so next request refetches active discounts
-  revalidateTag("promotions")
+  // Purge promotions cache so next request refetches active discounts (Next.js 16: revalidateTag requires 2 args)
+  revalidateTag("promotions", "max")
   revalidatePath("/")
 
   return NextResponse.json({ received: true })

@@ -44,10 +44,11 @@ export function QuickViewModal({ product, open, onClose, triggerRef }: QuickView
   const FOCUSABLE =
     'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
 
-  // Sync state when product or open changes
+  // Sync state when product or open changes (reset selection when modal opens)
   useEffect(() => {
     if (!open) return
     const list = product.variants ?? []
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional sync when modal opens
     setSelectedVariant(list[0] ?? null)
     setQuantity(1)
   }, [open, product.id])

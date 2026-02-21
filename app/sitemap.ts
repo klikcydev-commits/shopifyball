@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next'
 import { getCollections, getProducts } from '@/lib/shopify'
-import { readFileSync } from 'fs'
+import fs from 'fs'
 import { join } from 'path'
 import matter from 'gray-matter'
 
@@ -10,7 +10,6 @@ export const dynamic = 'force-dynamic'
 function getAllBlogPosts() {
   try {
     const postsDirectory = join(process.cwd(), 'content/blog')
-    const fs = require('fs')
     if (!fs.existsSync(postsDirectory)) {
       return []
     }

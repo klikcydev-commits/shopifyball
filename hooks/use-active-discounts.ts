@@ -14,8 +14,10 @@ export function useActiveDiscounts(): {
 
   useEffect(() => {
     let cancelled = false
+    /* eslint-disable react-hooks/set-state-in-effect -- reset state at start of fetch */
     setLoading(true)
     setError(false)
+    /* eslint-enable react-hooks/set-state-in-effect */
     fetch("/api/active-discounts")
       .then((res) => res.json())
       .then((json) => {

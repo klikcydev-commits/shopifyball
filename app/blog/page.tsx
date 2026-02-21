@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import Link from 'next/link'
-import { readFileSync } from 'fs'
+import fs from 'fs'
 import { join } from 'path'
 import matter from 'gray-matter'
 
@@ -33,7 +33,6 @@ function getAllPosts(): BlogPost[] {
   try {
     const blogDir = join(process.cwd(), 'content/blog')
     const postsDir = join(blogDir, 'posts')
-    const fs = require('fs')
     const bySlug = new Map<string, BlogPost>()
 
     function addFromFile(dir: string, file: string, defaultTheme: string) {
@@ -41,7 +40,7 @@ function getAllPosts(): BlogPost[] {
       const slugFromFile = file.replace(/\.(mdx|md)$/, '')
       try {
         const filePath = join(dir, file)
-        const fileContents = fs.readFileSync(filePath, 'utf8')
+        const fileContents = fs.readFileSync(filePath, 'utf-8')
         const { data } = matter(fileContents)
         const slug = data.slug || slugFromFile
         bySlug.set(slug, {

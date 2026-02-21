@@ -14,6 +14,7 @@ export function ClientOnly({
   fallback?: ReactNode
 }) {
   const [mounted, setMounted] = useState(false)
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: client-only mount guard
   useEffect(() => setMounted(true), [])
   if (!mounted) return <>{fallback}</>
   return <>{children}</>

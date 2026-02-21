@@ -23,6 +23,7 @@ export function FloatingParticles({ count = 20 }: { count?: number }) {
       delay: Math.random() * 4,
       duration: Math.random() * 4 + 3,
     }))
+    /* eslint-disable-next-line react-hooks/set-state-in-effect -- init particles once when count changes */
     setParticles(newParticles)
   }, [count])
 

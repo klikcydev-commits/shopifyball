@@ -6,6 +6,7 @@ import { HeroSection } from '@/components/home/hero-section'
 import { HomeSeoSections } from '@/components/home/home-seo-sections'
 import { FeaturedProducts } from '@/components/home/featured-products'
 import { join } from 'path'
+import fs from 'fs'
 import matter from 'gray-matter'
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import { ArticleLayout } from '@/components/blog/article-layout'
@@ -21,7 +22,6 @@ function getPost(slug: string) {
   try {
     const blogDir = join(process.cwd(), 'content/blog')
     const postsSubdir = join(blogDir, 'posts')
-    const fs = require('fs')
 
     // Prefer content/blog/posts/<slug>.mdx, then content/blog/<slug>.mdx or .md
     let filePath = join(postsSubdir, `${slug}.mdx`)
@@ -50,7 +50,6 @@ function getPost(slug: string) {
 function getMeta(slug: string): Record<string, unknown> | null {
   try {
     const metaPath = join(process.cwd(), 'content/blog/meta', `${slug}.json`)
-    const fs = require('fs')
     if (!fs.existsSync(metaPath)) return null
     const raw = fs.readFileSync(metaPath, 'utf8')
     return JSON.parse(raw) as Record<string, unknown>

@@ -49,25 +49,28 @@ function ProductCardWithAnimation({ product, index }: ProductCardWithAnimationPr
     margin: '-100px'
   })
 
+  let adaptedProduct: ReturnType<typeof adaptShopifyProduct> | null = null
   try {
-    const adaptedProduct = adaptShopifyProduct(product)
-
-    return (
-      <motion.div
-        ref={ref}
-        initial={{ opacity: 0, y: 50 }}
-        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-        transition={{
-          duration: 0.6,
-          delay: index * 0.1,
-          ease: [0.25, 0.46, 0.45, 0.94],
-        }}
-      >
-        <ProductCard product={adaptedProduct} />
-      </motion.div>
-    )
+    adaptedProduct = adaptShopifyProduct(product)
   } catch (error) {
     console.error('Error adapting product:', product.id, error)
-    return null // Skip this product if there's an error
+    return null
   }
+
+  if (!adaptedProduct) return null
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 50 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+      transition={{
+        duration: 0.6,
+        delay: index * 0.1,
+        ease: [0.25, 0.46, 0.45, 0.94],
+      }}
+    >
+      <ProductCard product={adaptedProduct} />
+    </motion.div>
+  )
 }

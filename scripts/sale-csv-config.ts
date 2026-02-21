@@ -6,8 +6,8 @@
 /** Compare-at price (old price) to set in AED. Sale shows when compare-at > price. */
 export const COMPARE_AT_PRICE = '90.00'
 
-/** Sale price to keep in AED. Leave empty to keep each product's current price. */
-export const VARIANT_PRICE = '60.00'
+/** Sale price to keep in AED. Leave empty string to keep each product's current price. */
+export const VARIANT_PRICE: string = '60.00'
 
 /**
  * Collection title or handle match for "sale_all" CSV.

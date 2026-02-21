@@ -39,6 +39,11 @@ export function ProductSeoBlock({ title, handle }: ProductSeoBlockProps) {
         </Link>
         .
       </p>
+      <p className="text-xs text-muted-foreground pt-2">
+        <Link href="/sitemap.xml" className="underline underline-offset-2 hover:text-foreground">
+          Sitemap
+        </Link>
+      </p>
     </div>
   )
 }

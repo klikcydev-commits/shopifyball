@@ -28,6 +28,7 @@ const footerLinks = {
     { name: "About", href: "/about" },
     { name: "Our Story", href: "/about" },
     { name: "Sustainability", href: "/about#sustainability" },
+    { name: "Sitemap", href: "/sitemap.xml" },
   ],
 }
 

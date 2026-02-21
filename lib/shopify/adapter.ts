@@ -8,14 +8,17 @@ export function adaptShopifyProduct(shopifyProduct: ShopifyProduct): Product {
   // Debug: verify compare-at price from Storefront API (only in development)
   if (process.env.NODE_ENV === 'development') {
     const firstVariant = shopifyProduct.variants?.edges?.[0]?.node
-    console.log('Product data:', {
-      title: shopifyProduct.title,
-      handle: shopifyProduct.handle,
-      price: shopifyProduct.priceRange?.minVariantPrice?.amount,
-      currencyCode: shopifyProduct.priceRange?.minVariantPrice?.currencyCode,
-      compareAtPriceRange: shopifyProduct.compareAtPriceRange?.minVariantPrice?.amount ?? null,
-      variantCompareAt: firstVariant?.compareAtPrice?.amount ?? null,
-    })
+    const hasCompareAt = !!firstVariant?.compareAtPrice?.amount
+    if (hasCompareAt) {
+      console.log('🔍 [SALE PRODUCT]:', {
+        title: shopifyProduct.title,
+        handle: shopifyProduct.handle,
+        price: shopifyProduct.priceRange?.minVariantPrice?.amount,
+        currencyCode: shopifyProduct.priceRange?.minVariantPrice?.currencyCode,
+        compareAtPriceRange: shopifyProduct.compareAtPriceRange?.minVariantPrice?.amount ?? null,
+        variantCompareAt: firstVariant?.compareAtPrice?.amount ?? null,
+      })
+    }
   }
 
   // Safely map images

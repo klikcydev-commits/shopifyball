@@ -48,9 +48,11 @@ export async function getProduct(handle: string): Promise<ShopifyProduct | null>
 export async function getProducts({
   query,
   first = 12,
+  after,
 }: {
   query?: string
   first?: number
+  after?: string
 }): Promise<{
   products: ShopifyProduct[]
   pageInfo: {
@@ -77,6 +79,7 @@ export async function getProducts({
     variables: {
       query,
       first,
+      ...(after != null && { after }),
     },
     cache: 'no-store', // Always fetch fresh products from Shopify
   })
@@ -85,6 +88,38 @@ export async function getProducts({
     products: res.body.data.products.edges.map((edge) => edge.node),
     pageInfo: res.body.data.products.pageInfo,
   }
+}
+
+/** Fetches all products by paginating until no more pages. */
+export async function getAllProducts(options?: { query?: string }): Promise<ShopifyProduct[]> {
+  const products: ShopifyProduct[] = []
+  const pageSize = 250
+  let after: string | undefined
+  do {
+    const { products: page, pageInfo } = await getProducts({
+      query: options?.query,
+      first: pageSize,
+      after,
+    })
+    products.push(...page)
+    after = pageInfo.hasNextPage ? pageInfo.endCursor : undefined
+  } while (after)
+  return products
+}
+
+/** Fetches all products in a collection by paginating until no more pages. */
+export async function getAllCollectionProducts(handle: string): Promise<ShopifyProduct[]> {
+  const products: ShopifyProduct[] = []
+  const pageSize = 250
+  let after: string | undefined
+  do {
+    const collection = await getCollection(handle, pageSize, after)
+    const prod = collection?.products
+    if (!prod?.edges?.length && !prod?.pageInfo?.hasNextPage) break
+    products.push(...prod.edges.map((e) => e.node))
+    after = prod.pageInfo.hasNextPage ? prod.pageInfo.endCursor : undefined
+  } while (after)
+  return products
 }
 
 export async function getCollection(

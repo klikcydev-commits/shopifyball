@@ -1,6 +1,12 @@
 /**
  * Server-only: fetch active Shopify discounts via Admin API.
  * Used by /api/promotions and PromoBanner. Never expose Admin token to client.
+ *
+ * Fetches any active offer from Shopify Discounts, including:
+ * - Free shipping (code or automatic)
+ * - Percentage/fixed deals (code or automatic)
+ * - BXGY (buy X get Y)
+ * Only discounts with status ACTIVE and within their date range are returned.
  */
 
 const ADMIN_API_VERSION = "2024-01"
@@ -28,8 +34,8 @@ function kindFromTypename(typename: string): PromoKind {
 }
 
 /**
- * Fetches active discounts from Shopify Admin API and normalizes for storefront.
- * Cached 120s; invalidate with revalidateTag("promotions").
+ * Fetches active discounts from Shopify Admin API (e.g. free shipping, deals, BXGY).
+ * Returns only discounts that are ACTIVE. Cached 120s; invalidate with revalidateTag("promotions").
  */
 export async function getPromotions(): Promise<PromotionsResponse> {
   const domain = process.env.SHOPIFY_STORE_DOMAIN

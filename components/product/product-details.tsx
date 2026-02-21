@@ -83,12 +83,12 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   const saleState = getSaleState(variantForSale)
 
   return (
-    <div className="section-padding bg-cream">
-      <div className="container-custom">
+    <div className="py-20 md:py-32 bg-cream">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12">
-          {/* Images */}
-          <div>
-            <div className="relative aspect-square rounded-lg overflow-hidden bg-muted mb-4">
+          {/* Images - slightly smaller on large screens */}
+          <div className="max-w-lg mx-auto lg:mx-0 w-full">
+            <div className="relative aspect-square max-h-[420px] lg:max-h-[480px] w-full mx-auto rounded-lg overflow-hidden bg-muted mb-4">
               {saleState.onSale && (
                 <span className="absolute top-4 left-4 z-10 rounded-md bg-red-600 text-white text-sm font-bold uppercase tracking-wider px-3 py-1.5 shadow-lg">
                   Sale

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useTransition } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { getCollectionAction, getProductsAction } from '@/app/actions/product-actions'
+import { getAllProductsAction, getAllCollectionProductsAction } from '@/app/actions/product-actions'
 import type { ShopifyCollection, ShopifyProduct } from '@/lib/shopify/types'
 import { adaptShopifyProduct } from '@/lib/shopify/adapter'
 import { ProductCard } from '@/components/products/product-card'
@@ -20,23 +20,27 @@ export function SearchClient({ collectionHandle, query, collections }: SearchCli
   const searchParams = useSearchParams()
   const [products, setProducts] = useState<ShopifyProduct[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [loadError, setLoadError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
   useEffect(() => {
     async function loadProducts() {
       setIsLoading(true)
+      setLoadError(null)
       try {
         if (collectionHandle) {
-          const collection = await getCollectionAction(collectionHandle, 24)
-          if (collection) {
-            setProducts(collection.products.edges.map((edge) => edge.node))
-          }
-        } else {
-          const result = await getProductsAction({ query, first: 24 })
+          const result = await getAllCollectionProductsAction(collectionHandle)
           setProducts(result.products)
+          if (result.error) setLoadError(result.error)
+        } else {
+          const result = await getAllProductsAction(query ? { query } : undefined)
+          setProducts(result.products)
+          if (result.error) setLoadError(result.error)
         }
       } catch (error) {
         console.error('Error loading products:', error)
+        setLoadError(error instanceof Error ? error.message : 'Failed to load products')
+        setProducts([])
       } finally {
         setIsLoading(false)
       }
@@ -98,6 +102,11 @@ export function SearchClient({ collectionHandle, query, collections }: SearchCli
               )}
             </div>
 
+            {loadError && (
+              <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 mb-6 text-sm text-destructive">
+                {loadError}
+              </div>
+            )}
             {isLoading || isPending ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[...Array(6)].map((_, i) => (

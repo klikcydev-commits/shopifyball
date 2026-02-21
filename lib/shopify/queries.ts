@@ -30,8 +30,8 @@ export const getPageQuery = `
 `
 
 export const getProductsQuery = `
-  query getProducts($first: Int!, $query: String) {
-    products(first: $first, query: $query) {
+  query getProducts($first: Int!, $query: String, $after: String) {
+    products(first: $first, query: $query, after: $after) {
       edges {
         node {
           id

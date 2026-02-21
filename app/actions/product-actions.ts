@@ -1,6 +1,6 @@
 'use server'
 
-import { getCollection, getCollections, getProducts } from '@/lib/shopify'
+import { getCollection, getCollections, getProducts, getAllProducts, getAllCollectionProducts } from '@/lib/shopify'
 import type { ShopifyCollection, ShopifyProduct } from '@/lib/shopify/types'
 
 /** Shuffle array and return a new array (Fisher–Yates). */
@@ -84,6 +84,34 @@ export async function getProductsAction({
   }
 }> {
   return getProducts({ query, first })
+}
+
+/** Fetches every product from Shopify (paginates until done). Use for "All Products" so none are missed. */
+export async function getAllProductsAction(options?: { query?: string }): Promise<{
+  products: ShopifyProduct[]
+  error?: string
+}> {
+  try {
+    const products = await getAllProducts(options)
+    return { products }
+  } catch (err) {
+    console.error('[getAllProductsAction]', err)
+    return { products: [], error: err instanceof Error ? err.message : 'Failed to fetch products' }
+  }
+}
+
+/** Fetches every product in a collection (paginates until done). */
+export async function getAllCollectionProductsAction(handle: string): Promise<{
+  products: ShopifyProduct[]
+  error?: string
+}> {
+  try {
+    const products = await getAllCollectionProducts(handle)
+    return { products }
+  } catch (err) {
+    console.error('[getAllCollectionProductsAction]', err)
+    return { products: [], error: err instanceof Error ? err.message : 'Failed to fetch collection products' }
+  }
 }
 
 

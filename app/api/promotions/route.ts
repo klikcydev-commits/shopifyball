@@ -3,8 +3,8 @@ import { getPromotions } from "@/lib/promotions"
 
 /**
  * GET /api/promotions
- * Returns active Shopify discounts (deals, free shipping, BXGY) for the storefront.
- * Server-only data source; cached 120s. Use SHOPIFY_WEBHOOK_SECRET + webhook to revalidate on discount changes.
+ * Fetches active offers from Shopify Discounts (e.g. free shipping, percentage off, BXGY).
+ * Only returns discounts that are currently active. Cached 120s; use revalidateTag("promotions") to invalidate.
  */
 export async function GET() {
   const data = await getPromotions()

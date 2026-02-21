@@ -22,6 +22,8 @@ interface PromotionsState {
   hasFreeShipping: boolean
   promos: PromoItem[]
   isLoading: boolean
+  /** Refetch active offers from Shopify (e.g. free shipping, deals). Call when cart opens or after discount changes. */
+  refetch: () => Promise<void>
 }
 
 const defaultState: PromotionsState = {
@@ -29,15 +31,22 @@ const defaultState: PromotionsState = {
   hasFreeShipping: false,
   promos: [],
   isLoading: true,
+  refetch: async () => {},
 }
 
 const PromotionsContext = createContext<PromotionsState>(defaultState)
 
 export function PromotionsProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<PromotionsState>(defaultState)
+  const [state, setState] = useState<Omit<PromotionsState, "refetch">>({
+    hasActivePromos: false,
+    hasFreeShipping: false,
+    promos: [],
+    isLoading: true,
+  })
 
   const fetchPromos = useCallback(async () => {
     try {
+      setState((s) => ({ ...s, isLoading: true }))
       const res = await fetch("/api/promotions")
       const data = await res.json()
       const promos = data.promos ?? []
@@ -58,7 +67,7 @@ export function PromotionsProvider({ children }: { children: ReactNode }) {
   }, [fetchPromos])
 
   return (
-    <PromotionsContext.Provider value={state}>
+    <PromotionsContext.Provider value={{ ...state, refetch: fetchPromos }}>
       {children}
     </PromotionsContext.Provider>
   )

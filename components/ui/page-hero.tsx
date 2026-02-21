@@ -22,9 +22,11 @@ interface PageHeroProps {
   title: string
   subtitle?: string
   badge?: string
+  /** Optional hero image path (e.g. /search-hero.png). When set, shown at top-0 left-0 instead of carousel. */
+  imageSrc?: string
 }
 
-export function PageHero({ title, subtitle, badge }: PageHeroProps) {
+export function PageHero({ title, subtitle, badge, imageSrc }: PageHeroProps) {
   const plugin = useRef(
     Autoplay({ 
       delay: 3000, 
@@ -36,37 +38,50 @@ export function PageHero({ title, subtitle, badge }: PageHeroProps) {
 
   return (
     <section className="relative h-[50vh] min-h-[400px] overflow-hidden">
-      <Carousel
-        plugins={[plugin.current]}
-        opts={{
-          align: 'start',
-          loop: true,
-        }}
-        className="w-full h-full absolute inset-0"
-      >
-        <CarouselContent className="-ml-0 h-full">
-          {heroImages.map((image, index) => (
-            <CarouselItem key={index} className="pl-0 h-full">
-              <div className="relative h-full w-full">
-                <Image
-                  src={image}
-                  alt={`Hero ${index + 1}`}
-                  fill
-                  className="object-cover"
-                  priority={index === 0}
-                  sizes="100vw"
-                />
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-      </Carousel>
+      {imageSrc ? (
+        <div className="absolute top-0 left-0 w-full h-full">
+          <Image
+            src={imageSrc}
+            alt=""
+            fill
+            className="object-cover object-top"
+            priority
+            sizes="100vw"
+          />
+        </div>
+      ) : (
+        <Carousel
+          plugins={[plugin.current]}
+          opts={{
+            align: 'start',
+            loop: true,
+          }}
+          className="w-full h-full absolute inset-0"
+        >
+          <CarouselContent className="-ml-0 h-full">
+            {heroImages.map((image, index) => (
+              <CarouselItem key={index} className="pl-0 h-full">
+                <div className="relative h-full w-full">
+                  <Image
+                    src={image}
+                    alt={`Hero ${index + 1}`}
+                    fill
+                    className="object-cover"
+                    priority={index === 0}
+                    sizes="100vw"
+                  />
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
+      )}
       
       {/* Overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-navy/70 via-navy/60 to-navy/80" />
       
-      {/* Content */}
-      <div className="absolute inset-0 flex items-center justify-center">
+      {/* Content - explicitly top-0 left-0 inside hero section */}
+      <div className="absolute top-0 left-0 right-0 bottom-0 flex items-start justify-center pt-12 md:pt-16">
         <div className="container-custom text-center">
           {badge && (
             <span className="inline-block px-4 py-2 bg-gold/20 border border-gold/30 rounded-full text-gold text-sm font-medium uppercase tracking-wider mb-6">

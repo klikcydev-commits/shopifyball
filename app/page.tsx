@@ -8,8 +8,6 @@ import { FeaturedProducts } from "@/components/home/featured-products"
 import { HomeSeoSections } from "@/components/home/home-seo-sections"
 import { HomeFaq } from "@/components/home/home-faq"
 import { ElevenKitTeaser } from "@/components/home/eleven-kit-teaser"
-import { BrandStory } from "@/components/home/brand-story"
-import { Testimonials } from "@/components/home/testimonials"
 import { Lookbook } from "@/components/home/lookbook"
 
 export const metadata: Metadata = {
@@ -40,8 +38,6 @@ export default async function HomePage() {
         <FeaturedProducts />
         <HomeFaq />
         <ElevenKitTeaser />
-        <BrandStory />
-        <Testimonials />
         <Lookbook />
       </main>
       <Footer />

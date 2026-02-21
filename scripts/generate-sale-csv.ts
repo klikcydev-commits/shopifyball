@@ -91,12 +91,13 @@ function productToRows(product: {
 
 let getCollectionsFn: (first: number) => Promise<{ title: string; handle: string; products: { edges: Array<{ node: { handle: string } }>; pageInfo: { hasNextPage?: boolean; endCursor?: string } } }[]>
 let getCollectionFn: (handle: string, first: number, after?: string) => Promise<{ products: { edges: Array<{ node: { handle: string } }>; pageInfo: { hasNextPage?: boolean; endCursor?: string } } } | null> | null
-let getProductFn: (handle: string) => Promise<{
+type ProductForRows = {
   handle: string
   title: string
-  variants: { edges: Array<{ node: { title: string; price: { amount: string }; selectedOptions: Array<{ name: string; value: string }> } }> }
+  variants: { edges: Array<{ node: { title: string; price: { amount: string }; compareAtPrice?: { amount: string } | null; selectedOptions: Array<{ name: string; value: string }> } }> }
   options?: Array<{ name: string; values: string[] }>
-} | null>
+}
+let getProductFn: (handle: string) => Promise<ProductForRows | null>
 
 async function fetchAllProductsFromCollections(): Promise<Set<string>> {
   const collections = await getCollectionsFn(50)
@@ -160,12 +161,12 @@ async function main() {
   // sale_selected: include products from selectedHandles (fetch if not already in productByHandle)
   const selectedRows: ProductRow[] = []
   for (const handle of selectedHandles) {
-    let product = productByHandle.get(handle)
+    let product: ProductForRows | null | undefined = productByHandle.get(handle)
     if (!product) {
       product = await getProductFn(handle)
       if (!product) continue
     }
-    selectedRows.push(...productToRows(product as Parameters<typeof productToRows>[0]))
+    selectedRows.push(...productToRows(product))
   }
 
   const saleAllCsv = [CSV_HEADERS.join(','), ...allRows.map(toCsvRow)].join('\n')

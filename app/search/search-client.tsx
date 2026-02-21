@@ -4,10 +4,13 @@ import { useState, useEffect, useTransition } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getAllProductsAction, getAllCollectionProductsAction } from '@/app/actions/product-actions'
 import type { ShopifyCollection, ShopifyProduct } from '@/lib/shopify/types'
+import type { Product } from '@/lib/shopify-types'
 import { adaptShopifyProduct } from '@/lib/shopify/adapter'
-import { ProductCard } from '@/components/products/product-card'
+import { ProductTile } from '@/components/products/product-tile'
 import { FilterList } from '@/components/search/filter-list'
 import { Button } from '@/components/ui/button'
+import { useCart } from '@/components/cart/cart-context'
+import { useToast } from '@/hooks/use-toast'
 
 interface SearchClientProps {
   collectionHandle?: string
@@ -22,6 +25,32 @@ export function SearchClient({ collectionHandle, query, collections }: SearchCli
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
+  const [addingId, setAddingId] = useState<string | null>(null)
+  const { addToCart } = useCart()
+  const { toast } = useToast()
+
+  const handleAddToCart = async (e: React.MouseEvent, product: Product) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!product.variants?.length) {
+      toast({ title: 'Error', description: 'No variants available.', variant: 'destructive' })
+      return
+    }
+    const variant = product.variants.find((v) => v.availableForSale) ?? product.variants[0]
+    if (!variant?.availableForSale) {
+      toast({ title: 'Out of stock', description: 'This product is unavailable.', variant: 'destructive' })
+      return
+    }
+    setAddingId(product.id)
+    try {
+      await addToCart(product, variant)
+      toast({ title: 'Added to cart', description: product.title })
+    } catch {
+      toast({ title: 'Error', description: 'Failed to add to cart.', variant: 'destructive' })
+    } finally {
+      setAddingId(null)
+    }
+  }
 
   useEffect(() => {
     async function loadProducts() {
@@ -75,7 +104,7 @@ export function SearchClient({ collectionHandle, query, collections }: SearchCli
   }
 
   return (
-    <div className="section-padding bg-cream">
+    <div className="section-padding bg-cream pb-20 md:pb-24">
       <div className="container-custom">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Filters Sidebar */}
@@ -89,7 +118,7 @@ export function SearchClient({ collectionHandle, query, collections }: SearchCli
 
           {/* Products Grid */}
           <div className="flex-1">
-            <div className="mb-8">
+            <div className="mb-8 text-center">
               <h1 className="font-heading text-4xl md:text-5xl text-navy mb-4">
                 {collectionHandle
                   ? collections.find((c) => c.handle === collectionHandle)?.title || 'Collection'
@@ -122,9 +151,19 @@ export function SearchClient({ collectionHandle, query, collections }: SearchCli
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {products.map((product) => (
-                  <ProductCard key={product.id} product={adaptShopifyProduct(product)} />
-                ))}
+                {products.map((product) => {
+                  const adapted = adaptShopifyProduct(product)
+                  return (
+                    <ProductTile
+                      key={product.id}
+                      product={adapted}
+                      aspect="square"
+                      variant="light"
+                      onAddToCart={handleAddToCart}
+                      isAdding={addingId === adapted.id}
+                    />
+                  )
+                })}
               </div>
             )}
           </div>

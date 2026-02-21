@@ -20,14 +20,14 @@ export async function POST(request: Request) {
     )
   }
 
-  let body: { name?: string; email?: string; subject?: string; message?: string }
+  let body: { name?: string; email?: string; phone?: string; subject?: string; message?: string }
   try {
     body = await request.json()
   } catch {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
   }
 
-  const { name, email, subject, message } = body
+  const { name, email, phone, subject, message } = body
   if (!name?.trim() || !email?.trim() || !message?.trim()) {
     return NextResponse.json(
       { error: 'Name, email, and message are required' },
@@ -43,10 +43,13 @@ export async function POST(request: Request) {
   })
 
   const mailSubject = subject?.trim() ? `[LeMah] ${subject.trim()}` : `[LeMah] Contact from ${name.trim()}`
-  const text = `Name: ${name.trim()}\nEmail: ${email.trim()}\nSubject: ${subject?.trim() || '(none)'}\n\nMessage:\n${message.trim()}`
+  const phoneLine = phone?.trim() ? `\nPhone: ${phone.trim()}` : ''
+  const text = `Name: ${name.trim()}\nEmail: ${email.trim()}${phoneLine}\nSubject: ${subject?.trim() || '(none)'}\n\nMessage:\n${message.trim()}`
+  const phoneHtml = phone?.trim() ? `<p><strong>Phone:</strong> ${escapeHtml(phone.trim())}</p>` : ''
   const html = `
     <p><strong>Name:</strong> ${escapeHtml(name.trim())}</p>
     <p><strong>Email:</strong> ${escapeHtml(email.trim())}</p>
+    ${phoneHtml}
     <p><strong>Subject:</strong> ${escapeHtml(subject?.trim() || '(none)')}</p>
     <hr />
     <p>${escapeHtml(message.trim()).replace(/\n/g, '<br />')}</p>

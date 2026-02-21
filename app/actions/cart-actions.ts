@@ -62,6 +62,3 @@ export async function applyDiscountCodesAction(
 ): Promise<ShopifyCart | null> {
   return applyDiscountCodes(cartId, discountCodes)
 }
-
-
-

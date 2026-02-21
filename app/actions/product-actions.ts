@@ -114,5 +114,41 @@ export async function getAllCollectionProductsAction(handle: string): Promise<{
   }
 }
 
+/** Lookbook: 9 random products, evenly spread across all collections. Used for lookbook grid. */
+export async function getLookbookProductsAction(): Promise<{ products: ShopifyProduct[] }> {
+  const wanted = 9
+  try {
+    const collections = await getCollections(20)
+    const withHandle = collections.filter((c) => c?.handle).slice(0, 15)
+    if (withHandle.length === 0) {
+      const { products } = await getProducts({ first: wanted })
+      return { products: pickRandom(products, wanted) }
+    }
+    const perCollection = Math.max(1, Math.ceil(wanted / withHandle.length))
+    const byCollection: ShopifyProduct[] = []
+    const seenIds = new Set<string>()
+    for (const col of withHandle) {
+      const coll = await getCollection(col.handle, 12)
+      if (!coll?.products?.edges?.length) continue
+      const nodes = coll.products.edges.map((e) => e.node).filter((p) => !seenIds.has(p.id))
+      const picked = pickRandom(nodes, perCollection)
+      for (const p of picked) {
+        seenIds.add(p.id)
+        byCollection.push(p)
+      }
+      if (byCollection.length >= wanted) break
+    }
+    const result = shuffle(byCollection).slice(0, wanted)
+    if (result.length >= wanted) return { products: result }
+    const { products } = await getProducts({ first: wanted * 2 })
+    const extra = products.filter((p) => !seenIds.has(p.id))
+    const filled = [...result, ...pickRandom(extra, wanted - result.length)]
+    return { products: shuffle(filled).slice(0, wanted) }
+  } catch {
+    const { products } = await getProducts({ first: wanted })
+    return { products: pickRandom(products, wanted) }
+  }
+}
+
 
 

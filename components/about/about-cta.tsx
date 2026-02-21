@@ -24,15 +24,24 @@ export function AboutCta() {
             <span className="text-gold">Your carry.</span>
           </h2>
           <p className="text-muted-foreground text-lg mb-10 max-w-xl mx-auto">
-            Build your perfect match day setup with our signature 11Kit experience.
+            Shop collectible frames UAE — CR7, Mbappé, Ronaldo & Messi. Football gifts Dubai. UAE delivery, gift-ready packaging.
           </p>
-          <Link
-            href="/11kit"
-            className="group inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-medium uppercase tracking-wider hover:bg-navy-light transition-all btn-press gold-glow"
-          >
-            Build Your 11Kit
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </Link>
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <Link
+              href="/shop"
+              className="group inline-flex items-center gap-2 px-6 py-3 bg-gold text-primary font-medium uppercase tracking-wider hover:bg-gold/90 transition-all btn-press gold-glow"
+            >
+              Shop Collectible Frames
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+            <Link
+              href="/shop"
+              className="group inline-flex items-center gap-2 px-6 py-3 border-2 border-gold text-gold font-medium uppercase tracking-wider hover:bg-gold hover:text-primary transition-all"
+            >
+              Football Gifts Dubai & UAE
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </div>
         </div>
       </div>
     </section>

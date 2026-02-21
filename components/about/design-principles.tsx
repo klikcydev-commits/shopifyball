@@ -9,31 +9,31 @@ const principles = [
     icon: Ruler,
     title: "Precision Materials",
     description:
-      "Every fabric, zipper, and stitch is selected for durability and feel. We source premium materials that perform under pressure and age beautifully.",
+      "Every frame is built for durability and presence. We choose materials that perform on the wall and age with you — no compromise. Collectible frames UAE fans display with pride.",
   },
   {
     icon: Wind,
     title: "Comfort Under Pressure",
     description:
-      "Whether it's a 90-minute match or a full travel day, our accessories are designed for sustained comfort. Breathable, lightweight, supportive.",
+      "Display that holds up. Our collectible frames are built to last: solid construction, quality finishes. Football gifts Dubai and UAE fans can trust for years.",
   },
   {
     icon: Sparkles,
     title: "Minimal, Loud Energy",
     description:
-      "Clean designs that make a statement. We strip away the unnecessary to let quality speak. Premium doesn't need to shout.",
+      "Clean lines. No loud logos. Our collectible frames let the moment speak — CR7, Mbappé, Ronaldo & Messi legends. Premium doesn&apos;t need to shout; it just needs to be right.",
   },
   {
     icon: Briefcase,
-    title: "Travel-Ready Systems",
+    title: "Travel-Ready & Gift-Ready",
     description:
-      "Organization is freedom. Our bags and organizers are built with compartments that make sense, closures that work, and sizes that fit life.",
+      "Every frame is packed for safe arrival. Gift-ready packaging means your football gift lands in Dubai or across the UAE ready to give — no extra wrap needed.",
   },
   {
     icon: Palette,
     title: "Gold Details",
     description:
-      "Our signature gold accents aren't decoration — they're a mark of quality. Used sparingly, like jewelry, to highlight what matters.",
+      "Our signature gold accents aren&apos;t decoration — they&apos;re a mark of craft. Used sparingly on each frame, like jewelry, to highlight what matters.",
   },
 ]
 
@@ -52,7 +52,7 @@ export function DesignPrinciples() {
         >
           <span className="text-xs uppercase tracking-[0.2em] text-gold mb-4 block">Design Philosophy</span>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">What We Stand For</h2>
-          <p className="text-muted-foreground text-lg">Five principles guide everything we create. No compromises.</p>
+          <p className="text-muted-foreground text-lg">Five principles guide every collectible frame we make. No shortcuts. Premium football accessories — new items coming soon.</p>
         </div>
 
         {/* Principles grid */}

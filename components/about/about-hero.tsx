@@ -16,7 +16,7 @@ export function AboutHero() {
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20 text-center">
         {/* Eyebrow */}
         <span className="inline-block text-xs uppercase tracking-[0.3em] text-gold mb-6 animate-stagger-in">
-          The Brand
+          About Lemah
         </span>
 
         {/* Manifesto */}
@@ -24,9 +24,9 @@ export function AboutHero() {
           className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-primary-foreground tracking-tight leading-tight mb-8 animate-stagger-in"
           style={{ animationDelay: "0.2s" }}
         >
-          Built for the
+          For everyone who
           <br />
-          <span className="text-gold">eleven.</span>
+          <span className="text-gold">lives the game.</span>
         </h1>
 
         {/* Three lines of manifesto */}
@@ -34,16 +34,15 @@ export function AboutHero() {
           className="space-y-2 text-lg md:text-xl text-primary-foreground/70 max-w-2xl mx-auto animate-stagger-in"
           style={{ animationDelay: "0.4s" }}
         >
-          <p>We carry what matters.</p>
-          <p>We prepare like champions.</p>
-          <p>We live the ritual.</p>
+          <p>LEMAH is premium collectible frames and football gifts — for fans in Dubai and across the UAE.</p>
+          <p>We exist because the moment deserves to be kept: refined, intentional, built to last.</p>
         </div>
 
         <p
           className="mt-6 text-base md:text-lg text-primary-foreground/60 max-w-xl mx-auto animate-stagger-in"
           style={{ animationDelay: "0.5s" }}
         >
-          Premium football accessories and collectible gifts. UAE delivery, gift-ready packaging — for fans in Dubai and across the UAE.
+          Collectible frames: CR7, Mbappé, Ronaldo & Messi legends. UAE delivery, gift-ready packaging. Premium football accessories — new items coming soon.
         </p>
 
         {/* Decorative line */}

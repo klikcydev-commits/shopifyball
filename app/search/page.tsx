@@ -40,7 +40,7 @@ export default async function SearchPage({
           title="Shop Our Collection"
           subtitle="Discover premium football gear designed for champions at every level."
           badge="Browse Products"
-          imageSrc="/search-hero.png"
+          imageSrc="/hero/143e766fa898a0c6d2b3306e6f0399a1.jpg"
         />
         
         <Suspense fallback={<div className="section-padding bg-cream" />}>

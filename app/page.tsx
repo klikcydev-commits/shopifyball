@@ -34,8 +34,8 @@ export default async function HomePage() {
       <main>
         <HeroSection />
         <FeaturedCollections collections={collections} />
-        <HomeSeoSections />
         <FeaturedProducts />
+        <HomeSeoSections />
         <HomeFaq />
         <ElevenKitTeaser />
         <Lookbook />

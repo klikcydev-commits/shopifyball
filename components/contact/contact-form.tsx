@@ -20,8 +20,8 @@ export function ContactForm() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     subject: "",
-    orderNumber: "",
     message: "",
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -46,15 +46,14 @@ export function ContactForm() {
     setSubmitError(null)
     try {
       const subjectLabel = subjects.find((s) => s.value === formData.subject)?.label ?? formData.subject
-      const messageBody = formData.orderNumber.trim()
-        ? `${formData.message.trim()}\n\nOrder #: ${formData.orderNumber.trim()}`
-        : formData.message.trim()
+      const messageBody = formData.message.trim()
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: formData.name.trim(),
           email: formData.email.trim(),
+          phone: formData.phone.trim(),
           subject: subjectLabel,
           message: messageBody,
         }),
@@ -100,7 +99,7 @@ export function ContactForm() {
               onClick={() => {
                 setIsSubmitted(false)
                 setSubmitError(null)
-                setFormData({ name: "", email: "", subject: "", orderNumber: "", message: "" })
+                setFormData({ name: "", email: "", phone: "", subject: "", message: "" })
               }}
               className="mt-8 text-sm text-gold hover:text-gold-dark transition-colors animate-in fade-in duration-500 delay-300"
             >
@@ -134,7 +133,7 @@ export function ContactForm() {
           style={{ transitionDelay: "150ms" }}
           suppressHydrationWarning
         >
-          <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Name */}
             <div>
               <label htmlFor="name" className="block text-sm font-medium mb-2">
@@ -173,6 +172,21 @@ export function ContactForm() {
               {errors.email && <p className="mt-1 text-sm text-destructive">{errors.email}</p>}
             </div>
 
+            {/* Phone */}
+            <div>
+              <label htmlFor="phone" className="block text-sm font-medium mb-2">
+                Phone Number
+              </label>
+              <input
+                id="phone"
+                type="tel"
+                value={formData.phone}
+                onChange={(e) => handleChange("phone", e.target.value)}
+                className="w-full px-4 py-3 bg-secondary border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors"
+                placeholder="+971 50 123 4567"
+              />
+            </div>
+
             {/* Subject */}
             <div>
               <label htmlFor="subject" className="block text-sm font-medium mb-2">
@@ -198,23 +212,8 @@ export function ContactForm() {
               {errors.subject && <p className="mt-1 text-sm text-destructive">{errors.subject}</p>}
             </div>
 
-            {/* Order Number (optional) */}
-            <div>
-              <label htmlFor="orderNumber" className="block text-sm font-medium mb-2">
-                Order Number <span className="text-muted-foreground text-xs">(optional)</span>
-              </label>
-              <input
-                id="orderNumber"
-                type="text"
-                value={formData.orderNumber}
-                onChange={(e) => handleChange("orderNumber", e.target.value)}
-                className="w-full px-4 py-3 bg-secondary border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors"
-                placeholder="#LMH-12345"
-              />
-            </div>
-
-            {/* Message */}
-            <div>
+            {/* Message - full width */}
+            <div className="md:col-span-2">
               <label htmlFor="message" className="block text-sm font-medium mb-2">
                 Message <span className="text-destructive">*</span>
               </label>
@@ -233,28 +232,32 @@ export function ContactForm() {
             </div>
 
             {submitError && (
-              <p className="text-sm text-destructive bg-destructive/10 border border-destructive/30 rounded-lg px-4 py-3">
-                {submitError}
-              </p>
+              <div className="md:col-span-2">
+                <p className="text-sm text-destructive bg-destructive/10 border border-destructive/30 rounded-lg px-4 py-3">
+                  {submitError}
+                </p>
+              </div>
             )}
             {/* Submit */}
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full flex items-center justify-center gap-2 py-4 bg-primary text-primary-foreground font-medium uppercase tracking-wider hover:bg-navy-light disabled:opacity-70 disabled:cursor-not-allowed transition-colors btn-press gold-glow"
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Sending...
-                </>
-              ) : (
-                <>
-                  <Send className="h-4 w-4" />
-                  Send Message
-                </>
-              )}
-            </button>
+            <div className="md:col-span-2">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full flex items-center justify-center gap-2 py-4 bg-primary text-primary-foreground font-medium uppercase tracking-wider hover:bg-navy-light disabled:opacity-70 disabled:cursor-not-allowed transition-colors btn-press gold-glow"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Send className="h-4 w-4" />
+                    Send Message
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </form>
       </div>

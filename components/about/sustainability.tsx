@@ -30,8 +30,7 @@ export function Sustainability() {
           </h2>
 
           <p className="text-muted-foreground text-lg leading-relaxed max-w-2xl mx-auto mb-8">
-            We don't chase trends or push fast fashion. LEMAH accessories are built to last for seasons — years, even.
-            Quality over quantity. Keep what you love. Use it until it tells stories.
+            We don&apos;t chase trends. LEMAH collectible frames are built to last — seasons, years. Choose once. Use it until it tells your story.
           </p>
 
           {/* Commitments */}

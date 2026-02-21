@@ -155,19 +155,11 @@ export function ElevenKitTeaser() {
                 {/* Tooltip */}
                 {hoveredSlot === slot.id && (
                   <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-1.5 bg-gold text-primary text-xs font-medium rounded shadow-lg animate-in fade-in zoom-in-95 duration-200">
-                    {slot.name}
+                    Coming Soon
                   </div>
                 )}
               </div>
             ))}
-
-            {/* Progress indicator */}
-            <div className="absolute bottom-4 left-4 right-4 bg-primary/80 backdrop-blur-sm rounded-lg p-3">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-gold font-medium">Your 11Kit</span>
-                <span className="text-primary-foreground/60">Hover to preview</span>
-              </div>
-            </div>
           </div>
         </div>
       </div>

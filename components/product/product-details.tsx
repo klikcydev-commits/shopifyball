@@ -173,17 +173,9 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               )}
             </div>
 
-            <div
-              className="prose prose-sm max-w-none mb-8 text-muted-foreground"
-              dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
-            />
-
-            <ProductSeoBlock title={product.title} handle={product.handle} />
-            <ProductFaq />
-
             <ClientOnly
               fallback={
-                <div className="mb-6 space-y-6" style={{ minHeight: 280 }}>
+                <div className="mb-8 space-y-6" style={{ minHeight: 280 }}>
                   <div className="h-16 bg-muted/30 rounded animate-pulse" />
                   <div className="h-14 bg-muted/30 rounded animate-pulse" />
                   <div className="h-12 bg-muted/30 rounded animate-pulse" />
@@ -273,12 +265,20 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               )}
 
               {selectedVariant?.availableForSale && (
-                <p className="text-sm text-muted-foreground flex items-center gap-2">
+                <p className="text-sm text-muted-foreground flex items-center gap-2 mb-8">
                   <Check className="w-4 h-4 text-green-500" />
                   In stock and ready to ship
                 </p>
               )}
             </ClientOnly>
+
+            <div
+              className="prose prose-sm max-w-none mb-8 text-muted-foreground"
+              dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
+            />
+
+            <ProductSeoBlock title={product.title} handle={product.handle} />
+            <ProductFaq />
           </div>
         </div>
       </div>

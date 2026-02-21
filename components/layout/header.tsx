@@ -47,7 +47,7 @@ export function Header() {
       <header
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
-          isScrolled ? "bg-background/95 backdrop-blur-md shadow-sm" : "bg-transparent",
+          isScrolled ? "bg-background/95 backdrop-blur-md shadow-sm" : "bg-primary",
         )}
       >
         {/* Promo / Deals banner – from Shopify sale products, else default drop */}
@@ -79,7 +79,10 @@ export function Header() {
             {/* Mobile menu button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 -ml-2 text-foreground hover:text-gold transition-colors"
+              className={cn(
+                "md:hidden p-2 -ml-2 hover:text-gold transition-colors",
+                isScrolled ? "text-foreground" : "text-white",
+              )}
               aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -105,7 +108,7 @@ export function Header() {
                   href={item.href}
                   className={cn(
                     "text-sm font-medium tracking-wide uppercase transition-colors relative group",
-                    pathname === item.href ? "text-gold" : "text-foreground hover:text-gold",
+                    pathname === item.href ? "text-gold" : isScrolled ? "text-foreground hover:text-gold" : "text-white hover:text-gold",
                   )}
                 >
                   {item.name}
@@ -123,14 +126,20 @@ export function Header() {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setIsSearchOpen(true)}
-                className="p-2 text-foreground hover:text-gold transition-colors"
+                className={cn(
+                  "p-2 hover:text-gold transition-colors",
+                  isScrolled ? "text-foreground" : "text-white",
+                )}
                 aria-label="Search"
               >
                 <Search className="h-5 w-5" />
               </button>
               <button
                 onClick={() => setIsCartOpen(true)}
-                className="p-2 text-foreground hover:text-gold transition-colors relative"
+                className={cn(
+                  "p-2 hover:text-gold transition-colors relative",
+                  isScrolled ? "text-foreground" : "text-white",
+                )}
                 aria-label="Cart"
               >
                 <ShoppingBag className="h-5 w-5" />

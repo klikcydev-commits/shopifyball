@@ -29,12 +29,10 @@ export function TheRitual() {
             )}
             style={{ transitionDelay: "150ms" }}
           >
-            {/* Dot */}
             <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-gold" />
             <h3 className="text-xl font-semibold mb-3 text-gold">The Preparation</h3>
             <p className="text-muted-foreground leading-relaxed text-lg">
-              Hours before kickoff, the ritual begins. Packing the bag with precision. Each item in its place. The grip
-              socks folded just right. The bottle filled. The pouch ready with essentials. This is where focus starts.
+              Hours before kickoff, the ritual begins. Each item in its place. You get ready your way — head in the game. The moment you keep starts here.
             </p>
           </div>
 
@@ -48,9 +46,7 @@ export function TheRitual() {
             <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-gold" />
             <h3 className="text-xl font-semibold mb-3 text-gold">The Journey</h3>
             <p className="text-muted-foreground leading-relaxed text-lg">
-              The walk to the stadium. The train ride with friends. The drive through the city as lights turn on. Your
-              accessories carry you there — organized, ready, confident. Stadium-to-street isn't just a phrase. It's the
-              path.
+              The walk to the stadium. The drive as the lights turn on. You show up ready. What you take home is the moment — and that&apos;s what we build for.
             </p>
           </div>
 
@@ -64,8 +60,7 @@ export function TheRitual() {
             <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-gold" />
             <h3 className="text-xl font-semibold mb-3 text-gold">The Moment</h3>
             <p className="text-muted-foreground leading-relaxed text-lg">
-              Stadium lights. The roar builds. Your scarf raised. Everything you carry has led to this. LEMAH is there
-              with you — in the details you chose, the quality you trusted, the ritual you honored.
+              Stadium lights. The roar. Your scarf in the air. What you carry got you here — and the moment you keep lives on in our collectible frames: CR7, Mbappé, Ronaldo & Messi legends. The game, frozen in time.
             </p>
           </div>
         </div>

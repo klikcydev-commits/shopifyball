@@ -1,16 +1,46 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 import type { ShopifyProduct } from '@/lib/shopify/types'
+import type { Product } from '@/lib/shopify-types'
 import { adaptShopifyProduct } from '@/lib/shopify/adapter'
-import { ProductCard } from '@/components/products/product-card'
+import { ProductTile } from '@/components/products/product-tile'
+import { useCart } from '@/components/cart/cart-context'
+import { useToast } from '@/hooks/use-toast'
 
 interface ShopProductsClientProps {
   products: ShopifyProduct[]
 }
 
 export function AllProductsClient({ products }: ShopProductsClientProps) {
+  const [addingId, setAddingId] = useState<string | null>(null)
+  const { addToCart } = useCart()
+  const { toast } = useToast()
+
+  const handleAddToCart = async (e: React.MouseEvent, product: Product) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!product.variants?.length) {
+      toast({ title: 'Error', description: 'No variants available.', variant: 'destructive' })
+      return
+    }
+    const variant = product.variants.find((v) => v.availableForSale) ?? product.variants[0]
+    if (!variant?.availableForSale) {
+      toast({ title: 'Out of stock', description: 'This product is unavailable.', variant: 'destructive' })
+      return
+    }
+    setAddingId(product.id)
+    try {
+      await addToCart(product, variant)
+      toast({ title: 'Added to cart', description: product.title })
+    } catch {
+      toast({ title: 'Error', description: 'Failed to add to cart.', variant: 'destructive' })
+    } finally {
+      setAddingId(null)
+    }
+  }
+
   if (products.length === 0) {
     return (
       <div className="text-center py-16">
@@ -27,22 +57,26 @@ export function AllProductsClient({ products }: ShopProductsClientProps) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {products.map((product, index) => (
-        <ProductCardWithAnimation
+        <ProductTileWithAnimation
           key={product.id}
           product={product}
           index={index}
+          onAddToCart={handleAddToCart}
+          isAdding={addingId}
         />
       ))}
     </div>
   )
 }
 
-interface ProductCardWithAnimationProps {
+interface ProductTileWithAnimationProps {
   product: ShopifyProduct
   index: number
+  onAddToCart: (e: React.MouseEvent, product: Product) => void
+  isAdding: string | null
 }
 
-function ProductCardWithAnimation({ product, index }: ProductCardWithAnimationProps) {
+function ProductTileWithAnimation({ product, index, onAddToCart, isAdding }: ProductTileWithAnimationProps) {
   const ref = useRef(null)
   const isInView = useInView(ref, {
     once: true,
@@ -70,7 +104,13 @@ function ProductCardWithAnimation({ product, index }: ProductCardWithAnimationPr
         ease: [0.25, 0.46, 0.45, 0.94],
       }}
     >
-      <ProductCard product={adaptedProduct} />
+      <ProductTile
+        product={adaptedProduct}
+        aspect="square"
+        variant="light"
+        onAddToCart={onAddToCart}
+        isAdding={isAdding === adaptedProduct.id}
+      />
     </motion.div>
   )
 }

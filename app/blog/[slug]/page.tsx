@@ -75,7 +75,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const ogTitle = (meta?.ogTitle as string) || title
   const ogDescription = (meta?.ogDescription as string) || description
   const publishedTime = (meta?.datePublished as string) || post.data.date
-  const ogImage = (meta?.ogImage as string) ? (meta.ogImage as string).startsWith('http') ? (meta.ogImage as string) : `${baseUrl}${meta.ogImage}` : undefined
+  const metaOgImage = meta?.ogImage as string | undefined
+  const ogImage = metaOgImage
+    ? metaOgImage.startsWith('http')
+      ? metaOgImage
+      : `${baseUrl}${metaOgImage}`
+    : undefined
 
   let keywords = [
     ...(meta?.focusKeyword ? [meta.focusKeyword as string] : []),

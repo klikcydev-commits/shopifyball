@@ -3,7 +3,7 @@
  */
 
 import { getCollections, getProducts } from "@/lib/shopify"
-import { getBaseUrl, isNoIndexRoute } from "./build-metadata"
+import { getSitemapBaseUrl, isNoIndexRoute } from "./build-metadata"
 import fs from "fs"
 import { join } from "path"
 import matter from "gray-matter"
@@ -24,9 +24,15 @@ export function formatLastMod(date: Date): string {
   return date.toISOString().slice(0, 10)
 }
 
+/** Build absolute URL for sitemaps: base has no trailing slash, path must start with /. No double slashes. */
+function sitemapUrl(base: string, path: string): string {
+  const p = path.startsWith("/") ? path : `/${path}`
+  return `${base}${p}`
+}
+
 /** Sitemap index listing child sitemaps. */
 export function buildSitemapIndexXml(): string {
-  const baseUrl = getBaseUrl()
+  const base = getSitemapBaseUrl()
   const lastmod = formatLastMod(new Date())
   const sitemaps = [
     "sitemap-pages.xml",
@@ -37,7 +43,7 @@ export function buildSitemapIndexXml(): string {
   const entries = sitemaps
     .map(
       (path) =>
-        `  <sitemap>\n    <loc>${escapeXml(`${baseUrl}/${path}`)}</loc>\n    <lastmod>${lastmod}</lastmod>\n  </sitemap>`
+        `  <sitemap>\n    <loc>${escapeXml(sitemapUrl(base, `/${path}`))}</loc>\n    <lastmod>${lastmod}</lastmod>\n  </sitemap>`
     )
     .join("\n")
   return `${XML_HEADER}\n<sitemapindex ${SITEMAP_NS}>\n${entries}\n</sitemapindex>`
@@ -45,13 +51,14 @@ export function buildSitemapIndexXml(): string {
 
 /** Static pages only (exclude noindex e.g. /11kit). */
 export function buildPagesSitemapXml(): string {
-  const baseUrl = getBaseUrl()
+  const base = getSitemapBaseUrl()
   const lastmod = formatLastMod(new Date())
   const routes = ["", "/shop", "/about", "/contact", "/blog", "/search", "/products"]
   const entries = routes
     .filter((route) => !isNoIndexRoute(route || "/"))
     .map((route) => {
-      const loc = `${baseUrl}${route || ""}`
+      const path = route === "" ? "/" : route
+      const loc = sitemapUrl(base, path)
       const priority = route === "" ? "1.0" : "0.8"
       return `  <url>\n    <loc>${escapeXml(loc)}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>${priority}</priority>\n  </url>`
     })
@@ -61,7 +68,7 @@ export function buildPagesSitemapXml(): string {
 
 /** Collections: /search?collection={handle} */
 export async function buildCollectionsSitemapXml(): Promise<string> {
-  const baseUrl = getBaseUrl()
+  const base = getSitemapBaseUrl()
   const lastmod = formatLastMod(new Date())
   let collections: { handle: string }[] = []
   try {
@@ -71,14 +78,14 @@ export async function buildCollectionsSitemapXml(): Promise<string> {
   }
   const entries = collections.map(
     (c) =>
-      `  <url>\n    <loc>${escapeXml(`${baseUrl}/search?collection=${encodeURIComponent(c.handle)}`)}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>`
+      `  <url>\n    <loc>${escapeXml(sitemapUrl(base, `/search?collection=${encodeURIComponent(c.handle)}`))}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>`
   ).join("\n")
   return `${XML_HEADER}\n<urlset ${SITEMAP_NS}>\n${entries}\n</urlset>`
 }
 
 /** Products: /products/{handle}. Shopify doesn't return updatedAt in current query; use build time. */
 export async function buildProductsSitemapXml(): Promise<string> {
-  const baseUrl = getBaseUrl()
+  const base = getSitemapBaseUrl()
   const lastmod = formatLastMod(new Date())
   let products: { handle: string }[] = []
   try {
@@ -89,7 +96,7 @@ export async function buildProductsSitemapXml(): Promise<string> {
   }
   const entries = products.map(
     (p) =>
-      `  <url>\n    <loc>${escapeXml(`${baseUrl}/products/${encodeURIComponent(p.handle)}`)}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.9</priority>\n  </url>`
+      `  <url>\n    <loc>${escapeXml(sitemapUrl(base, `/products/${encodeURIComponent(p.handle)}`))}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.9</priority>\n  </url>`
   ).join("\n")
   return `${XML_HEADER}\n<urlset ${SITEMAP_NS}>\n${entries}\n</urlset>`
 }
@@ -128,12 +135,12 @@ export function getAllBlogSlugs(): { slug: string; lastmod: string }[] {
 }
 
 export function buildBlogsSitemapXml(): string {
-  const baseUrl = getBaseUrl()
+  const base = getSitemapBaseUrl()
   const slugs = getAllBlogSlugs()
   const entries = slugs
     .map(
       (r) =>
-        `  <url>\n    <loc>${escapeXml(`${baseUrl}/blog/${encodeURIComponent(r.slug)}`)}</loc>\n    <lastmod>${r.lastmod}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>`
+        `  <url>\n    <loc>${escapeXml(sitemapUrl(base, `/blog/${encodeURIComponent(r.slug)}`))}</loc>\n    <lastmod>${r.lastmod}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>`
     )
     .join("\n")
   return `${XML_HEADER}\n<urlset ${SITEMAP_NS}>\n${entries}\n</urlset>`

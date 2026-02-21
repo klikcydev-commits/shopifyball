@@ -27,8 +27,22 @@ const data = seoMapData as {
   products?: { descriptionSuffix?: string; titleTemplate?: string; secondaryKeywordTemplate?: string[] }
 }
 
+const DEFAULT_BASE = "https://lemah.store"
+
+function normalizeBaseUrl(url: string): string {
+  return url.replace(/\/+$/, "")
+}
+
+/** Canonical base URL (no trailing slash). Prefer seo-map so sitemaps/canonicals use lemah.store on any deployment. */
 export function getBaseUrl(): string {
-  return process.env.NEXT_PUBLIC_APP_URL || data.baseUrl || "https://lemah.store"
+  const url = data.baseUrl || process.env.NEXT_PUBLIC_APP_URL || DEFAULT_BASE
+  return normalizeBaseUrl(url)
+}
+
+/** Base URL used only for sitemaps. Always from seo-map (canonical domain), never from env. */
+export function getSitemapBaseUrl(): string {
+  const url = data.baseUrl || DEFAULT_BASE
+  return normalizeBaseUrl(url)
 }
 
 function getPageEntry(route: string) {

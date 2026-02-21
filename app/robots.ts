@@ -1,9 +1,9 @@
 import { MetadataRoute } from 'next'
-import { getSitemapBaseUrl } from '@/lib/seo/build-metadata'
+
+/** Canonical sitemap URL. Always lemah.store so GSC discovers pages regardless of deployment host. */
+const SITEMAP_URL = 'https://lemah.store/sitemap.xml'
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = getSitemapBaseUrl()
-
   return {
     rules: [
       {
@@ -12,7 +12,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/api/', '/admin/'],
       },
     ],
-    sitemap: `${baseUrl}/sitemap.xml`,
+    sitemap: SITEMAP_URL,
   }
 }
 

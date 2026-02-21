@@ -2,7 +2,7 @@
  * Helpers for generating categorized sitemaps. Used by route handlers.
  */
 
-import { getCollections, getProducts } from "@/lib/shopify"
+import { getCollections, getAllProducts } from "@/lib/shopify"
 import { getSitemapBaseUrl, isNoIndexRoute } from "./build-metadata"
 import fs from "fs"
 import { join } from "path"
@@ -83,16 +83,20 @@ export async function buildCollectionsSitemapXml(): Promise<string> {
   return `${XML_HEADER}\n<urlset ${SITEMAP_NS}>\n${entries}\n</urlset>`
 }
 
-/** Products: /products/{handle}. Shopify doesn't return updatedAt in current query; use build time. */
+/** Products: /products/{handle}. Paginates via getAllProducts. Logs errors for debugging in production. */
 export async function buildProductsSitemapXml(): Promise<string> {
   const base = getSitemapBaseUrl()
   const lastmod = formatLastMod(new Date())
   let products: { handle: string }[] = []
   try {
-    const result = await getProducts({ first: 1000 })
-    products = result.products ?? []
-  } catch {
-    // fallback empty
+    products = await getAllProducts()
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    const code = err instanceof Error ? (err as Error & { code?: string }).code : undefined
+    console.error("[sitemap-products] Shopify fetch failed:", msg, code ? `(code: ${code})` : "")
+    if (code === "MISSING_ENV_VARS") {
+      console.error("[sitemap-products] Set SHOPIFY_STORE_DOMAIN and SHOPIFY_STOREFRONT_ACCESS_TOKEN in Vercel Production env.")
+    }
   }
   const entries = products.map(
     (p) =>

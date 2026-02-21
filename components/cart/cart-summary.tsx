@@ -27,6 +27,8 @@ export function CartSummary({
   const subtotal = cart.subtotal ?? "0.00"
   const total = cart.totalAmount ?? cart.subtotal ?? "0.00"
   const hasDiscount = cart.discountAmount != null && Number.parseFloat(cart.discountAmount) > 0
+  const savingsAmount = cart.savingsAmount != null && Number.parseFloat(cart.savingsAmount) > 0 ? cart.savingsAmount : null
+  const hasFreeShipping = cart.hasFreeShippingOption === true
   const taxesDisplay = taxesLabel ?? (cart.totalTaxAmount != null ? formatPriceWithCurrency(cart.totalTaxAmount, currencyCode) : "Calculated at checkout")
 
   return (
@@ -37,13 +39,20 @@ export function CartSummary({
       </div>
       {hasDiscount && (
         <div className="flex justify-between text-sm text-green-600 dark:text-green-400">
-          <span>Discounts</span>
+          <span>Discounts applied</span>
           <span>-{formatPriceWithCurrency(cart.discountAmount!, currencyCode)}</span>
         </div>
       )}
+      {savingsAmount && (
+        <p className="text-xs text-green-600 dark:text-green-400 font-medium">
+          You save {formatPriceWithCurrency(savingsAmount, currencyCode)} on this order
+        </p>
+      )}
       <div className="flex justify-between text-sm">
         <span className="text-muted-foreground">Shipping</span>
-        <span className="text-muted-foreground">{shippingLabel}</span>
+        <span className={cn(hasFreeShipping && "text-green-600 dark:text-green-400 font-medium")}>
+          {hasFreeShipping ? "Free shipping" : shippingLabel}
+        </span>
       </div>
       <div className="flex justify-between text-sm">
         <span className="text-muted-foreground">Taxes</span>

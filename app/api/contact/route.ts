@@ -1,18 +1,19 @@
 import { NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
 
-const SMTP_HOST = process.env.SMTP_HOST || 'smtp.hostinger.com'
-const SMTP_PORT = Number(process.env.SMTP_PORT) || 587
-// Port 465 = SSL, Port 587 = STARTTLS (often works better on shared hosting)
-const SMTP_SECURE = SMTP_PORT === 465
 const SMTP_USER = process.env.SMTP_USER || 'contact@lemah.store'
 const SMTP_PASS = process.env.SMTP_PASS
 const CONTACT_TO = process.env.CONTACT_TO || SMTP_USER
-const CONTACT_BCC = process.env.CONTACT_BCC // Optional: BCC to another inbox (e.g. your Gmail) to ensure you get a copy
+const CONTACT_BCC = process.env.CONTACT_BCC
+const SMTP_PORT = Number(process.env.SMTP_PORT) || 587
+const USE_SSL = SMTP_PORT === 465
 
 export async function POST(request: Request) {
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[Contact] POST received. SMTP_USER set:', !!SMTP_USER, 'SMTP_PASS set:', !!SMTP_PASS, 'port:', SMTP_PORT)
+  }
   if (!SMTP_PASS) {
-    console.error('SMTP_PASS is not set')
+    console.error('[Contact] SMTP_PASS is not set')
     return NextResponse.json(
       { error: 'Email is not configured. Please set SMTP_PASS in environment.' },
       { status: 503 }
@@ -35,16 +36,10 @@ export async function POST(request: Request) {
   }
 
   const transporter = nodemailer.createTransport({
-    host: SMTP_HOST,
+    host: 'smtp.hostinger.com',
     port: SMTP_PORT,
-    secure: SMTP_SECURE,
-    auth: {
-      user: SMTP_USER,
-      pass: SMTP_PASS,
-    },
-    tls: {
-      rejectUnauthorized: true,
-    },
+    secure: USE_SSL,
+    auth: { user: SMTP_USER, pass: SMTP_PASS },
   })
 
   const mailSubject = subject?.trim() ? `[LeMah] ${subject.trim()}` : `[LeMah] Contact from ${name.trim()}`
@@ -69,22 +64,25 @@ export async function POST(request: Request) {
     if (CONTACT_BCC?.trim()) {
       mailOptions.bcc = CONTACT_BCC.trim()
     }
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[Contact] Sending to:', CONTACT_TO, 'from:', SMTP_USER, 'port:', SMTP_PORT)
+    }
     await transporter.sendMail(mailOptions)
     if (process.env.NODE_ENV === 'development') {
-      console.log('[Contact] Email sent to:', CONTACT_TO, CONTACT_BCC ? `(BCC: ${CONTACT_BCC})` : '')
+      console.log('[Contact] Email sent successfully to:', CONTACT_TO)
     }
     return NextResponse.json({ success: true })
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err)
     const code = err && typeof err === 'object' && 'code' in err ? (err as { code?: string }).code : undefined
-    console.error('Contact form send failed:', { message, code, err })
+    console.error('[Contact] Send failed:', message, 'code:', code)
 
     // Sanitized message for client (avoid leaking credentials)
     let userMessage = 'Failed to send message. Please try again or email us directly.'
     if (message.includes('Invalid login') || message.includes('authentication') || code === 'EAUTH') {
       userMessage = 'Email login failed. Please check SMTP username and password in server settings.'
     } else if (message.includes('ECONNREFUSED') || message.includes('ENOTFOUND')) {
-      userMessage = 'Could not reach the mail server. Try port 465 (SSL) or 587 (TLS) in server settings.'
+      userMessage = 'Could not reach the mail server. In .env.local set SMTP_PORT=465 and restart.'
     } else if (process.env.NODE_ENV === 'development') {
       userMessage = `SMTP error: ${message.slice(0, 100)}`
     }

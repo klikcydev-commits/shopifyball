@@ -6,10 +6,12 @@ import {
   useState,
   useCallback,
   useEffect,
+  useRef,
   type ReactNode,
 } from "react"
-import type { Cart, CartLine, Product, ProductVariant } from "@/lib/shopify-types"
+import type { Cart, Product, ProductVariant } from "@/lib/shopify-types"
 import { shopifyCartToCart } from "@/lib/shopify/cart-adapter"
+import { loadCartId, saveCartId } from "@/lib/cart-id-storage"
 import {
   getCartAction,
   addToCartAction,
@@ -18,19 +20,20 @@ import {
   applyDiscountCodesAction,
 } from "@/app/actions/cart-actions"
 
-const CART_ID_KEY = "lemah_cart_id"
-
 interface CartContextType {
   cart: Cart
   cartId: string | null
   isCartOpen: boolean
   setIsCartOpen: (open: boolean) => void
   isLoading: boolean
+  error: string | null
+  clearError: () => void
   addToCart: (product: Product, variant: ProductVariant, quantity?: number) => Promise<void>
   removeFromCart: (lineId: string) => Promise<void>
-  updateQuantity: (lineId: string, quantity: number) => Promise<void>
+  updateQuantity: (lineId: string, quantity: number) => void
   applyDiscountCode: (code: string) => Promise<{ success: boolean; error?: string }>
   removeDiscountCode: (code: string) => Promise<void>
+  refreshCart: () => Promise<void>
   clearCart: () => void
 }
 
@@ -45,22 +48,13 @@ const emptyCart: Cart = {
   checkoutUrl: "",
 }
 
-function loadCartId(): string | null {
-  if (typeof window === "undefined") return null
-  return localStorage.getItem(CART_ID_KEY)
-}
-
-function saveCartId(id: string | null) {
-  if (typeof window === "undefined") return
-  if (id) localStorage.setItem(CART_ID_KEY, id)
-  else localStorage.removeItem(CART_ID_KEY)
-}
-
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<Cart>(emptyCart)
   const [cartId, setCartIdState] = useState<string | null>(null)
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const updateQtyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const setCartFromShopify = useCallback((shopifyCart: { id: string; checkoutUrl: string; cost?: { subtotalAmount?: { amount: string } }; lines?: { edges: unknown[] } } | null) => {
     if (!shopifyCart) {
@@ -74,6 +68,24 @@ export function CartProvider({ children }: { children: ReactNode }) {
     saveCartId(shopifyCart.id)
   }, [])
 
+  const refreshCart = useCallback(async () => {
+    const id = loadCartId()
+    if (!id) return
+    try {
+      const shopifyCart = await getCartAction(id)
+      if (shopifyCart) setCartFromShopify(shopifyCart)
+      else {
+        saveCartId(null)
+        setCartIdState(null)
+        setCart(emptyCart)
+      }
+    } catch {
+      saveCartId(null)
+      setCartIdState(null)
+      setCart(emptyCart)
+    }
+  }, [setCartFromShopify])
+
   useEffect(() => {
     const id = loadCartId()
     if (!id) return
@@ -81,19 +93,28 @@ export function CartProvider({ children }: { children: ReactNode }) {
     getCartAction(id)
       .then((shopifyCart) => {
         if (shopifyCart) setCartFromShopify(shopifyCart)
-        else saveCartId(null)
+        else {
+          saveCartId(null)
+          setCartIdState(null)
+        }
       })
-      .catch(() => saveCartId(null))
+      .catch(() => {
+        saveCartId(null)
+        setCartIdState(null)
+      })
   }, [setCartFromShopify])
 
   const addToCart = useCallback(
     async (product: Product, variant: ProductVariant, quantity = 1) => {
+      setError(null)
       setIsLoading(true)
       try {
         const shopifyCart = await addToCartAction(cartId, variant.id, quantity)
         if (shopifyCart) setCartFromShopify(shopifyCart)
         setIsCartOpen(true)
       } catch (err) {
+        const message = err instanceof Error ? err.message : "Could not add to cart"
+        setError(message)
         console.error("Add to cart failed:", err)
         throw err
       } finally {
@@ -106,11 +127,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const removeFromCart = useCallback(
     async (lineId: string) => {
       if (!cartId) return
+      setError(null)
       setIsLoading(true)
       try {
         const shopifyCart = await removeFromCartAction(cartId, lineId)
         if (shopifyCart) setCartFromShopify(shopifyCart)
       } catch (err) {
+        const message = err instanceof Error ? err.message : "Could not remove item"
+        setError(message)
         console.error("Remove from cart failed:", err)
         throw err
       } finally {
@@ -121,24 +145,30 @@ export function CartProvider({ children }: { children: ReactNode }) {
   )
 
   const updateQuantity = useCallback(
-    async (lineId: string, quantity: number) => {
+    (lineId: string, quantity: number) => {
       if (!cartId) return
       if (quantity < 1) {
-        await removeFromCart(lineId)
+        removeFromCart(lineId)
         return
       }
-      setIsLoading(true)
-      try {
-        const shopifyCart = await updateCartAction(cartId, lineId, quantity)
-        if (shopifyCart) setCartFromShopify(shopifyCart)
-      } catch (err) {
-        console.error("Update quantity failed:", err)
-        throw err
-      } finally {
-        setIsLoading(false)
-      }
+      setError(null)
+      if (updateQtyTimeoutRef.current) clearTimeout(updateQtyTimeoutRef.current)
+      updateQtyTimeoutRef.current = setTimeout(async () => {
+        setIsLoading(true)
+        try {
+          const shopifyCart = await updateCartAction(cartId, lineId, quantity)
+          if (shopifyCart) setCartFromShopify(shopifyCart)
+        } catch (err) {
+          const message = err instanceof Error ? err.message : "Could not update quantity"
+          setError(message)
+          await refreshCart()
+        } finally {
+          setIsLoading(false)
+          updateQtyTimeoutRef.current = null
+        }
+      }, 400)
     },
-    [cartId, removeFromCart, setCartFromShopify]
+    [cartId, removeFromCart, setCartFromShopify, refreshCart]
   )
 
   const applyDiscountCode = useCallback(
@@ -189,7 +219,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setCart(emptyCart)
     setCartIdState(null)
     saveCartId(null)
+    setError(null)
   }, [])
+
+  const clearError = useCallback(() => setError(null), [])
 
   return (
     <CartContext.Provider
@@ -199,11 +232,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
         isCartOpen,
         setIsCartOpen,
         isLoading,
+        error,
+        clearError,
         addToCart,
         removeFromCart,
         updateQuantity,
         applyDiscountCode,
         removeDiscountCode,
+        refreshCart,
         clearCart,
       }}
     >

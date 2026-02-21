@@ -117,7 +117,8 @@ export async function getCollections(first: number = 12): Promise<ShopifyCollect
   return res.body.data.collections.edges.map((edge) => edge.node)
 }
 
-export async function createCart(variantId: string, quantity: number = 1): Promise<ShopifyCart | null> {
+/** Create a cart with one line (fallback when empty cart is not supported). */
+export async function createCartWithLine(variantId: string, quantity: number = 1): Promise<ShopifyCart | null> {
   const res = await shopifyFetch<{
     data: {
       cartCreate: {
@@ -230,11 +231,17 @@ export async function removeFromCart(cartId: string, lineId: string): Promise<Sh
     cache: 'no-store',
   })
 
-  if (res.body.data.cartLinesRemove.userErrors.length > 0) {
-    throw new Error(res.body.data.cartLinesRemove.userErrors[0].message)
+  const payload = res.body.data.cartLinesRemove
+  if (payload.userErrors.length > 0) {
+    const msg = payload.userErrors[0].message ?? ""
+    // Line already removed or cart stale — refetch cart so UI matches server
+    if (msg.toLowerCase().includes("does not exist") || msg.toLowerCase().includes("not found")) {
+      return getCart(cartId)
+    }
+    throw new Error(msg)
   }
 
-  return res.body.data.cartLinesRemove.cart
+  return payload.cart
 }
 
 export async function getCart(cartId: string): Promise<ShopifyCart | null> {

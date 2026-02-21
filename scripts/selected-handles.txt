@@ -1,0 +1,3 @@
+# One product handle per line (for sale_selected.csv).
+# Example: products tagged "Best Deals" — export from Shopify and paste handles here.
+# Lines starting with # are ignored.

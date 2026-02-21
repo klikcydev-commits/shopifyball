@@ -11,7 +11,7 @@ export function ContactFaq() {
   const [openIndex, setOpenIndex] = useState<number | null>(0)
 
   return (
-    <section ref={ref} className="py-20 md:py-32 bg-background" id="faq">
+    <section ref={ref} className="py-20 md:py-32 bg-background" id="faq" suppressHydrationWarning>
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div
           className={cn(

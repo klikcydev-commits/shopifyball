@@ -73,6 +73,10 @@ export interface Cart {
   discountCodes?: CartDiscountCode[]
   /** Total discount amount from Shopify discountAllocations. */
   discountAmount?: string
+  /** Savings = subtotal - total (when discounts applied). For display. */
+  savingsAmount?: string
+  /** True when at least one delivery option has zero cost (e.g. free shipping). */
+  hasFreeShippingOption?: boolean
   /** Tax amount from Shopify if available; otherwise "Calculated at checkout". */
   totalTaxAmount?: string | null
 }

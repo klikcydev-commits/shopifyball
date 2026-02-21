@@ -11,7 +11,7 @@ import { useCart } from "@/components/cart/cart-context"
 import { usePromotions } from "@/components/cart/promotions-context"
 import { useToast } from "@/hooks/use-toast"
 import { cn, formatPriceWithCurrency } from "@/lib/utils"
-import { getSaleState } from "@/lib/sale-helpers"
+import { getCardPricing, getSaleState } from "@/lib/sale-helpers"
 import { QuickViewModal } from "@/components/products/quick-view-modal"
 
 interface ProductCardProps {
@@ -67,8 +67,9 @@ export function ProductCard({ product, size = "default", reviewCount }: ProductC
         currencyCode: displayVariant.currencyCode ?? product.currencyCode ?? "AED",
       }
     : { price: product.price, compareAtPrice: product.compareAtPrice, currencyCode: product.currencyCode ?? "AED" }
+  const cardPricing = getCardPricing(variantForSale)
   const saleState = getSaleState(variantForSale)
-  const onSale = saleState.isOnSale
+  const onSale = cardPricing.isSale
 
   const imageUrl = product.images?.[0]?.url || "/placeholder.svg"
   const category = product.category || product.tags?.[0] || "Product"
@@ -90,12 +91,17 @@ export function ProductCard({ product, size = "default", reviewCount }: ProductC
         >
           {/* Badge – top right */}
           <div className="absolute top-[15px] right-[15px] z-10 flex flex-wrap justify-end gap-1.5">
+            {!promosLoading && hasActivePromos && (
+              <span className="product-badge rounded-xl bg-green-600 text-white px-2.5 py-1 text-xs font-semibold uppercase tracking-wider shadow-lg">
+                Deal
+              </span>
+            )}
             {(product.tags?.includes("11kit") || product.tags?.includes("premium")) && (
               <span className="product-badge rounded-xl bg-gradient-to-br from-zinc-900 to-zinc-800 text-white px-3 py-1.5 text-xs font-semibold uppercase tracking-wider shadow-lg">
                 Premium
               </span>
             )}
-            {!onSale && !product.tags?.includes("11kit") && !product.tags?.includes("premium") && product.tags?.[0] && (
+            {!onSale && !product.tags?.includes("11kit") && !product.tags?.includes("premium") && !hasActivePromos && product.tags?.[0] && (
               <span className="product-badge rounded-xl bg-gradient-to-br from-zinc-900 to-zinc-800 text-white px-3 py-1.5 text-xs font-semibold uppercase tracking-wider shadow-lg">
                 {product.tags[0]}
               </span>
@@ -177,26 +183,23 @@ export function ProductCard({ product, size = "default", reviewCount }: ProductC
             )}
 
             <div className="product-bottom">
-              {saleState.isOnSale ? (
+              {cardPricing.isSale ? (
                 <div className="product-price flex flex-col gap-0.5">
-                  <del className="price-was block text-sm text-zinc-500 dark:text-zinc-400">
-                    {saleState.compareAtText}
-                  </del>
-                  <span className="price-now font-bold text-zinc-900 dark:text-zinc-100 text-xl">
-                    {saleState.priceText}
+                  <span className="line-through opacity-70 text-sm text-zinc-500 dark:text-zinc-400">
+                    {formatPriceWithCurrency(String(cardPricing.compare), cardPricing.currencyCode)}
                   </span>
-                  <span className="text-xs text-green-600 dark:text-green-400 font-medium">
-                    Save {saleState.saveAmountText} ({saleState.savePercentText})
+                  <span className="font-semibold text-xl text-zinc-900 dark:text-zinc-100">
+                    {formatPriceWithCurrency(String(cardPricing.price), cardPricing.currencyCode)}
                   </span>
                   {saleState.percentOff > 0 && (
-                    <span className="text-xs font-semibold text-red-600 dark:text-red-400">
-                      {saleState.percentOff}% OFF
+                    <span className="text-xs text-green-600 dark:text-green-400 font-medium">
+                      Save {saleState.saveAmountText} ({saleState.savePercentText})
                     </span>
                   )}
                 </div>
               ) : (
                 <span className="product-price font-semibold text-xl text-zinc-900 dark:text-zinc-100">
-                  {saleState.priceText}
+                  {formatPriceWithCurrency(String(cardPricing.price), cardPricing.currencyCode)}
                 </span>
               )}
               {!promosLoading && hasActivePromos && (

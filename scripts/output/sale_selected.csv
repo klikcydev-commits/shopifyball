@@ -1,0 +1,2 @@
+Handle,Title,Option1 Name,Option1 Value,Price,Compare-at price
+# Add handles to sale-csv-config.ts SALE_SELECTED_HANDLES or scripts/selected-handles.txt

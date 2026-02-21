@@ -14,6 +14,39 @@ export type SaleInfo =
   | { isSale: false }
   | { isSale: true; price: number; compare: number; percentOff: number }
 
+/** Result of getCardPricing(): for product card / quick view before-after display. */
+export type CardPricing =
+  | { isSale: false; price: number; currencyCode: string }
+  | { isSale: true; price: number; compare: number; currencyCode: string }
+
+/**
+ * Card pricing from variant (Storefront API: price.amount, compareAtPrice.amount).
+ * Use on every product card. A product is ON SALE iff compareAtPrice exists and compareAtPrice.amount > price.amount.
+ */
+export function getCardPricing(variant: VariantForSale | null | undefined): CardPricing {
+  const priceAmount =
+    variant == null
+      ? "0"
+      : typeof variant.price === "object" && variant.price != null
+        ? variant.price.amount
+        : String(variant.price ?? "0")
+  const compareAmount =
+    variant?.compareAtPrice == null || variant.compareAtPrice === ""
+      ? null
+      : typeof variant.compareAtPrice === "object"
+        ? variant.compareAtPrice.amount
+        : String(variant.compareAtPrice)
+  const currencyCode =
+    (variant && typeof variant.price === "object" && variant.price?.currencyCode) ||
+    variant?.currencyCode ||
+    "AED"
+  const price = Number(priceAmount)
+  const compare = compareAmount != null && compareAmount !== "" ? Number(compareAmount) : null
+  const isSale = compare !== null && !Number.isNaN(compare) && !Number.isNaN(price) && compare > price
+  if (isSale) return { isSale: true, price, compare, currencyCode }
+  return { isSale: false, price, currencyCode }
+}
+
 /**
  * Single source of truth: variant is on sale iff compareAtPrice exists and compare > price.
  * Accepts Storefront API shape (price.amount, compareAtPrice.amount) or adapted flat strings.

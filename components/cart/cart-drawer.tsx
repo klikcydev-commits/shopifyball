@@ -22,6 +22,8 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
     applyDiscountCode,
     removeDiscountCode,
     isLoading,
+    error,
+    clearError,
   } = useCart()
   const { hasFreeShipping } = usePromotions()
 
@@ -57,6 +59,20 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
               <X className="h-5 w-5" />
             </button>
           </div>
+
+          {error && (
+            <div className="mx-4 mt-2 rounded-lg bg-destructive/10 border border-destructive/30 px-3 py-2 flex items-center justify-between gap-2">
+              <p className="text-sm text-destructive">{error}</p>
+              <button
+                type="button"
+                onClick={clearError}
+                className="text-destructive hover:underline text-xs shrink-0"
+                aria-label="Dismiss"
+              >
+                Dismiss
+              </button>
+            </div>
+          )}
 
           {cart.lines.length === 0 ? (
             <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
@@ -206,9 +222,25 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                 />
 
                 {hasFreeShipping && (
-                  <p className="text-xs text-muted-foreground">
-                    Free shipping offer may apply at checkout.
-                  </p>
+                  <div className="space-y-1">
+                    {cart.totalQuantity >= 2 ? (
+                      <div className="rounded-lg border border-green-500/30 bg-green-500/10 px-3 py-2">
+                        <p className="text-sm font-semibold text-green-700 dark:text-green-400">
+                          Free delivery unlocked
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2">
+                        <p className="text-sm font-semibold text-amber-800 dark:text-amber-400">
+                          Add {2 - cart.totalQuantity} more item
+                          {2 - cart.totalQuantity > 1 ? "s" : ""} for free delivery
+                        </p>
+                        <p className="text-xs text-amber-700/80 dark:text-amber-400/80 mt-0.5">
+                          Free shipping on orders with 2+ items
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 )}
 
                 <CartSummary cart={cart} />

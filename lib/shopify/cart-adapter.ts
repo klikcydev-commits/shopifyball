@@ -60,6 +60,15 @@ export function shopifyCartToCart(shopifyCart: ShopifyCart): Cart {
   const discountAmount = discountAllocations
     .reduce((sum, a) => sum + Number.parseFloat(a.discountedAmount.amount), 0)
     .toFixed(2)
+  const subtotalNum = Number.parseFloat(subtotal)
+  const totalNum = Number.parseFloat(totalAmount)
+  const savingsAmount = subtotalNum > totalNum ? (subtotalNum - totalNum).toFixed(2) : undefined
+  const deliveryEdges = shopifyCart.deliveryGroups?.edges ?? []
+  const hasFreeShippingOption = deliveryEdges.some(({ node }) =>
+    (node?.deliveryOptions ?? []).some((opt: { estimatedCost?: { amount?: string } }) =>
+      Number.parseFloat(opt?.estimatedCost?.amount ?? '1') === 0
+    )
+  )
   const discountCodes: CartDiscountCode[] = (shopifyCart.discountCodes ?? []).map((d) => ({
     code: d.code,
     applicable: d.applicable,
@@ -79,6 +88,8 @@ export function shopifyCartToCart(shopifyCart: ShopifyCart): Cart {
     checkoutUrl: shopifyCart.checkoutUrl ?? '',
     discountCodes: discountCodes.length > 0 ? discountCodes : undefined,
     discountAmount: Number.parseFloat(discountAmount) > 0 ? discountAmount : undefined,
+    savingsAmount,
+    hasFreeShippingOption: hasFreeShippingOption || undefined,
     totalTaxAmount: totalTaxAmount ?? undefined,
   }
 }

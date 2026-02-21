@@ -31,7 +31,7 @@ export function ContactNewsletter() {
           {isSubmitted ? (
             <p className="text-gold font-medium animate-in fade-in zoom-in duration-300">Thanks for subscribing!</p>
           ) : (
-            <form onSubmit={handleSubmit} className="flex gap-3 max-w-md mx-auto">
+            <form onSubmit={handleSubmit} className="flex gap-3 max-w-md mx-auto" suppressHydrationWarning>
               <input
                 type="email"
                 value={email}

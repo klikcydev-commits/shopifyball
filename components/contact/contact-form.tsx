@@ -25,6 +25,7 @@ export function ContactForm() {
     message: "",
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
@@ -42,10 +43,33 @@ export function ContactForm() {
     if (!validateForm()) return
 
     setIsSubmitting(true)
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    setIsSubmitting(false)
-    setIsSubmitted(true)
+    setSubmitError(null)
+    try {
+      const subjectLabel = subjects.find((s) => s.value === formData.subject)?.label ?? formData.subject
+      const messageBody = formData.orderNumber.trim()
+        ? `${formData.message.trim()}\n\nOrder #: ${formData.orderNumber.trim()}`
+        : formData.message.trim()
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          subject: subjectLabel,
+          message: messageBody,
+        }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        setSubmitError(data.error ?? 'Something went wrong. Please try again.')
+        return
+      }
+      setIsSubmitted(true)
+    } catch {
+      setSubmitError('Failed to send. Please try again or email us directly.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleChange = (field: string, value: string) => {
@@ -75,6 +99,7 @@ export function ContactForm() {
             <button
               onClick={() => {
                 setIsSubmitted(false)
+                setSubmitError(null)
                 setFormData({ name: "", email: "", subject: "", orderNumber: "", message: "" })
               }}
               className="mt-8 text-sm text-gold hover:text-gold-dark transition-colors animate-in fade-in duration-500 delay-300"
@@ -107,6 +132,7 @@ export function ContactForm() {
             isRevealed ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8",
           )}
           style={{ transitionDelay: "150ms" }}
+          suppressHydrationWarning
         >
           <div className="space-y-6">
             {/* Name */}
@@ -206,6 +232,11 @@ export function ContactForm() {
               {errors.message && <p className="mt-1 text-sm text-destructive">{errors.message}</p>}
             </div>
 
+            {submitError && (
+              <p className="text-sm text-destructive bg-destructive/10 border border-destructive/30 rounded-lg px-4 py-3">
+                {submitError}
+              </p>
+            )}
             {/* Submit */}
             <button
               type="submit"

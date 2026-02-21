@@ -307,6 +307,17 @@ export const createCartMutation = `
             currencyCode
           }
         }
+        deliveryGroups(first: 5) {
+          edges {
+            node {
+              deliveryOptions {
+                handle
+                title
+                estimatedCost { amount currencyCode }
+              }
+            }
+          }
+        }
         lines(first: 100) {
           edges {
             node {
@@ -382,6 +393,17 @@ export const addToCartMutation = `
           totalTaxAmount {
             amount
             currencyCode
+          }
+        }
+        deliveryGroups(first: 5) {
+          edges {
+            node {
+              deliveryOptions {
+                handle
+                title
+                estimatedCost { amount currencyCode }
+              }
+            }
           }
         }
         lines(first: 100) {
@@ -461,6 +483,17 @@ export const updateCartMutation = `
             currencyCode
           }
         }
+        deliveryGroups(first: 5) {
+          edges {
+            node {
+              deliveryOptions {
+                handle
+                title
+                estimatedCost { amount currencyCode }
+              }
+            }
+          }
+        }
         lines(first: 100) {
           edges {
             node {
@@ -536,6 +569,17 @@ export const removeFromCartMutation = `
           totalTaxAmount {
             amount
             currencyCode
+          }
+        }
+        deliveryGroups(first: 5) {
+          edges {
+            node {
+              deliveryOptions {
+                handle
+                title
+                estimatedCost { amount currencyCode }
+              }
+            }
           }
         }
         lines(first: 100) {
@@ -622,6 +666,20 @@ export const getCartQuery = `
           currencyCode
         }
       }
+      deliveryGroups(first: 5) {
+        edges {
+          node {
+            deliveryOptions {
+              handle
+              title
+              estimatedCost {
+                amount
+                currencyCode
+              }
+            }
+          }
+        }
+      }
       lines(first: 100) {
         edges {
           node {
@@ -684,6 +742,17 @@ export const cartDiscountCodesUpdateMutation = `
           totalAmount { amount currencyCode }
           subtotalAmount { amount currencyCode }
           totalTaxAmount { amount currencyCode }
+        }
+        deliveryGroups(first: 5) {
+          edges {
+            node {
+              deliveryOptions {
+                handle
+                title
+                estimatedCost { amount currencyCode }
+              }
+            }
+          }
         }
         lines(first: 100) {
           edges {

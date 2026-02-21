@@ -129,6 +129,17 @@ export interface ShopifyCart {
   discountAllocations?: Array<{
     discountedAmount: { amount: string; currencyCode: string }
   }>
+  deliveryGroups?: {
+    edges: Array<{
+      node: {
+        deliveryOptions: Array<{
+          handle: string
+          title: string
+          estimatedCost: { amount: string; currencyCode: string }
+        }>
+      }
+    }>
+  }
   lines: {
     edges: Array<{
       node: {

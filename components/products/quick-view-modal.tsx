@@ -9,9 +9,8 @@ import type { Product, ProductVariant } from "@/lib/shopify-types"
 import { useCart } from "@/components/cart/cart-context"
 import { usePromotions } from "@/components/cart/promotions-context"
 import { useToast } from "@/hooks/use-toast"
-import { cn, formatPrice } from "@/lib/utils"
-import { getSaleState } from "@/lib/sale-helpers"
-import { ProductPrice } from "./product-price"
+import { cn, formatPrice, formatPriceWithCurrency } from "@/lib/utils"
+import { getCardPricing, getSaleState } from "@/lib/sale-helpers"
 
 interface QuickViewModalProps {
   product: Product
@@ -146,8 +145,9 @@ export function QuickViewModal({ product, open, onClose, triggerRef }: QuickView
         currencyCode: selectedVariant.currencyCode ?? product.currencyCode ?? "AED",
       }
     : null
+  const cardPricing = getCardPricing(variantForSale)
   const saleState = getSaleState(variantForSale)
-  const currencyCode = saleState.currencyCode
+  const currencyCode = cardPricing.currencyCode
   const optionName = variants[0]?.selectedOptions?.[0]?.name ?? "Option"
   const canAddToCart = selectedVariant && selectedVariant.availableForSale
 
@@ -209,20 +209,32 @@ export function QuickViewModal({ product, open, onClose, triggerRef }: QuickView
 
             {selectedVariant ? (
               <div className="mb-4">
-                {saleState.isOnSale && (
+                {cardPricing.isSale && (
                   <span className="inline-block rounded-md bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 text-xs font-semibold uppercase tracking-wider px-2.5 py-1 mb-2">
                     Sale
                   </span>
                 )}
-                <ProductPrice
-                  price={selectedVariant.price}
-                  compareAtPrice={selectedVariant.compareAtPrice ?? undefined}
-                  currencyCode={currencyCode}
-                  showWasNow
-                  showPercentOff
-                  showSavings
-                  size="default"
-                />
+                <div className="flex flex-col gap-0.5">
+                  {cardPricing.isSale ? (
+                    <>
+                      <span className="line-through opacity-70 text-sm text-zinc-500 dark:text-zinc-400">
+                        {formatPriceWithCurrency(String(cardPricing.compare), currencyCode)}
+                      </span>
+                      <span className="font-semibold text-xl text-zinc-900 dark:text-zinc-100">
+                        {formatPriceWithCurrency(String(cardPricing.price), currencyCode)}
+                      </span>
+                      {saleState.percentOff > 0 && (
+                        <span className="text-xs text-green-600 dark:text-green-400 font-medium">
+                          Save {saleState.saveAmountText} ({saleState.savePercentText})
+                        </span>
+                      )}
+                    </>
+                  ) : (
+                    <span className="font-semibold text-xl text-zinc-900 dark:text-zinc-100">
+                      {formatPriceWithCurrency(String(cardPricing.price), currencyCode)}
+                    </span>
+                  )}
+                </div>
                 {!promosLoading && hasActivePromos && (
                   <p className="text-xs text-muted-foreground mt-1">
                     Deal available at checkout

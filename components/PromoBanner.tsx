@@ -24,7 +24,7 @@ export async function PromoBanner() {
         {hasFreeShipping && (
           <span className="inline-flex items-center gap-1 rounded-full bg-white/20 px-2.5 py-0.5 text-xs font-medium">
             <Truck className="h-3 w-3" aria-hidden />
-            Free Shipping
+            Free Shipping on 2+ items!
           </span>
         )}
       </div>

@@ -36,12 +36,6 @@ const kitFaqs = [
     answer:
       "Premium gift packaging includes a custom LEMAH box with formation-style layout, tissue paper, ribbon closure, and a personalized note card. Available at checkout.",
   },
-  {
-    id: 6,
-    question: "How do returns work for 11Kit purchases?",
-    answer:
-      "Each item in your 11Kit follows our standard 30-day return policy. Items must be unworn with original tags. You can return individual items without returning the full kit.",
-  },
 ]
 
 export function KitFaq() {

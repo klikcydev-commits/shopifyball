@@ -20,7 +20,6 @@ const footerLinks = {
   ],
   support: [
     { name: "Contact", href: "/contact" },
-    { name: "Shipping & Returns", href: "/contact#faq" },
     { name: "FAQs", href: "/contact#faq" },
     { name: "Size Guide", href: "/contact" },
   ],
@@ -28,7 +27,6 @@ const footerLinks = {
     { name: "About", href: "/about" },
     { name: "Our Story", href: "/about" },
     { name: "Sustainability", href: "/about#sustainability" },
-    { name: "Sitemap", href: "/sitemap.xml" },
   ],
 }
 

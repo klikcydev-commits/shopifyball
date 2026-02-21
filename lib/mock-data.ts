@@ -462,12 +462,6 @@ export const faqs = [
       "Standard shipping takes 5-7 business days. Express shipping (2-3 days) is available at checkout. Free shipping on orders over €75.",
   },
   {
-    id: 3,
-    question: "What is your return policy?",
-    answer:
-      "We offer 30-day returns on all unworn items with original tags. Simply initiate a return through your account or contact support.",
-  },
-  {
     id: 4,
     question: "Can I customize my 11Kit?",
     answer:

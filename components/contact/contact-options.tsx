@@ -14,7 +14,7 @@ const options = [
   {
     icon: Package,
     title: "Order Help",
-    description: "Tracking, returns, exchanges",
+    description: "Tracking and order support",
     email: "orders@lemah.co",
   },
   {

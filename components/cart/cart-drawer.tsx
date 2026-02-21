@@ -1,9 +1,9 @@
 "use client"
 
 import Image from "next/image"
-import { X, Minus, Plus, ShoppingBag } from "lucide-react"
+import Link from "next/link"
+import { X, Minus, Plus, ShoppingBag, Truck } from "lucide-react"
 import { useCart } from "./cart-context"
-import { usePromotions } from "./promotions-context"
 import { CartSummary } from "./cart-summary"
 import { CartDiscountCodeInput } from "./cart-discount-code"
 import { cn, formatPriceWithCurrency } from "@/lib/utils"
@@ -25,7 +25,6 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
     error,
     clearError,
   } = useCart()
-  const { hasFreeShipping } = usePromotions()
 
   const currencyCode =
     cart.currencyCode ?? cart.lines[0]?.variant?.currencyCode ?? "AED"
@@ -221,27 +220,45 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                   isLoading={isLoading}
                 />
 
-                {hasFreeShipping && (
-                  <div className="space-y-1">
-                    {cart.totalQuantity >= 2 ? (
-                      <div className="rounded-lg border border-green-500/30 bg-green-500/10 px-3 py-2">
-                        <p className="text-sm font-semibold text-green-700 dark:text-green-400">
+                {/* Shipping incentive: always show to attract customers (2 items = free delivery) */}
+                <div className="rounded-xl border overflow-hidden">
+                  {cart.totalQuantity >= 2 ? (
+                    <div className="flex items-center gap-3 bg-green-500/15 border-green-500/40 border px-4 py-3">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-green-500/20">
+                        <Truck className="h-5 w-5 text-green-600 dark:text-green-400" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-green-800 dark:text-green-300">
                           Free delivery unlocked
                         </p>
+                        <p className="text-xs text-green-700/80 dark:text-green-400/80">
+                          You qualify for free shipping across UAE
+                        </p>
                       </div>
-                    ) : (
-                      <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2">
-                        <p className="text-sm font-semibold text-amber-800 dark:text-amber-400">
-                          Add {2 - cart.totalQuantity} more item
-                          {2 - cart.totalQuantity > 1 ? "s" : ""} for free delivery
+                    </div>
+                  ) : (
+                    <Link
+                      href="/shop"
+                      onClick={onClose}
+                      className="flex items-center gap-3 bg-amber-500/10 border-amber-500/40 border px-4 py-3 hover:bg-amber-500/15 transition-colors"
+                    >
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-500/20">
+                        <Truck className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                      </div>
+                      <div className="flex-1 text-left">
+                        <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">
+                          Add {2 - cart.totalQuantity} more item for free delivery
                         </p>
                         <p className="text-xs text-amber-700/80 dark:text-amber-400/80 mt-0.5">
-                          Free shipping on orders with 2+ items
+                          Free shipping on 2+ items · Dubai & UAE
                         </p>
                       </div>
-                    )}
-                  </div>
-                )}
+                      <span className="text-xs font-medium text-amber-700 dark:text-amber-400 shrink-0">
+                        Shop now →
+                      </span>
+                    </Link>
+                  )}
+                </div>
 
                 <CartSummary cart={cart} />
 

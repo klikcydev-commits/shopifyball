@@ -4,19 +4,13 @@ import { getProducts, getCollections } from '@/lib/shopify'
 import { AllProductsClient } from '@/components/shop/shop-products-client'
 import { ShopCollections } from '@/components/shop/shop-collections'
 import { ShopFaq } from '@/components/shop/shop-faq'
+import { UaeDeliveryAreas } from '@/components/seo/UaeDeliveryAreas'
+import { getPageMetadata } from '@/lib/seo/build-metadata'
 import type { Metadata } from 'next'
 
 export const dynamic = 'force-dynamic'
 
-export const metadata: Metadata = {
-  title: 'Football Gifts & Accessories Dubai | Shop Lemah',
-  description:
-    'Browse football gifts, accessories, and wall art in Dubai & UAE. Ronaldo, Messi, Real Madrid gifts. Fast UAE delivery.',
-  openGraph: {
-    title: 'Football Gifts & Accessories Dubai | Shop Lemah',
-    description: 'Football gifts, accessories, wall art. Dubai & UAE delivery.',
-  },
-}
+export const metadata: Metadata = getPageMetadata('/shop')
 
 export default async function ShopPage() {
   let products: Awaited<ReturnType<typeof getProducts>>['products'] = []
@@ -129,6 +123,9 @@ export default async function ShopPage() {
             )}
 
             <ShopFaq />
+            <div className="mt-12">
+              <UaeDeliveryAreas />
+            </div>
           </div>
         </section>
       </main>

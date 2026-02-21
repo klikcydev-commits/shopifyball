@@ -8,28 +8,13 @@ import { OriginStory } from "@/components/about/origin-story"
 import { MaterialsCraft } from "@/components/about/materials-craft"
 import { Sustainability } from "@/components/about/sustainability"
 import { AboutCta } from "@/components/about/about-cta"
+import { UaeDeliveryAreas } from "@/components/seo/UaeDeliveryAreas"
+import { getPageMetadata } from "@/lib/seo/build-metadata"
 import { getProducts } from "@/lib/shopify"
 import { adaptShopifyProduct } from "@/lib/shopify/adapter"
 import type { Product } from "@/lib/shopify-types"
 
-export const metadata: Metadata = {
-  title: "About Lemah | Collectible Football Frames & Gifts Dubai UAE",
-  description:
-    "Premium collectible frames UAE — CR7, Mbappé, Ronaldo & Messi. Football gifts Dubai. UAE delivery, gift-ready packaging. Discover LEMAH.",
-  keywords: [
-    "collectible frames UAE",
-    "football gifts Dubai",
-    "football accessories UAE",
-    "UAE delivery",
-    "gift-ready packaging",
-    "LEMAH",
-  ],
-  openGraph: {
-    title: "About Lemah | Collectible Football Frames & Gifts Dubai UAE",
-    description:
-      "Premium collectible frames UAE. Football gifts Dubai. UAE delivery, gift-ready packaging. CR7, Mbappé, Ronaldo & Messi.",
-  },
-}
+export const metadata: Metadata = getPageMetadata("/about")
 
 export default async function AboutPage() {
   let products: Product[] = []
@@ -50,6 +35,11 @@ export default async function AboutPage() {
         <OriginStory />
         <MaterialsCraft products={products} />
         <Sustainability />
+        <section className="py-12 md:py-16 bg-background">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <UaeDeliveryAreas />
+          </div>
+        </section>
         <AboutCta />
       </main>
       <Footer />

@@ -14,6 +14,7 @@ import { buildProductUrl } from '@/lib/shopify/checkout'
 import { getSaleState } from '@/lib/sale-helpers'
 import { ProductSeoBlock } from '@/components/product/product-seo-block'
 import { ProductFaq } from '@/components/product/product-faq'
+import { UaeDeliveryAreas } from '@/components/seo/UaeDeliveryAreas'
 
 interface ProductDetailsProps {
   product: ShopifyProduct
@@ -279,6 +280,9 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
             <ProductSeoBlock title={product.title} handle={product.handle} />
             <ProductFaq />
+            <div className="mt-8">
+              <UaeDeliveryAreas variant="compact" />
+            </div>
           </div>
         </div>
       </div>

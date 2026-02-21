@@ -8,6 +8,7 @@ import { CartProvider } from "@/components/cart/cart-context"
 import { PromotionsProvider } from "@/components/cart/promotions-context"
 import { PromoBanner } from "@/components/PromoBanner"
 import { Toaster } from "@/components/ui/toaster"
+import { getPageMetadata } from "@/lib/seo/build-metadata"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -19,30 +20,18 @@ const oswald = Oswald({
   variable: "--font-oswald",
 })
 
+const defaultMeta = getPageMetadata("/")
+
 export const metadata: Metadata = {
+  ...defaultMeta,
   title: {
-    default: "Football Gifts Dubai & UAE | Lemah",
+    default: defaultMeta.title as string,
     template: "%s | Lemah",
   },
-  description:
-    "Shop premium football gifts, wall art, and collectible frames in Dubai & UAE. Perfect for teens and football fans. Fast UAE delivery.",
-  keywords: [
-    "football gifts dubai",
-    "football gifts uae",
-    "football accessories dubai",
-    "gifts for football fans dubai",
-    "ronaldo gift dubai",
-    "real madrid gifts uae",
-  ],
   authors: [{ name: "Lemah" }],
   icons: {
     icon: "/favicon.png",
     apple: "/favicon.png",
-  },
-  openGraph: {
-    title: "Football Gifts Dubai & UAE | Lemah",
-    description: "Premium football gifts, wall art & collectibles in Dubai & UAE. Perfect for teens and football lovers.",
-    type: "website",
   },
 }
 

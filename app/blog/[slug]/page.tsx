@@ -11,6 +11,7 @@ import matter from 'gray-matter'
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import { ArticleLayout } from '@/components/blog/article-layout'
 import { blogMdxComponents } from '@/components/blog/mdx-components'
+import { getBaseUrl } from '@/lib/seo/build-metadata'
 
 interface PageProps {
   params: Promise<{
@@ -64,38 +65,48 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const meta = getMeta(slug)
 
   if (!post) {
-    return {
-      title: 'Post Not Found',
-    }
+    return { title: 'Post Not Found' }
   }
 
+  const baseUrl = getBaseUrl()
   const title = (meta?.title as string) || post.data.meta_title || post.data.title
   const description = (meta?.description as string) || post.data.meta_description || post.data.title
-  const canonicalUrl = (meta?.canonical as string) || post.data.canonical_url
+  const canonicalUrl = (meta?.canonical as string) || post.data.canonical_url || `${baseUrl}/blog/${slug}`
   const ogTitle = (meta?.ogTitle as string) || title
   const ogDescription = (meta?.ogDescription as string) || description
   const publishedTime = (meta?.datePublished as string) || post.data.date
+  const ogImage = (meta?.ogImage as string) ? (meta.ogImage as string).startsWith('http') ? (meta.ogImage as string) : `${baseUrl}${meta.ogImage}` : undefined
 
-  const keywords = [
+  let keywords = [
     ...(meta?.focusKeyword ? [meta.focusKeyword as string] : []),
     ...(Array.isArray(meta?.secondaryKeywords) ? (meta.secondaryKeywords as string[]) : []),
     ...(Array.isArray(post.data.focus_keyword) ? post.data.focus_keyword : post.data.focus_keyword ? [post.data.focus_keyword] : []),
     ...(Array.isArray(post.data.secondary_keywords) ? post.data.secondary_keywords : []),
+    ...(Array.isArray(post.data.target_keywords) ? post.data.target_keywords : []),
   ].filter(Boolean) as string[]
+  if (keywords.length === 0 && slug) {
+    const fromSlug = slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+    keywords = [`${fromSlug} Dubai`, `${fromSlug} UAE`, 'football gifts UAE']
+  }
 
   const metadata: Metadata = {
     title,
     description,
+    alternates: { canonical: canonicalUrl },
     openGraph: {
       title: ogTitle,
       description: ogDescription,
       type: 'article',
       publishedTime: publishedTime || undefined,
-      url: canonicalUrl || undefined,
+      url: canonicalUrl,
+      ...(ogImage && { images: [{ url: ogImage, alt: ogTitle }] }),
     },
-  }
-  if (canonicalUrl) {
-    metadata.alternates = { canonical: canonicalUrl }
+    twitter: {
+      card: 'summary_large_image',
+      title: ogTitle,
+      description: ogDescription,
+      ...(ogImage && { images: [ogImage] }),
+    },
   }
   if (keywords.length > 0) {
     metadata.keywords = keywords

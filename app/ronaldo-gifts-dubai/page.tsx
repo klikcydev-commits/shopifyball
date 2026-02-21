@@ -7,10 +7,10 @@ import { LandingPageTemplate } from "@/components/landing/landing-page-template"
 export const metadata: Metadata = {
   title: "Ronaldo Gifts Dubai | CR7 Football Fan Gifts | Lemah",
   description:
-    "Ronaldo and CR7 football gifts in Dubai. Premium collectibles for football fans. Dubai & UAE delivery.",
+    "Ronaldo and CR7 football gifts in Dubai. Premium collectibles for football fans. UAE delivery—Dubai, Abu Dhabi, Sharjah & more.",
   openGraph: {
     title: "Ronaldo Gifts Dubai | CR7 Football Fan Gifts | Lemah",
-    description: "Ronaldo gifts in Dubai. Premium collectibles for CR7 fans. UAE delivery.",
+    description: "Ronaldo gifts in Dubai. UAE delivery—Dubai, Abu Dhabi, Sharjah & more. Gift-ready packaging.",
   },
 }
 

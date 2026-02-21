@@ -1,0 +1,102 @@
+{
+  "baseUrl": "https://lemah.store",
+  "pages": {
+    "/": {
+      "route": "/",
+      "focusKeyword": "football accessories UAE",
+      "secondaryKeywords": ["football gifts Dubai", "collectible frames UAE", "Real Madrid accessories UAE", "Ronaldo gifts Dubai"],
+      "title": "Football Accessories & Gifts UAE | Lemah",
+      "description": "Premium football accessories and collectible frames. UAE delivery—Dubai, Abu Dhabi, Sharjah & more. Gift-ready packaging.",
+      "ogImage": "/og/default.jpg",
+      "robots": "index,follow"
+    },
+    "/shop": {
+      "route": "/shop",
+      "focusKeyword": "football accessories Dubai",
+      "secondaryKeywords": ["football accessories UAE", "football gifts UAE", "football gifts for teens Dubai"],
+      "title": "Football Gifts & Accessories UAE | Shop Lemah",
+      "description": "Browse football gifts, accessories, and wall art. UAE delivery—Dubai, Abu Dhabi, Sharjah & more. Ronaldo, Messi, collectible frames.",
+      "ogImage": "/og/default.jpg",
+      "robots": "index,follow"
+    },
+    "/about": {
+      "route": "/about",
+      "focusKeyword": "football gifts Dubai",
+      "secondaryKeywords": ["football accessories UAE", "collectible frames UAE", "UAE delivery"],
+      "title": "About Lemah | Collectible Football Frames & Gifts Dubai UAE",
+      "description": "Premium collectible frames UAE — CR7, Mbappé, Ronaldo & Messi. UAE delivery—Dubai, Abu Dhabi, Sharjah & more. Gift-ready packaging.",
+      "ogImage": "/og/default.jpg",
+      "robots": "index,follow"
+    },
+    "/contact": {
+      "route": "/contact",
+      "focusKeyword": "football shop UAE",
+      "secondaryKeywords": ["football gifts Dubai", "UAE delivery"],
+      "title": "Contact | Football Shop UAE | Lemah",
+      "description": "Get in touch with Lemah. Football gifts and accessories across the UAE. Dubai, Abu Dhabi, Sharjah & more.",
+      "ogImage": "/og/default.jpg",
+      "robots": "index,follow"
+    },
+    "/11kit": {
+      "route": "/11kit",
+      "focusKeyword": "football kit organizer UAE",
+      "secondaryKeywords": ["football accessories UAE", "matchday essentials"],
+      "title": "11Kit Coming Soon | Lemah",
+      "description": "Build your 11Kit — coming soon. Curated football accessory system for Dubai & UAE.",
+      "ogImage": "/og/default.jpg",
+      "robots": "noindex,follow"
+    },
+    "/blog": {
+      "route": "/blog",
+      "focusKeyword": "football blog UAE",
+      "secondaryKeywords": ["football gifts Dubai", "football accessories UAE"],
+      "title": "Blog | Football Gifts & Guides UAE | Lemah",
+      "description": "Guides and articles on football gifts, accessories, and where to buy in Dubai and the UAE.",
+      "ogImage": "/og/default.jpg",
+      "robots": "index,follow"
+    },
+    "/search": {
+      "route": "/search",
+      "focusKeyword": "football gifts UAE",
+      "secondaryKeywords": ["football accessories Dubai", "football gifts Dubai"],
+      "title": "Search | Football Gifts UAE | Lemah",
+      "description": "Search our football gifts, accessories, and collectibles. UAE delivery—Dubai, Abu Dhabi, Sharjah & more.",
+      "ogImage": "/og/default.jpg",
+      "robots": "index,follow"
+    },
+    "/products": {
+      "route": "/products",
+      "focusKeyword": "football products UAE",
+      "secondaryKeywords": ["football gifts Dubai", "football accessories UAE"],
+      "title": "Products | Football Gifts UAE | Lemah",
+      "description": "Browse our complete collection of premium football gear. UAE delivery—Dubai, Abu Dhabi, Sharjah & more.",
+      "ogImage": "/og/default.jpg",
+      "robots": "index,follow"
+    }
+  },
+  "collections": {
+    "cr7": {
+      "focusKeyword": "Ronaldo gifts Dubai",
+      "secondaryKeywords": ["CR7 gifts UAE", "football wall art Dubai", "collectible frames UAE"],
+      "title": "Ronaldo Gifts Dubai | CR7 Football Fan Gifts | Lemah",
+      "description": "Ronaldo and CR7 football gifts in Dubai. Premium collectibles for football fans. UAE delivery—Dubai, Abu Dhabi, Sharjah & more."
+    },
+    "mbappe": {
+      "focusKeyword": "Mbappé gifts Dubai",
+      "secondaryKeywords": ["football gifts UAE", "collectible frames UAE"],
+      "title": "Mbappé Gifts Dubai | Football Gifts UAE | Lemah",
+      "description": "Mbappé football gifts in Dubai. Premium collectibles. UAE delivery—Dubai, Abu Dhabi, Sharjah & more."
+    },
+    "legends": {
+      "focusKeyword": "Ronaldo Messi gifts Dubai",
+      "secondaryKeywords": ["football gifts UAE", "football wall art Dubai"],
+      "title": "Ronaldo Messi Gifts Dubai | Football Legends | Lemah",
+      "description": "Ronaldo and Messi football gifts in Dubai. Legends collectibles. UAE delivery—Dubai, Abu Dhabi, Sharjah & more."
+    }
+  },
+  "products": {
+    "descriptionSuffix": "UAE delivery—Dubai, Abu Dhabi, Sharjah & more.",
+    "titleTemplate": "{productTitle} | Football Gifts Dubai & UAE | Lemah",
+    "secondaryKeywordTemplate": ["{productTitle} Dubai", "{productTitle} UAE", "football gifts Abu Dhabi"]
+  }
+}

@@ -3,9 +3,9 @@ import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { getProduct } from '@/lib/shopify'
 import { ProductDetails } from '@/components/product/product-details'
+import { getBaseUrl, getProductDescriptionSuffix, getProductTitleTemplate } from '@/lib/seo/build-metadata'
 import type { Metadata } from 'next'
 
-// Force dynamic rendering to avoid build-time API calls
 export const dynamic = 'force-dynamic'
 
 export async function generateMetadata({
@@ -18,34 +18,40 @@ export async function generateMetadata({
     const product = await getProduct(handle)
 
     if (!product) {
-      return {
-        title: 'Product Not Found | Lemah',
-      }
+      return { title: 'Product Not Found | Lemah' }
     }
 
+    const baseUrl = getBaseUrl()
+    const suffix = getProductDescriptionSuffix()
+    const titleTemplate = getProductTitleTemplate()
+    const title = titleTemplate.replace('{productTitle}', product.title)
     const desc =
-      (product.description?.replace(/<[^>]*>/g, '').slice(0, 120).trim() || product.title) +
-      ' — Dubai & UAE delivery.'
+      (product.description?.replace(/<[^>]*>/g, '').slice(0, 120).trim() || product.title) + ` — ${suffix}`
+    const canonical = `${baseUrl}/products/${handle}`
+    const ogImage = product.images.edges[0]?.node
+    const imageUrl = ogImage?.url
+    const imageAlt = ogImage?.altText || product.title
+
     return {
-      title: `${product.title} | Football Gifts Dubai | Lemah`,
+      title,
       description: desc,
+      alternates: { canonical },
       openGraph: {
-        title: `${product.title} | Football Gifts Dubai | Lemah`,
+        title,
         description: desc,
-        images: product.images.edges[0]?.node.url
-          ? [
-              {
-                url: product.images.edges[0].node.url,
-                alt: product.images.edges[0].node.altText || product.title,
-              },
-            ]
-          : [],
+        url: canonical,
+        type: 'website',
+        images: imageUrl ? [{ url: imageUrl, alt: imageAlt }] : [],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title,
+        description: desc,
+        images: imageUrl ? [imageUrl] : undefined,
       },
     }
-  } catch (error) {
-    return {
-      title: 'Product | Lemah',
-    }
+  } catch {
+    return { title: 'Product | Lemah' }
   }
 }
 

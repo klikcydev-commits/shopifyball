@@ -7,10 +7,10 @@ import { LandingPageTemplate } from "@/components/landing/landing-page-template"
 export const metadata: Metadata = {
   title: "Football Gifts for Teens Dubai | Gifts for Boys UAE | Lemah",
   description:
-    "Football gifts for teens and boys in Dubai & UAE. Perfect for bedrooms and match day. UAE delivery.",
+    "Football gifts for teens and boys in Dubai & UAE. Perfect for bedrooms and match day. UAE delivery—Dubai, Abu Dhabi, Sharjah & more.",
   openGraph: {
     title: "Football Gifts for Teens Dubai | Gifts for Boys UAE | Lemah",
-    description: "Football gifts for teens and boys. Dubai & UAE delivery.",
+    description: "Football gifts for teens and boys. UAE delivery—Dubai, Abu Dhabi, Sharjah & more.",
   },
 }
 

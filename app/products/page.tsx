@@ -6,14 +6,12 @@ import { getProducts } from '@/lib/shopify'
 // ProductCard is now used via AllProductsClient
 import { AllProductsClient } from './all-products-client'
 import type { Metadata } from 'next'
+import { getPageMetadata } from '@/lib/seo/build-metadata'
 
 // Force dynamic rendering to avoid build-time API calls
 export const dynamic = 'force-dynamic'
 
-export const metadata: Metadata = {
-  title: 'All Products | LeMah',
-  description: 'Browse our complete collection of premium football gear - everything you need from training to game day.',
-}
+export const metadata: Metadata = getPageMetadata('/products')
 
 export default async function AllProductsPage() {
   // Fetch all products from Shopify

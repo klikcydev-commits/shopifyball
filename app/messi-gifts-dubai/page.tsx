@@ -7,10 +7,10 @@ import { LandingPageTemplate } from "@/components/landing/landing-page-template"
 export const metadata: Metadata = {
   title: "Messi Gifts Dubai | Lionel Messi Football Gifts | Lemah",
   description:
-    "Messi and Lionel Messi football gifts in Dubai. Premium collectibles for football fans. Dubai & UAE delivery.",
+    "Messi and Lionel Messi football gifts in Dubai. Premium collectibles for football fans. UAE delivery—Dubai, Abu Dhabi, Sharjah & more.",
   openGraph: {
     title: "Messi Gifts Dubai | Lionel Messi Football Gifts | Lemah",
-    description: "Messi gifts in Dubai. Premium collectibles for Lionel Messi fans. UAE delivery.",
+    description: "Messi gifts in Dubai. UAE delivery—Dubai, Abu Dhabi, Sharjah & more. Gift-ready packaging.",
   },
 }
 

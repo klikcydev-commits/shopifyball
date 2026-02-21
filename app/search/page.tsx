@@ -1,17 +1,15 @@
 import { Suspense } from 'react'
+import type { Metadata } from 'next'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { PageHero } from '@/components/ui/page-hero'
 import { SearchClient } from './search-client'
 import { getCollections } from '@/lib/shopify'
+import { getPageMetadata } from '@/lib/seo/build-metadata'
 
-// Force dynamic rendering to avoid build-time API calls
 export const dynamic = 'force-dynamic'
 
-export const metadata = {
-  title: 'Search Products | LeMah',
-  description: 'Browse our collection of premium football gear',
-}
+export const metadata: Metadata = getPageMetadata('/search')
 
 export default async function SearchPage({
   searchParams: searchParamsPromise,

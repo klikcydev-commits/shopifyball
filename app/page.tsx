@@ -9,16 +9,10 @@ import { HomeSeoSections } from "@/components/home/home-seo-sections"
 import { HomeFaq } from "@/components/home/home-faq"
 import { ElevenKitTeaser } from "@/components/home/eleven-kit-teaser"
 import { Lookbook } from "@/components/home/lookbook"
+import { UaeDeliveryAreas } from "@/components/seo/UaeDeliveryAreas"
+import { getPageMetadata } from "@/lib/seo/build-metadata"
 
-export const metadata: Metadata = {
-  title: "Football Gifts Dubai & UAE | Lemah",
-  description:
-    "Shop premium football gifts, wall art, and collectible frames in Dubai & UAE. Perfect for teens and football fans. Fast UAE delivery.",
-  openGraph: {
-    title: "Football Gifts Dubai & UAE | Lemah",
-    description: "Premium football gifts, wall art & collectibles in Dubai & UAE. Perfect for teens and football lovers.",
-  },
-}
+export const metadata: Metadata = getPageMetadata("/")
 
 export default async function HomePage() {
   let collections: Awaited<ReturnType<typeof getCollections>> = []
@@ -39,6 +33,11 @@ export default async function HomePage() {
         <HomeFaq />
         <ElevenKitTeaser />
         <Lookbook />
+        <section className="py-12 md:py-16 bg-background">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <UaeDeliveryAreas />
+          </div>
+        </section>
       </main>
       <Footer />
     </>

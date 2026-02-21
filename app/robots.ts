@@ -11,6 +11,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/api/', '/admin/'],
       },
     ],
+    // Sitemap index; /11kit is noindex,follow and excluded from sitemap-pages until launch
     sitemap: `${baseUrl}/sitemap.xml`,
   }
 }

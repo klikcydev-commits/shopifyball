@@ -1,4 +1,4 @@
-import { Metadata } from 'next'
+import type { Metadata } from 'next'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import Link from 'next/link'
@@ -6,10 +6,9 @@ import fs from 'fs'
 import { join } from 'path'
 import matter from 'gray-matter'
 
-export const metadata: Metadata = {
-  title: 'Football Accessories Blog | LeMah',
-  description: 'Expert guides on football accessories, Real Madrid kits, and goalkeeper gear in Dubai & UAE. Buying guides, sizing tips, and authenticity checks.',
-}
+import { getPageMetadata } from '@/lib/seo/build-metadata'
+
+export const metadata: Metadata = getPageMetadata('/blog')
 
 interface BlogPost {
   slug: string

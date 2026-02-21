@@ -10,6 +10,7 @@ import {
 import type { ShopifyProduct } from "@/lib/shopify/types"
 import { adaptShopifyProduct } from "@/lib/shopify/adapter"
 import { ProductCard } from "@/components/products/product-card"
+import { UaeDeliveryAreas } from "@/components/seo/UaeDeliveryAreas"
 
 export interface LandingFaqItem {
   q: string
@@ -90,6 +91,12 @@ export function LandingPageTemplate({
               </AccordionItem>
             ))}
           </Accordion>
+        </div>
+      </section>
+
+      <section className="py-12 md:py-16 bg-background">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <UaeDeliveryAreas />
         </div>
       </section>
     </div>

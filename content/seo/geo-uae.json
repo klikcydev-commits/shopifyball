@@ -1,0 +1,14 @@
+{
+  "country": "United Arab Emirates",
+  "abbr": "UAE",
+  "primaryCities": [
+    "Dubai",
+    "Abu Dhabi",
+    "Sharjah",
+    "Ajman",
+    "Ras Al Khaimah",
+    "Fujairah",
+    "Umm Al Quwain"
+  ],
+  "secondaryCities": ["Al Ain"]
+}

@@ -66,17 +66,19 @@ export function FeaturedCollections({ collections }: FeaturedCollectionsProps) {
                     className="absolute inset-0 z-[1] rounded-lg pointer-events-none bg-black/40 transition-all duration-500 group-hover:bg-black/80"
                     aria-hidden
                   />
-                  {/* Hover character image */}
-                  <div className="card-character-wrapper absolute inset-0 z-2 pointer-events-none overflow-visible">
-                    <Image
-                      src="/collection-hover.png"
-                      alt=""
-                      width={600}
-                      height={800}
-                      className="card-character"
-                      aria-hidden
-                    />
-                  </div>
+                  {/* Hover character image - first collection (CR7) only */}
+                  {index === 0 && (
+                    <div className="card-character-wrapper absolute inset-0 z-[2] pointer-events-none overflow-visible">
+                      <Image
+                        src="/collection-hover.png"
+                        alt=""
+                        width={600}
+                        height={800}
+                        className="card-character"
+                        aria-hidden
+                      />
+                    </div>
+                  )}
                 </Link>
               </div>
 

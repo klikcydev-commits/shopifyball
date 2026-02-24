@@ -21,19 +21,13 @@ export function Lookbook() {
   const { addToCart } = useCart()
   const { toast } = useToast()
 
-  // Initial fetch and refresh every 10 seconds with new random products
   useEffect(() => {
-    const fetchProducts = () => {
-      getLookbookProductsAction()
-        .then((res) => {
-          setProducts(res.products || [])
-          setSelectedId(null)
-        })
-        .catch(() => setProducts([]))
-    }
-    fetchProducts()
-    const interval = setInterval(fetchProducts, 10_000)
-    return () => clearInterval(interval)
+    getLookbookProductsAction()
+      .then((res) => {
+        setProducts(res.products || [])
+        setSelectedId(null)
+      })
+      .catch(() => setProducts([]))
   }, [])
 
   const handleAddToCart = async (e: React.MouseEvent, shopifyProduct: ShopifyProduct) => {

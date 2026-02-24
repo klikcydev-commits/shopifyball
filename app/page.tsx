@@ -18,6 +18,14 @@ export default async function HomePage() {
   let collections: Awaited<ReturnType<typeof getCollections>> = []
   try {
     collections = await getCollections(6)
+    // Ensure CR7 (Ronaldo) collection is always first
+    const cr7Index = collections.findIndex(
+      (c) => c.title.toLowerCase().includes("cr7") || c.handle.toLowerCase() === "cr7"
+    )
+    if (cr7Index > 0) {
+      const cr7 = collections[cr7Index]
+      collections = [cr7, ...collections.slice(0, cr7Index), ...collections.slice(cr7Index + 1)]
+    }
   } catch (e) {
     console.error("Home: failed to fetch collections", e)
   }

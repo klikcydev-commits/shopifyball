@@ -1,11 +1,9 @@
 "use client"
 
 import Image from "next/image"
-import Link from "next/link"
-import { X, Minus, Plus, ShoppingBag, Truck } from "lucide-react"
+import { X, Minus, Plus, ShoppingBag } from "lucide-react"
 import { useCart } from "./cart-context"
 import { CartSummary } from "./cart-summary"
-import { CartDiscountCodeInput } from "./cart-discount-code"
 import { cn, formatPriceWithCurrency } from "@/lib/utils"
 import { getSaleState } from "@/lib/sale-helpers"
 
@@ -19,8 +17,6 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
     cart,
     removeFromCart,
     updateQuantity,
-    applyDiscountCode,
-    removeDiscountCode,
     isLoading,
     error,
     clearError,
@@ -213,53 +209,6 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
               </div>
 
               <div className="p-6 border-t border-border bg-secondary/50 space-y-4">
-                <CartDiscountCodeInput
-                  appliedCodes={cart.discountCodes ?? []}
-                  onApply={applyDiscountCode}
-                  onRemove={removeDiscountCode}
-                  isLoading={isLoading}
-                />
-
-                {/* Shipping incentive: always show to attract customers (2 items = free delivery) */}
-                <div className="rounded-xl border overflow-hidden">
-                  {cart.totalQuantity >= 2 ? (
-                    <div className="flex items-center gap-3 bg-green-500/15 border-green-500/40 border px-4 py-3">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-green-500/20">
-                        <Truck className="h-5 w-5 text-green-600 dark:text-green-400" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-green-800 dark:text-green-300">
-                          Free delivery unlocked
-                        </p>
-                        <p className="text-xs text-green-700/80 dark:text-green-400/80">
-                          You qualify for free shipping across UAE
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <Link
-                      href="/shop"
-                      onClick={onClose}
-                      className="flex items-center gap-3 bg-amber-500/10 border-amber-500/40 border px-4 py-3 hover:bg-amber-500/15 transition-colors"
-                    >
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-500/20">
-                        <Truck className="h-5 w-5 text-amber-600 dark:text-amber-400" />
-                      </div>
-                      <div className="flex-1 text-left">
-                        <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">
-                          Add {2 - cart.totalQuantity} more item for free delivery
-                        </p>
-                        <p className="text-xs text-amber-700/80 dark:text-amber-400/80 mt-0.5">
-                          Free shipping on 2+ items · Dubai & UAE
-                        </p>
-                      </div>
-                      <span className="text-xs font-medium text-amber-700 dark:text-amber-400 shrink-0">
-                        Shop now →
-                      </span>
-                    </Link>
-                  )}
-                </div>
-
                 <CartSummary cart={cart} />
 
                 <button

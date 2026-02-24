@@ -139,7 +139,6 @@ export function FeaturedProducts() {
   const { toast } = useToast()
 
   useEffect(() => {
-    const FIVE_MINUTES_MS = 5 * 60 * 1000
     async function loadProducts() {
       try {
         const result = await getFeaturedProductsAction()
@@ -150,8 +149,6 @@ export function FeaturedProducts() {
       }
     }
     loadProducts()
-    const interval = setInterval(loadProducts, FIVE_MINUTES_MS)
-    return () => clearInterval(interval)
   }, [])
 
   const handleAddToCart = async (e: React.MouseEvent, product: Product) => {

@@ -37,13 +37,10 @@ export function MaterialsCraft({ products = [] }: MaterialsCraftProps) {
 
   const productPool = useMemo(() => (products.length > 0 ? products : []), [products])
 
-  // Pick 4 random products on mount and every 10s
+  // Pick 4 random products once on mount
   useEffect(() => {
     if (productPool.length === 0) return
-    const setRandom = () => setFourProducts(pickRandomN(productPool, 4))
-    setRandom()
-    const interval = setInterval(setRandom, 10_000)
-    return () => clearInterval(interval)
+    setFourProducts(pickRandomN(productPool, 4))
   }, [productPool])
 
   const handleAddToCart = async (e: React.MouseEvent, product: Product) => {

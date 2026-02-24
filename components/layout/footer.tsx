@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { Instagram, Twitter } from "lucide-react"
+import { Instagram } from "lucide-react"
 
 const footerLinks = {
   shop: [
@@ -108,11 +108,14 @@ export function Footer() {
 
         <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-white/10">
           <div className="flex items-center gap-4 mb-4 md:mb-0">
-            <a href="#" className="text-white/60 hover:text-gold transition-colors" aria-label="Instagram">
+            <a
+              href="https://www.instagram.com/le.mah.madrid?igsh=NXd6Z3BxaDAxZHh2"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white/60 hover:text-gold transition-colors"
+              aria-label="Instagram"
+            >
               <Instagram className="h-5 w-5" />
-            </a>
-            <a href="#" className="text-white/60 hover:text-gold transition-colors" aria-label="Twitter">
-              <Twitter className="h-5 w-5" />
             </a>
           </div>
           <div className="flex items-center gap-6 text-xs text-white/40">

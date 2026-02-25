@@ -106,8 +106,8 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-white/10">
-          <div className="flex items-center gap-4 mb-4 md:mb-0">
+        <div className="flex flex-col items-center justify-center pt-8 border-t border-white/10 text-center">
+          <div className="flex items-center gap-4 mb-4">
             <a
               href="https://www.instagram.com/le.mah.madrid?igsh=NXd6Z3BxaDAxZHh2"
               target="_blank"
@@ -118,14 +118,28 @@ export function Footer() {
               <Instagram className="h-5 w-5" />
             </a>
           </div>
-          <div className="flex items-center gap-6 text-xs text-white/40">
-            <span suppressHydrationWarning>© {new Date().getFullYear()} LEMAH</span>
-            <Link href="#" className="hover:text-white transition-colors">
-              Privacy
-            </Link>
-            <Link href="#" className="hover:text-white transition-colors">
-              Terms
-            </Link>
+          <div className="flex flex-col items-center gap-1 text-xs text-white/40">
+            <p>
+              © LeMah • All rights reserved.
+              {" "}
+              Powered by{" "}
+              <a
+                href="https://klikcy.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition-colors"
+              >
+                KLIKCY
+              </a>
+            </p>
+            <div className="flex items-center gap-4">
+              <Link href="#" className="hover:text-white transition-colors">
+                Privacy
+              </Link>
+              <Link href="#" className="hover:text-white transition-colors">
+                Terms
+              </Link>
+            </div>
           </div>
         </div>
       </div>

@@ -110,7 +110,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setIsLoading(true)
       try {
         const shopifyCart = await addToCartAction(cartId, variant.id, quantity)
-        if (shopifyCart) setCartFromShopify(shopifyCart)
+        if (shopifyCart) {
+          setCartFromShopify(shopifyCart)
+          // Refetch cart so UI always shows latest prices/totals from Shopify
+          const fresh = await getCartAction(shopifyCart.id)
+          if (fresh) setCartFromShopify(fresh)
+        }
         setIsCartOpen(true)
       } catch (err) {
         const message = err instanceof Error ? err.message : "Could not add to cart"
@@ -131,7 +136,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setIsLoading(true)
       try {
         const shopifyCart = await removeFromCartAction(cartId, lineId)
-        if (shopifyCart) setCartFromShopify(shopifyCart)
+        if (shopifyCart) {
+          setCartFromShopify(shopifyCart)
+          const fresh = await getCartAction(shopifyCart.id)
+          if (fresh) setCartFromShopify(fresh)
+        }
       } catch (err) {
         const message = err instanceof Error ? err.message : "Could not remove item"
         setError(message)
@@ -157,7 +166,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
         setIsLoading(true)
         try {
           const shopifyCart = await updateCartAction(cartId, lineId, quantity)
-          if (shopifyCart) setCartFromShopify(shopifyCart)
+          if (shopifyCart) {
+            setCartFromShopify(shopifyCart)
+            const fresh = await getCartAction(shopifyCart.id)
+            if (fresh) setCartFromShopify(fresh)
+          }
         } catch (err) {
           const message = err instanceof Error ? err.message : "Could not update quantity"
           setError(message)

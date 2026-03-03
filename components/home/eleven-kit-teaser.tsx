@@ -79,7 +79,7 @@ export function ElevenKitTeaser() {
             {/* Pitch background */}
             <div className="absolute inset-0 rounded-xl bg-gradient-to-b from-navy-light/50 to-primary/50 border border-gold/20">
               {/* Pitch lines */}
-              <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+              <svg xmlns="http://www.w3.org/2000/svg" className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
                 {/* Center line */}
                 <line
                   x1="0"

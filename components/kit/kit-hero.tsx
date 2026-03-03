@@ -60,7 +60,7 @@ export function KitHero() {
 
         {/* Formation preview watermark */}
         <div className="absolute bottom-0 left-0 right-0 h-48 opacity-10 pointer-events-none">
-          <svg className="w-full h-full" viewBox="0 0 400 100" preserveAspectRatio="xMidYMax meet">
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-full h-full" viewBox="0 0 400 100" preserveAspectRatio="xMidYMax meet">
             {/* 4-3-3 dots */}
             <circle cx="200" cy="90" r="4" fill="currentColor" className="text-gold" />
             <circle cx="100" cy="70" r="3" fill="currentColor" className="text-gold" />

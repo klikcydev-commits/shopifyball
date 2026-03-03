@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { X, Minus, Plus, ShoppingBag } from "lucide-react"
+import { X, Minus, Plus, ShoppingBag, Truck } from "lucide-react"
 import { useCart } from "./cart-context"
 import { CartSummary } from "./cart-summary"
 import { cn, formatPriceWithCurrency } from "@/lib/utils"
@@ -114,7 +114,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                     <div key={line.id} className="flex gap-4">
                       <div className="relative w-20 h-20 bg-secondary rounded-lg overflow-hidden flex-shrink-0">
                         {hasSale && (
-                          <span className="absolute top-1 left-1 z-10 rounded bg-red-600 text-white text-[10px] font-semibold uppercase px-1.5 py-0.5">
+                          <span className="absolute top-1 left-1 z-10 rounded bg-[#0A1931] text-white text-[10px] font-semibold uppercase px-1.5 py-0.5 shadow-[0_0_8px_rgba(74,127,167,0.5),0_0_16px_rgba(10,25,49,0.4)]">
                             Sale
                           </span>
                         )}
@@ -210,6 +210,10 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
 
               <div className="p-6 border-t border-border bg-secondary/50 space-y-4">
                 <CartSummary cart={cart} />
+                <p className="flex items-center gap-2 text-sm font-medium text-accent">
+                  <Truck className="w-4 h-4 shrink-0" aria-hidden />
+                  Free Delivery
+                </p>
 
                 <button
                   onClick={() => {

@@ -33,6 +33,24 @@ A high-performance, server-rendered Next.js App Router ecommerce application usi
 - ✅ Open Graph tags
 - ✅ Error boundaries and 404 pages
 - ✅ TypeScript for type safety
+- ✅ **Free SEO scanner** (Lighthouse CI) – run `npm run seo:scan`
+
+## SEO scanner (Lighthouse CI)
+
+A **free, local** SEO and performance scanner runs with one command. No sign-up or paid tools.
+
+```bash
+npm run seo:scan
+```
+
+This builds the app, starts the production server on port 3000, then runs Lighthouse CI on:
+
+- `/` (home)
+- `/products`
+- `/shop`
+- `/search`
+
+Reports are written to `.lighthouseci/`. Scores are asserted for performance, accessibility, best-practices, and SEO (warnings only; adjust thresholds in `lighthouserc.json` if needed).
 
 ## 📚 Documentation
 

@@ -25,11 +25,11 @@ export function AllProductsClient({ products }: AllProductsClientProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="flex flex-wrap justify-center gap-3 md:gap-5 px-2 md:px-0">
       {products.map((product, index) => (
-        <ProductCardWithAnimation 
-          key={product.id} 
-          product={product} 
+        <ProductCardWithAnimation
+          key={product.id}
+          product={product}
           index={index}
         />
       ))}

@@ -83,9 +83,9 @@ export default async function KitPage() {
 
             <Suspense 
               fallback={
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="flex flex-wrap justify-center gap-3 md:gap-5">
                   {[...Array(6)].map((_, i) => (
-                    <div key={i} className="h-96 bg-muted animate-pulse rounded-lg" />
+                    <div key={i} className="w-[170px] sm:w-[220px] md:w-[260px] h-[320px] bg-muted animate-pulse rounded-xl" />
                   ))}
                 </div>
               }
@@ -100,7 +100,7 @@ export default async function KitPage() {
                   </p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="flex flex-wrap justify-center gap-3 md:gap-5">
                   {products.map((product) => (
                     <ProductCard key={product.id} product={adaptShopifyProduct(product)} />
                   ))}

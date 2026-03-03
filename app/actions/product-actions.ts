@@ -100,6 +100,25 @@ export async function getAllProductsAction(options?: { query?: string }): Promis
   }
 }
 
+/** Search products by query (e.g. header search dialog). Uses Shopify product search; returns up to 12 matches. */
+export async function searchProductsAction(query: string | null): Promise<{
+  products: ShopifyProduct[]
+  error?: string
+}> {
+  const q = (query ?? '').trim()
+  if (!q) return { products: [] }
+  try {
+    const { products } = await getProducts({
+      first: 12,
+      query: q,
+    })
+    return { products }
+  } catch (err) {
+    console.error('[searchProductsAction]', err)
+    return { products: [], error: err instanceof Error ? err.message : 'Search failed' }
+  }
+}
+
 /** Fetches every product in a collection (paginates until done). */
 export async function getAllCollectionProductsAction(handle: string): Promise<{
   products: ShopifyProduct[]

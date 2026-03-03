@@ -8,7 +8,8 @@
     "dev": "next dev",
     "lint": "eslint .",
     "start": "next start",
-    "generate-sale-csv": "npx tsx scripts/generate-sale-csv.ts"
+    "generate-sale-csv": "npx tsx scripts/generate-sale-csv.ts",
+    "seo:scan": "npm run build && lhci autorun"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -74,6 +75,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
+    "@lhci/cli": "^0.15.1",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "^22",
     "@types/nodemailer": "^7.0.10",
@@ -85,8 +87,8 @@
     "globals": "^17.0.0",
     "postcss": "^8.5",
     "tailwindcss": "^4.1.9",
-    "tw-animate-css": "1.3.3",
     "tsx": "^4.19.2",
+    "tw-animate-css": "1.3.3",
     "typescript": "^5",
     "typescript-eslint": "^8.53.0"
   }

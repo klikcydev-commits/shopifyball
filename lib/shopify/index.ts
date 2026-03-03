@@ -90,6 +90,57 @@ export async function getProducts({
   }
 }
 
+/**
+ * Shuffle array in place (Fisher–Yates). Returns the same array.
+ */
+function shuffle<T>(arr: T[]): T[] {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    ;[arr[i], arr[j]] = [arr[j], arr[i]]
+  }
+  return arr
+}
+
+/**
+ * Order products so that products from collections with the fewest products appear first.
+ * Within each "tier" (same collection size), products are shuffled randomly.
+ */
+export function orderProductsByCollectionSize(products: ShopifyProduct[]): ShopifyProduct[] {
+  const collectionCounts = new Map<string, number>()
+  for (const p of products) {
+    const edges = p.collections?.edges ?? []
+    for (const { node } of edges) {
+      collectionCounts.set(node.id, (collectionCounts.get(node.id) ?? 0) + 1)
+    }
+  }
+
+  const getMinCollectionSize = (p: ShopifyProduct): number => {
+    const edges = p.collections?.edges ?? []
+    if (edges.length === 0) return Number.MAX_SAFE_INTEGER
+    let min = Number.MAX_SAFE_INTEGER
+    for (const { node } of edges) {
+      const count = collectionCounts.get(node.id) ?? 0
+      if (count < min) min = count
+    }
+    return min
+  }
+
+  const bySize = new Map<number, ShopifyProduct[]>()
+  for (const p of products) {
+    const size = getMinCollectionSize(p)
+    if (!bySize.has(size)) bySize.set(size, [])
+    bySize.get(size)!.push(p)
+  }
+
+  const sortedSizes = Array.from(bySize.keys()).sort((a, b) => a - b)
+  const result: ShopifyProduct[] = []
+  for (const size of sortedSizes) {
+    const group = bySize.get(size)!
+    result.push(...shuffle(group))
+  }
+  return result
+}
+
 /** Fetches all products by paginating until no more pages. */
 export async function getAllProducts(options?: { query?: string }): Promise<ShopifyProduct[]> {
   const products: ShopifyProduct[] = []

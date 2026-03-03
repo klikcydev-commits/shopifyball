@@ -73,7 +73,7 @@ export function TheRitual() {
           )}
           style={{ transitionDelay: "600ms" }}
         >
-          <svg width="200" height="40" viewBox="0 0 200 40" className="text-gold/30">
+          <svg xmlns="http://www.w3.org/2000/svg" width="200" height="40" viewBox="0 0 200 40" className="text-gold/30">
             <line x1="0" y1="20" x2="80" y2="20" stroke="currentColor" strokeWidth="1" />
             <circle cx="100" cy="20" r="6" fill="none" stroke="currentColor" strokeWidth="1" />
             <line x1="120" y1="20" x2="200" y2="20" stroke="currentColor" strokeWidth="1" />

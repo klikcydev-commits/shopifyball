@@ -27,7 +27,7 @@ export function BlogProductStrip({ products, title = "Shop related" }: BlogProdu
   return (
     <section className="mb-12 rounded-xl border border-border bg-muted/30 p-6" aria-label="Related products">
       <h2 className="text-lg font-semibold mb-4">{title}</h2>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="flex flex-wrap justify-center gap-3 md:gap-5">
         {adapted.map((product) => (
           <ProductCard key={product.id} product={product} size="default" />
         ))}

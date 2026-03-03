@@ -20,6 +20,7 @@ export function TacticalLines() {
 
   return (
     <svg
+      xmlns="http://www.w3.org/2000/svg"
       ref={svgRef}
       className="absolute inset-0 w-full h-full pointer-events-none opacity-20"
       viewBox="0 0 1000 600"

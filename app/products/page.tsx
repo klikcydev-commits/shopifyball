@@ -2,7 +2,7 @@ import { Suspense } from 'react'
 import Image from 'next/image'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
-import { getProducts } from '@/lib/shopify'
+import { getAllProducts, orderProductsByCollectionSize } from '@/lib/shopify'
 // ProductCard is now used via AllProductsClient
 import { AllProductsClient } from './all-products-client'
 import type { Metadata } from 'next'
@@ -14,14 +14,12 @@ export const dynamic = 'force-dynamic'
 export const metadata: Metadata = getPageMetadata('/products')
 
 export default async function AllProductsPage() {
-  // Fetch all products from Shopify
-  let products: Awaited<ReturnType<typeof getProducts>>['products'] = []
-  
+  // Fetch all products, then order by collection size (smallest collections first) and shuffle within each tier
+  let products: Awaited<ReturnType<typeof getAllProducts>> = []
+
   try {
-    const result = await getProducts({ 
-      first: 100 // Get up to 100 products
-    })
-    products = result.products
+    const all = await getAllProducts()
+    products = orderProductsByCollectionSize(all)
   } catch (error) {
     console.error('Error fetching products:', error)
     // Continue with empty products array

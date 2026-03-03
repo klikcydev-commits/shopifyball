@@ -8,13 +8,19 @@ import { ClientOnly } from '@/components/ui/client-only'
 import { useCart } from '@/components/cart/cart-context'
 import { adaptShopifyProduct } from '@/lib/shopify/adapter'
 import type { ProductVariant } from '@/lib/shopify-types'
-import { ShoppingBag, Check, ExternalLink } from 'lucide-react'
+import { ShoppingBag, Check, ExternalLink, Heart, Ruler, Truck, CreditCard, RotateCcw, Banknote, ChevronLeft, ChevronRight } from 'lucide-react'
 import { toast } from 'sonner'
 import { buildProductUrl } from '@/lib/shopify/checkout'
 import { getSaleState } from '@/lib/sale-helpers'
 import { ProductSeoBlock } from '@/components/product/product-seo-block'
 import { ProductFaq } from '@/components/product/product-faq'
 import { UaeDeliveryAreas } from '@/components/seo/UaeDeliveryAreas'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
 
 interface ProductDetailsProps {
   product: ShopifyProduct
@@ -24,7 +30,13 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   const [selectedVariant, setSelectedVariant] = useState(
     product.variants.edges[0]?.node || null
   )
-  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({})
+  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>(() => {
+    const opts: Record<string, string> = {}
+    for (const opt of product.options) {
+      if (opt.values.length > 0) opts[opt.name] = opt.values[0]
+    }
+    return opts
+  })
   const [quantity, setQuantity] = useState(1)
   const [isAdding, setIsAdding] = useState(false)
   const { addToCart } = useCart()
@@ -88,12 +100,32 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12">
           {/* Images - slightly smaller on large screens */}
-          <div className="max-w-lg mx-auto lg:mx-0 w-full">
-            <div className="relative aspect-square max-h-[420px] lg:max-h-[480px] w-full mx-auto rounded-lg overflow-hidden bg-muted mb-4">
+          <div className="max-w-lg mx-auto lg:mx-0 w-full lg:sticky lg:top-24 self-start">
+            <div className="relative w-full max-w-[420px] lg:max-w-[480px] aspect-[1/1] mx-auto rounded-lg overflow-hidden bg-muted mb-4">
               {saleState.onSale && (
-                <span className="absolute top-4 left-4 z-10 rounded-md bg-red-600 text-white text-sm font-bold uppercase tracking-wider px-3 py-1.5 shadow-lg">
+                <span className="absolute top-4 left-4 z-10 rounded-md bg-[#0A1931] text-white text-sm font-bold uppercase tracking-wider px-3 py-1.5 shadow-[0_0_14px_rgba(74,127,167,0.6),0_0_28px_rgba(10,25,49,0.5)] animate-pulse">
                   Sale
                 </span>
+              )}
+              {images.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    aria-label="Previous image"
+                    onClick={() => setSelectedImageIndex((i) => (i === 0 ? images.length - 1 : i - 1))}
+                    className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+                  >
+                    <ChevronLeft className="w-6 h-6" aria-hidden />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Next image"
+                    onClick={() => setSelectedImageIndex((i) => (i === images.length - 1 ? 0 : i + 1))}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+                  >
+                    <ChevronRight className="w-6 h-6" aria-hidden />
+                  </button>
+                </>
               )}
               {images[selectedImageIndex] && (
                 <Image
@@ -102,7 +134,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   fill
                   className="object-cover"
                   priority
-                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  sizes="(max-width: 1024px) 100vw, 480px"
                 />
               )}
             </div>
@@ -163,9 +195,6 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                       {saleState.percentOff}% OFF
                     </span>
                   )}
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Sale pricing shown based on compare-at price.
-                  </p>
                 </div>
               ) : (
                 <span className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
@@ -184,8 +213,10 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 </div>
               }
             >
-              {/* Options */}
-              {product.options.map((option) => (
+              {/* Options – hide "Title" (e.g. Default Title) when it's the only meaningless option */}
+              {product.options
+                .filter((option) => option.name.toLowerCase() !== 'title')
+                .map((option) => (
                 <div key={option.id} className="mb-6">
                   <label className="block text-sm font-medium mb-2">{option.name}</label>
                   <div className="flex flex-wrap gap-2">
@@ -212,22 +243,22 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
               {/* Quantity */}
               <div className="mb-6">
-                <label className="block text-sm font-medium mb-2">Quantity</label>
-                <div className="flex items-center gap-4">
+                <label className="block text-xs font-medium mb-1.5">Quantity</label>
+                <div className="flex items-center gap-2">
                   <button
                     type="button"
                     aria-label="Decrease quantity"
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="w-10 h-10 flex items-center justify-center border border-border rounded hover:bg-muted"
+                    className="w-8 h-8 flex items-center justify-center text-sm border border-border rounded hover:bg-muted"
                   >
                     −
                   </button>
-                  <span className="text-lg font-medium w-12 text-center">{quantity}</span>
+                  <span className="text-sm font-medium w-8 text-center">{quantity}</span>
                   <button
                     type="button"
                     aria-label="Increase quantity"
                     onClick={() => setQuantity(quantity + 1)}
-                    className="w-10 h-10 flex items-center justify-center border border-border rounded hover:bg-muted"
+                    className="w-8 h-8 flex items-center justify-center text-sm border border-border rounded hover:bg-muted"
                   >
                     +
                   </button>
@@ -252,31 +283,121 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
               {/* Buy Now - Direct to shop.lemah.store */}
               {selectedVariant?.availableForSale && (
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="w-full mb-4"
-                  onClick={() => {
-                    window.location.href = buildProductUrl(product.handle)
-                  }}
-                >
-                  <ExternalLink className="w-5 h-5 mr-2" />
-                  Buy Now on Shop
-                </Button>
+                <>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="w-full mb-3"
+                    onClick={() => {
+                      window.location.href = buildProductUrl(product.handle)
+                    }}
+                  >
+                    <ExternalLink className="w-5 h-5 mr-2" />
+                    Buy Now on Shop
+                  </Button>
+                  <div className="flex flex-col gap-2 mb-4 text-sm font-semibold text-muted-foreground">
+                    <p className="flex items-center gap-2">
+                      <RotateCcw className="w-4 h-4 shrink-0 text-accent" aria-hidden />
+                      15 Days Free Return
+                    </p>
+                    <p className="flex items-center gap-2">
+                      <Banknote className="w-4 h-4 shrink-0 text-accent" aria-hidden />
+                      Cash on Delivery
+                    </p>
+                    <p className="flex items-center gap-2">
+                      <Truck className="w-4 h-4 shrink-0 text-accent" aria-hidden />
+                      Free Delivery
+                    </p>
+                  </div>
+                </>
               )}
 
               {selectedVariant?.availableForSale && (
                 <p className="text-sm text-muted-foreground flex items-center gap-2 mb-8">
-                  <Check className="w-4 h-4 text-green-500" />
+                  <Check className="w-4 h-4 text-accent" />
                   In stock and ready to ship
                 </p>
               )}
             </ClientOnly>
 
             <div
-              className="prose prose-sm max-w-none mb-8 text-muted-foreground"
+              className="prose prose-sm max-w-none mb-6 text-muted-foreground"
               dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
             />
+
+            <Accordion type="single" collapsible className="w-full mb-8" defaultValue="why-you-will-love-it">
+              <AccordionItem value="why-you-will-love-it" className="border-b border-border">
+                <AccordionTrigger className="text-left font-medium py-4">
+                  <span className="flex items-center gap-3">
+                    <Heart className="w-5 h-5 shrink-0 text-muted-foreground" aria-hidden />
+                    Why You Will Love It
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground text-sm pb-4">
+                  <ul className="space-y-3 list-disc pl-5">
+                    <li>
+                      <strong>3D Angular Frame:</strong> See your image from every angle—each facet of the frame displays the design, creating a dynamic 3D effect wherever you look.
+                    </li>
+                    <li>
+                      <strong>Museum-Quality Print:</strong> Vibrant, high resolution colors that won&apos;t fade over time.
+                    </li>
+                    <li>
+                      <strong>Premium Materials:</strong> Thick, durable canvas with a premium quality light-weight black frame and sleek glossy acrylic for protection.
+                    </li>
+                    <li>
+                      <strong>Perfect for Any Space:</strong> Elevate your bedroom, gaming setup, or living room with a stylish, modern touch.
+                    </li>
+                    <li>
+                      <strong>Great Gift Idea:</strong> Our posters are personal, stylish, and reflects passion—whether it&apos;s music, sports, or cars. It&apos;s more than just a decor; it&apos;s a meaningful piece that adds personality and good vibes to the space.
+                    </li>
+                  </ul>
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="sizes" className="border-b border-border">
+                <AccordionTrigger className="text-left font-medium py-4">
+                  <span className="flex items-center gap-3">
+                    <Ruler className="w-5 h-5 shrink-0 text-muted-foreground" aria-hidden />
+                    Sizes
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground text-sm pb-4">
+                  30x40 cm (11.8x15.7″)
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="shipping" className="border-b border-border">
+                <AccordionTrigger className="text-left font-medium py-4">
+                  <span className="flex items-center gap-3">
+                    <Truck className="w-5 h-5 shrink-0 text-muted-foreground" aria-hidden />
+                    Shipping
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground text-sm pb-4">
+                  Free and fast shipping across UAE within 1–2 days.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="payment" className="border-b border-border">
+                <AccordionTrigger className="text-left font-medium py-4">
+                  <span className="flex items-center gap-3">
+                    <CreditCard className="w-5 h-5 shrink-0 text-muted-foreground" aria-hidden />
+                    Payment
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground text-sm pb-4">
+                  Cash on Delivery & Secure Online Payments Available!
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="returns" className="border-b border-border">
+                <AccordionTrigger className="text-left font-medium py-4">
+                  <span className="flex items-center gap-3">
+                    <RotateCcw className="w-5 h-5 shrink-0 text-muted-foreground" aria-hidden />
+                    Returns
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground text-sm pb-4">
+                  Your satisfaction is our top priority. We take pride in delivering premium-quality wall canvas posters, but if you ever receive a defective item or feel the product doesn&apos;t meet your expectations, we offer a totally free return to ensure you shop with confidence.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
 
             <ProductSeoBlock title={product.title} handle={product.handle} />
             <ProductFaq />

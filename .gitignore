@@ -28,3 +28,10 @@ public/lemahs.mp4
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# script outputs (keep repo clean)
+scripts/output/
+scripts/*.csv
+
+# Lighthouse CI reports
+.lighthouseci/

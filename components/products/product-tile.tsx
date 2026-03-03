@@ -67,7 +67,7 @@ export function ProductTile({
       />
 
       {onSale && (
-        <span className="absolute top-2 left-2 z-10 rounded-md bg-red-600 px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-white shadow">
+        <span className="absolute top-2 left-2 z-10 rounded-md bg-[#0A1931] px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-white shadow-[0_0_10px_rgba(74,127,167,0.5),0_0_20px_rgba(10,25,49,0.4)]">
           Sale
         </span>
       )}

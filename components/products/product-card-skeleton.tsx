@@ -1,6 +1,5 @@
 "use client"
 
-import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
 interface ProductCardSkeletonProps {
@@ -10,24 +9,24 @@ interface ProductCardSkeletonProps {
 
 export function ProductCardSkeleton({ size = "default", className }: ProductCardSkeletonProps) {
   return (
-    <Card className={cn("overflow-hidden border-border bg-card", className)}>
-      <CardContent className="p-0">
-        <div
-          className={cn(
-            "animate-pulse bg-muted",
-            size === "large" ? "aspect-[3/4]" : "aspect-square"
-          )}
-        />
-        <div className="flex flex-col p-4">
-          <div className="h-5 w-3/4 rounded-md bg-muted" />
-          <div className="mt-2 h-4 w-1/2 rounded-md bg-muted" />
-          <div className="mt-4 flex items-baseline gap-2">
-            <div className="h-6 w-20 rounded-md bg-muted" />
-            <div className="h-4 w-14 rounded-md bg-muted" />
-          </div>
-          <div className="mt-2 h-3 w-16 rounded-md bg-muted" />
+    <div
+      className={cn(
+        "w-full flex-shrink-0 bg-white rounded-xl overflow-hidden",
+        size === "large" ? "w-[200px] sm:w-[280px] md:w-[300px]" : "w-[170px] sm:w-[220px] md:w-[260px]",
+        className
+      )}
+    >
+      <div className="relative w-full aspect-[3/4] shrink-0 animate-pulse bg-[#e5e5e5]" />
+      <div className="px-3 pt-4 pb-4 md:px-4 md:pt-4 md:pb-5 h-[168px] md:h-[176px] flex flex-col">
+        <div className="h-4 w-3/4 mx-auto rounded bg-[#e5e5e5]" />
+        <div className="mt-2 flex justify-center gap-2">
+          <div className="h-4 w-16 rounded bg-[#e5e5e5]" />
+          <div className="h-5 w-20 rounded bg-[#e5e5e5]" />
         </div>
-      </CardContent>
-    </Card>
+        <div className="mt-4 pt-4 border-t border-[#e5e5e5]">
+          <div className="h-10 w-full rounded-lg bg-[#e5e5e5]" />
+        </div>
+      </div>
+    </div>
   )
 }

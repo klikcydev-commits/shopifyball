@@ -7,6 +7,7 @@ import "./globals.css"
 import { CartProvider } from "@/components/cart/cart-context"
 import { PromotionsProvider } from "@/components/cart/promotions-context"
 import { PromoBanner } from "@/components/PromoBanner"
+import { MainLoader } from "@/components/MainLoader"
 import { Toaster } from "@/components/ui/toaster"
 import { getPageMetadata } from "@/lib/seo/build-metadata"
 
@@ -83,6 +84,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           `}
         </Script>
         <PromotionsProvider>
+          <MainLoader />
           <PromoBanner />
           <CartProvider>
             {children}

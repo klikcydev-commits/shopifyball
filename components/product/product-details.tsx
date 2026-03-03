@@ -249,7 +249,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                     type="button"
                     aria-label="Decrease quantity"
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="w-8 h-8 flex items-center justify-center text-sm border border-border rounded hover:bg-muted"
+                    className="w-8 h-8 flex items-center justify-center text-sm border border-border rounded-lg hover:bg-muted"
                   >
                     −
                   </button>
@@ -258,7 +258,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                     type="button"
                     aria-label="Increase quantity"
                     onClick={() => setQuantity(quantity + 1)}
-                    className="w-8 h-8 flex items-center justify-center text-sm border border-border rounded hover:bg-muted"
+                    className="w-8 h-8 flex items-center justify-center text-sm border border-border rounded-lg hover:bg-muted"
                   >
                     +
                   </button>

@@ -48,14 +48,9 @@ export function ShopCollections({ collections }: ShopCollectionsProps) {
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity" />
             </div>
             <div className="p-4">
-              <h3 className="font-semibold text-lg mb-1 group-hover/card:text-gold transition-colors">
+              <h3 className="font-semibold text-lg mb-2 group-hover/card:text-gold transition-colors">
                 {collection.title}
               </h3>
-              {collection.description && (
-                <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
-                  {collection.description}
-                </p>
-              )}
               <span className="inline-flex items-center gap-1 text-sm font-medium text-gold">
                 View collection
                 <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/card:translate-x-0.5" />

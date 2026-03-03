@@ -87,12 +87,7 @@ export function FeaturedCollections({ collections }: FeaturedCollectionsProps) {
                 <span className="text-xs uppercase tracking-[0.2em] text-gold mb-4 block">
                   Collection
                 </span>
-                <h3 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">{collection.title}</h3>
-                {collection.description && (
-                  <p className="text-muted-foreground text-lg mb-8 leading-relaxed line-clamp-3">
-                    {collection.description}
-                  </p>
-                )}
+                <h3 className="text-3xl md:text-4xl font-bold tracking-tight mb-6">{collection.title}</h3>
                 <Link
                   href={`/search?collection=${encodeURIComponent(collection.handle)}`}
                   className="group inline-flex items-center gap-2 text-sm font-medium uppercase tracking-wider hover:text-gold transition-colors"

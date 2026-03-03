@@ -453,8 +453,9 @@
   transform: translate3d(0%, -50px, 100px);
 }
 
-/* Button press effect */
+/* Button press effect – rounded corners for all button-style elements */
 .btn-press {
+  border-radius: 0.5rem; /* rounded-lg */
   transition: transform 0.15s ease;
 }
 

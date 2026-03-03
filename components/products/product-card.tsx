@@ -145,7 +145,7 @@ export function ProductCard({ product, size = "default", reviewCount }: ProductC
               <span className="text-[#999999] text-[10px] md:text-sm line-through">{originalPriceStr}</span>
             )}
             <span className="text-[#1a1a1a] text-[11px] md:text-base font-semibold">
-              {onSale ? `From ${salePriceStr}` : salePriceStr}
+              {salePriceStr}
             </span>
           </div>
           <div className="flex-1 min-h-[12px]" aria-hidden />

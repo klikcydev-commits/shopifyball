@@ -6,7 +6,7 @@ import { ProductDetails } from '@/components/product/product-details'
 import { getBaseUrl, getProductDescriptionSuffix, getProductTitleTemplate } from '@/lib/seo/build-metadata'
 import type { Metadata } from 'next'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 300
 
 export async function generateMetadata({
   params,

@@ -2,18 +2,27 @@
  * Server-only Shopify GraphQL fetch wrapper.
  * This function MUST only be called from server-side code (RSC, Server Actions, Route Handlers).
  * The private storefront token is never exposed to the client.
+ *
+ * For read-only data (products, collections, pages, menu): use next: { revalidate } for ISR.
+ * For mutations/cart: use cache: 'no-store'.
  */
 type Variables = Record<string, unknown>
+
+export type ShopifyFetchOptions = {
+  query: string
+  variables?: Variables
+  /** Use for mutations/cart - forces dynamic. */
+  cache?: RequestCache
+  /** Use for read-only data - enables ISR. Revalidate every N seconds. */
+  next?: { revalidate: number }
+}
 
 export async function shopifyFetch<T>({
   query,
   variables,
-  cache = 'force-cache',
-}: {
-  query: string
-  variables?: Variables
-  cache?: RequestCache
-}): Promise<{ status: number; body: T } | never> {
+  cache,
+  next,
+}: ShopifyFetchOptions): Promise<{ status: number; body: T } | never> {
   const domain = process.env.SHOPIFY_STORE_DOMAIN
   // Use SHOPIFY_STOREFRONT_ACCESS_TOKEN (the public Storefront API token, NOT the Admin API shpat_ token)
   const storefrontToken = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN
@@ -39,16 +48,24 @@ export async function shopifyFetch<T>({
   const url = `https://${domain}/api/${apiVersion}/graphql.json`
   console.log('[Shopify] Fetching:', url)
 
+  const fetchOptions: RequestInit & { cache?: RequestCache; next?: { revalidate: number } } = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Shopify-Storefront-Access-Token': storefrontToken,
+    },
+    body: JSON.stringify({ query, variables }),
+  }
+  if (next) {
+    fetchOptions.next = next
+  } else if (cache) {
+    fetchOptions.cache = cache
+  } else {
+    fetchOptions.next = { revalidate: 300 }
+  }
+
   try {
-    const result = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Shopify-Storefront-Access-Token': storefrontToken,
-      },
-      body: JSON.stringify({ query, variables }),
-      cache,
-    })
+    const result = await fetch(url, fetchOptions)
 
     if (!result.ok) {
       const errorText = await result.text()

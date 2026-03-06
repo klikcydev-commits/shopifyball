@@ -15,6 +15,7 @@ import { adaptShopifyProduct } from "@/lib/shopify/adapter"
 import type { Product } from "@/lib/shopify-types"
 
 export const metadata: Metadata = getPageMetadata("/about")
+export const revalidate = 300
 
 export default async function AboutPage() {
   let products: Product[] = []

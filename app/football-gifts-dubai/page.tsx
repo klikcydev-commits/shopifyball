@@ -14,6 +14,8 @@ export const metadata: Metadata = {
   },
 }
 
+export const revalidate = 300
+
 const FOOTBALL_GIFTS_DUBAI_FAQ = [
   {
     q: "Where can I buy football gifts in Dubai?",

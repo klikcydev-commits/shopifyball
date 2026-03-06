@@ -13,6 +13,7 @@ import { UaeDeliveryAreas } from "@/components/seo/UaeDeliveryAreas"
 import { getPageMetadata } from "@/lib/seo/build-metadata"
 
 export const metadata: Metadata = getPageMetadata("/")
+export const revalidate = 300
 
 export default async function HomePage() {
   let collections: Awaited<ReturnType<typeof getCollections>> = []

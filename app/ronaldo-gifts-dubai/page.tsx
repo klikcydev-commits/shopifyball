@@ -14,6 +14,8 @@ export const metadata: Metadata = {
   },
 }
 
+export const revalidate = 300
+
 const RONALDO_GIFTS_DUBAI_FAQ = [
   {
     q: "Do you have Ronaldo gifts in Dubai?",

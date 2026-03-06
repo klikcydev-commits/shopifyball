@@ -19,7 +19,7 @@ export async function getMenu(handle: string): Promise<ShopifyMenu | null> {
   const res = await shopifyFetch<{ data: { menu: ShopifyMenu | null } }>({
     query: getMenuQuery,
     variables: { handle },
-    cache: 'no-store', // Always fetch fresh menu from Shopify
+    next: { revalidate: 300 },
   })
 
   return res.body.data.menu
@@ -29,7 +29,7 @@ export async function getPageByHandle(handle: string): Promise<ShopifyPage | nul
   const res = await shopifyFetch<{ data: { page: ShopifyPage | null } }>({
     query: getPageQuery,
     variables: { handle },
-    cache: 'no-store', // Always fetch fresh page from Shopify
+    next: { revalidate: 300 },
   })
 
   return res.body.data.page
@@ -39,7 +39,7 @@ export async function getProduct(handle: string): Promise<ShopifyProduct | null>
   const res = await shopifyFetch<{ data: { product: ShopifyProduct | null } }>({
     query: getProductQuery,
     variables: { handle },
-    cache: 'no-store',
+    next: { revalidate: 300 },
   })
 
   return res.body.data.product
@@ -81,7 +81,7 @@ export async function getProducts({
       first,
       ...(after != null && { after }),
     },
-    cache: 'no-store', // Always fetch fresh products from Shopify
+    next: { revalidate: 300 },
   })
 
   return {
@@ -181,7 +181,7 @@ export async function getCollection(
   const res = await shopifyFetch<{ data: { collection: ShopifyCollection | null } }>({
     query: getCollectionQuery,
     variables: { handle, first, after },
-    cache: 'no-store', // Always fetch fresh collection data from Shopify
+    next: { revalidate: 300 },
   })
 
   return res.body.data.collection
@@ -197,7 +197,7 @@ export async function getCollections(first: number = 12): Promise<ShopifyCollect
   }>({
     query: getCollectionsQuery,
     variables: { first },
-    cache: 'no-store', // Always fetch fresh collections from Shopify
+    next: { revalidate: 300 },
   })
 
   return res.body.data.collections.edges.map((edge) => edge.node)

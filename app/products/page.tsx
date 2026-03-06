@@ -8,8 +8,7 @@ import { AllProductsClient } from './all-products-client'
 import type { Metadata } from 'next'
 import { getPageMetadata } from '@/lib/seo/build-metadata'
 
-// Force dynamic rendering to avoid build-time API calls
-export const dynamic = 'force-dynamic'
+export const revalidate = 300
 
 export const metadata: Metadata = getPageMetadata('/products')
 

@@ -4,6 +4,7 @@ import Image from "next/image"
 import { X, Minus, Plus, ShoppingBag } from "lucide-react"
 import { useCart } from "./cart-context"
 import { CartSummary } from "./cart-summary"
+import { TrustBadges } from "@/components/trust-badges"
 import { cn, formatPriceWithCurrency } from "@/lib/utils"
 import { getSaleState } from "@/lib/sale-helpers"
 
@@ -209,6 +210,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
               </div>
 
               <div className="p-6 border-t border-border bg-secondary/50 space-y-4">
+                <TrustBadges variant="compact" showShopifyBadge={true} />
                 <CartSummary cart={cart} />
                 <button
                   onClick={() => {

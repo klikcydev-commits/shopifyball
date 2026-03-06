@@ -12,8 +12,8 @@ import {
 import Autoplay from 'embla-carousel-autoplay'
 import { cn } from '@/lib/utils'
 
-/** Shopify secure badge - white for dark testimonial cards */
-const SHOPIFY_BADGE_WHITE = 'https://cdn.shopify.com/s/images/badges/shopify-secure-badge-white.svg'
+/** Shopify Secure badge - imported from Shopify, stored locally */
+const SHOPIFY_BADGE_WHITE = '/shopify-secure-badge-white.svg'
 
 /** Hero-style images for testimonial cards - lifestyle / wall art / room decor */
 const TESTIMONIAL_IMAGES = [
@@ -73,42 +73,42 @@ export function TestimonialSlider({ className, variant = 'default' }: Testimonia
   return (
     <div
       className={cn(
-        'w-full overflow-hidden',
-        variant === 'default' && 'py-16 md:py-20 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8',
+        'w-full overflow-hidden min-w-0',
+        variant === 'default' && 'py-12 sm:py-16 md:py-20 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8',
         variant === 'default' ? 'bg-[#facc15]' : '',
         className
       )}
     >
       {variant === 'default' && (
-        <h3 className="text-center text-lg md:text-xl font-semibold text-[#1a1a1a] mb-10">
+        <h3 className="text-center text-base sm:text-lg md:text-xl font-semibold text-[#1a1a1a] mb-8 sm:mb-10 px-2">
           Loved by everyone, everywhere. Don&apos;t miss out.
         </h3>
       )}
       {variant === 'compact' && (
-        <div className="flex flex-col items-center gap-3 mb-6">
-          <h3 className="text-center text-sm font-medium uppercase tracking-[0.2em] text-gold">
+        <div className="flex flex-col items-center gap-2 sm:gap-3 mb-4 sm:mb-6 px-2">
+          <h3 className="text-center text-xs sm:text-sm font-medium uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gold">
             What customers say
           </h3>
           <div
-            className="inline-flex items-center gap-3"
+            className="inline-flex items-center gap-2 sm:gap-3"
             title="Verified Reviews"
             aria-label="Verified Reviews"
           >
-            <span className="inline-block h-12 w-12 shrink-0 [&>img]:mix-blend-multiply">
+            <span className="inline-block h-10 w-10 sm:h-12 sm:w-12 shrink-0 [&>img]:mix-blend-multiply">
               <Image
                 src="/verified-reviews-badge.png"
                 alt=""
                 width={48}
                 height={48}
-                className="h-12 w-12 object-contain"
+                className="h-10 w-10 sm:h-12 sm:w-12 object-contain"
                 aria-hidden
               />
             </span>
             <div className="flex flex-col items-start leading-tight">
-              <span className="text-sm font-semibold uppercase tracking-wider text-foreground">
+              <span className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-foreground">
                 Verified
               </span>
-              <span className="text-sm font-semibold uppercase tracking-wider text-foreground">
+              <span className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-foreground">
                 Reviews
               </span>
             </div>
@@ -125,7 +125,7 @@ export function TestimonialSlider({ className, variant = 'default' }: Testimonia
           containScroll: 'trimSnaps',
           dragFree: false,
         }}
-        className="relative w-full max-w-7xl mx-auto"
+        className="relative w-full max-w-7xl mx-auto px-1 sm:px-0"
       >
         {/* Fade overlays - edges match section background so cards blend seamlessly */}
         <div
@@ -148,24 +148,24 @@ export function TestimonialSlider({ className, variant = 'default' }: Testimonia
           }}
           aria-hidden
         />
-        <CarouselContent className="-ml-1.5 sm:-ml-4">
+        <CarouselContent className="-ml-2 sm:-ml-3 md:-ml-4">
           {TESTIMONIALS.map((t, i) => {
             const imageSrc = t.image ?? TESTIMONIAL_IMAGES[i % TESTIMONIAL_IMAGES.length]
             return (
               <CarouselItem
                 key={`${t.name}-${i}`}
                 className={cn(
-                  'pl-1.5 sm:pl-4',
-                  /* Mobile: 1 card centered, half of left + half of right peeking */
-                  'basis-[52%] lg:basis-[calc(25%-12px)] min-w-0'
+                  'pl-2 sm:pl-3 md:pl-4',
+                  /* Responsive: 1 card mobile, 1.5 sm, 2 md, 3-4 lg */
+                  'basis-[85%] sm:basis-[70%] md:basis-[48%] lg:basis-[calc(25%-12px)] min-w-0'
                 )}
               >
                 <article
                   className={cn(
-                    'rounded-2xl overflow-hidden',
+                    'rounded-xl sm:rounded-2xl overflow-hidden',
                     'bg-[#0f0f0f] text-white',
                     'shadow-xl',
-                    variant === 'compact' ? 'p-4' : 'flex flex-col'
+                    variant === 'compact' ? 'p-3 sm:p-4' : 'flex flex-col'
                   )}
                 >
                   {/* Large rounded image - hero of the card */}
@@ -176,7 +176,7 @@ export function TestimonialSlider({ className, variant = 'default' }: Testimonia
                         alt=""
                         fill
                         className="object-cover"
-                        sizes="(max-width: 768px) 55vw, 360px"
+                        sizes="(max-width: 640px) 85vw, (max-width: 768px) 70vw, (max-width: 1024px) 48vw, 360px"
                       />
                     </div>
                   )}
@@ -184,21 +184,21 @@ export function TestimonialSlider({ className, variant = 'default' }: Testimonia
                   <div
                     className={cn(
                       'flex flex-col items-center text-center',
-                      variant === 'default' ? 'px-5 pt-5 pb-6' : 'px-0 pb-0'
+                      variant === 'default' ? 'px-4 sm:px-5 pt-4 sm:pt-5 pb-5 sm:pb-6' : 'px-0 pb-0'
                     )}
                   >
                     {/* 5 stars - centered */}
-                    <div className="flex gap-1 mb-4" aria-hidden>
+                    <div className="flex gap-0.5 sm:gap-1 mb-3 sm:mb-4" aria-hidden>
                       {Array.from({ length: t.rating }).map((_, j) => (
-                        <Star key={j} className="h-5 w-5 fill-[#facc15] text-[#facc15]" />
+                        <Star key={j} className="h-4 w-4 sm:h-5 sm:w-5 fill-[#facc15] text-[#facc15]" />
                       ))}
                     </div>
 
                     {/* Testimonial text - centered */}
                     <blockquote
                       className={cn(
-                        'text-white/95 leading-relaxed mb-4',
-                        variant === 'compact' ? 'text-sm' : 'text-base'
+                        'text-white/95 leading-relaxed mb-3 sm:mb-4',
+                        variant === 'compact' ? 'text-xs sm:text-sm' : 'text-sm sm:text-base'
                       )}
                       dir={t.lang === 'ar' ? 'rtl' : 'ltr'}
                     >
@@ -206,7 +206,7 @@ export function TestimonialSlider({ className, variant = 'default' }: Testimonia
                     </blockquote>
 
                     {/* Reviewer name - first name only */}
-                    <p className="text-sm font-semibold text-white mb-2">{t.name}</p>
+                    <p className="text-xs sm:text-sm font-semibold text-white mb-1.5 sm:mb-2">{t.name}</p>
 
                     {/* Shopify verified badge - trust indicator for every testimonial */}
                     <a
@@ -222,8 +222,7 @@ export function TestimonialSlider({ className, variant = 'default' }: Testimonia
                         alt="Shopify Secure"
                         width={80}
                         height={32}
-                        className="h-6 w-auto object-contain"
-                        unoptimized
+                        className="h-5 sm:h-6 w-auto object-contain"
                       />
                     </a>
                   </div>
@@ -233,32 +232,32 @@ export function TestimonialSlider({ className, variant = 'default' }: Testimonia
           })}
         </CarouselContent>
 
-        <div className="flex justify-center gap-4 mt-8">
+        <div className="flex justify-center gap-3 sm:gap-4 mt-6 sm:mt-8">
           <button
             type="button"
             onClick={() => api?.scrollPrev()}
             className={cn(
-              'p-2.5 rounded-full transition-colors',
+              'p-2 sm:p-2.5 rounded-full transition-colors touch-manipulation',
               variant === 'default'
                 ? 'bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]'
                 : 'border border-border bg-background hover:bg-muted'
             )}
             aria-label="Previous testimonial"
           >
-            <ChevronLeft className="h-5 w-5" />
+            <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>
           <button
             type="button"
             onClick={() => api?.scrollNext()}
             className={cn(
-              'p-2.5 rounded-full transition-colors',
+              'p-2 sm:p-2.5 rounded-full transition-colors touch-manipulation',
               variant === 'default'
                 ? 'bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]'
                 : 'border border-border bg-background hover:bg-muted'
             )}
             aria-label="Next testimonial"
           >
-            <ChevronRight className="h-5 w-5" />
+            <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>
         </div>
       </Carousel>

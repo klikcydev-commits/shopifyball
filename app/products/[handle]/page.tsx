@@ -74,7 +74,7 @@ export default async function ProductPage({ params }: { params: Promise<{ handle
   return (
     <>
       <Header />
-      <main className="pt-32">
+      <main className="pt-24 sm:pt-28 md:pt-32 min-h-screen">
         <ProductDetails product={product} />
       </main>
       <Footer />

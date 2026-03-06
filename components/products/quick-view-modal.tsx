@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast"
 import { cn, formatPrice, formatPriceWithCurrency } from "@/lib/utils"
 import { getCardPricing, getSaleState } from "@/lib/sale-helpers"
 import { LiveViewers } from "@/components/product/live-viewers"
+import { TrustBadges } from "@/components/trust-badges"
 
 interface QuickViewModalProps {
   product: Product
@@ -307,6 +308,7 @@ export function QuickViewModal({ product, open, onClose, triggerRef }: QuickView
             )}
 
             <div className="mt-auto flex flex-col gap-3">
+              <TrustBadges variant="compact" />
               {canAddToCart && selectedVariant && (
                 <button
                   type="button"

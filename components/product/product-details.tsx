@@ -8,7 +8,7 @@ import { ClientOnly } from '@/components/ui/client-only'
 import { useCart } from '@/components/cart/cart-context'
 import { adaptShopifyProduct } from '@/lib/shopify/adapter'
 import type { ProductVariant } from '@/lib/shopify-types'
-import { ShoppingBag, Check, ExternalLink, Heart, Ruler, Truck, CreditCard, RotateCcw, Banknote, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ShoppingBag, Check, ExternalLink, Heart, Ruler, Truck, CreditCard, RotateCcw, ChevronLeft, ChevronRight } from 'lucide-react'
 import { toast } from 'sonner'
 import { buildProductUrl } from '@/lib/shopify/checkout'
 import { getSaleState } from '@/lib/sale-helpers'
@@ -17,6 +17,7 @@ import { ProductFaq } from '@/components/product/product-faq'
 import { LiveViewers } from '@/components/product/live-viewers'
 import { TestimonialSlider } from '@/components/home/testimonial-slider'
 import { UaeDeliveryAreas } from '@/components/seo/UaeDeliveryAreas'
+import { TrustBadges } from '@/components/trust-badges'
 import {
   Accordion,
   AccordionContent,
@@ -98,14 +99,14 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   const saleState = getSaleState(variantForSale)
 
   return (
-    <div className="py-20 md:py-32 bg-cream">
+    <div className="py-12 sm:py-16 md:py-20 lg:py-32 bg-cream overflow-x-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12">
-          {/* Images - slightly smaller on large screens */}
-          <div className="max-w-lg mx-auto lg:mx-0 w-full lg:sticky lg:top-24 self-start">
-            <div className="relative w-full max-w-[420px] lg:max-w-[480px] aspect-[1/1] mx-auto rounded-lg overflow-hidden bg-muted mb-4">
+        <div className="grid lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 min-w-0">
+          {/* Images - responsive, no overflow on mobile */}
+          <div className="w-full max-w-full lg:max-w-lg mx-auto lg:mx-0 lg:sticky lg:top-24 self-start min-w-0">
+            <div className="relative w-full aspect-square max-w-[420px] lg:max-w-[480px] mx-auto rounded-lg overflow-hidden bg-muted mb-3 sm:mb-4">
               {saleState.onSale && (
-                <span className="absolute top-4 left-4 z-10 rounded-md bg-[#0A1931] text-white text-sm font-bold uppercase tracking-wider px-3 py-1.5 shadow-[0_0_14px_rgba(74,127,167,0.6),0_0_28px_rgba(10,25,49,0.5)] animate-pulse">
+                <span className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10 rounded-md bg-[#0A1931] text-white text-xs sm:text-sm font-bold uppercase tracking-wider px-2.5 py-1 sm:px-3 sm:py-1.5 shadow-[0_0_14px_rgba(74,127,167,0.6),0_0_28px_rgba(10,25,49,0.5)] animate-pulse">
                   Sale
                 </span>
               )}
@@ -115,17 +116,17 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                     type="button"
                     aria-label="Previous image"
                     onClick={() => setSelectedImageIndex((i) => (i === 0 ? images.length - 1 : i - 1))}
-                    className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+                    className="absolute left-1.5 sm:left-2 top-1/2 -translate-y-1/2 z-10 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors touch-manipulation"
                   >
-                    <ChevronLeft className="w-6 h-6" aria-hidden />
+                    <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden />
                   </button>
                   <button
                     type="button"
                     aria-label="Next image"
                     onClick={() => setSelectedImageIndex((i) => (i === images.length - 1 ? 0 : i + 1))}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+                    className="absolute right-1.5 sm:right-2 top-1/2 -translate-y-1/2 z-10 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors touch-manipulation"
                   >
-                    <ChevronRight className="w-6 h-6" aria-hidden />
+                    <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden />
                   </button>
                 </>
               )}
@@ -136,21 +137,21 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   fill
                   className="object-cover"
                   priority
-                  sizes="(max-width: 1024px) 100vw, 480px"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 480px"
                 />
               )}
             </div>
             {images.length > 1 && (
               <ClientOnly
                 fallback={
-                  <div className="grid grid-cols-4 gap-4">
+                  <div className="grid grid-cols-4 gap-2 sm:gap-4">
                     {[1, 2, 3, 4].map((i) => (
                       <div key={i} className="aspect-square rounded-lg bg-muted/50 animate-pulse" />
                     ))}
                   </div>
                 }
               >
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid grid-cols-4 gap-2 sm:gap-4">
                   {images.map((image, index) => (
                     <button
                       key={image.node.id}
@@ -178,15 +179,15 @@ export function ProductDetails({ product }: ProductDetailsProps) {
           </div>
 
           {/* Product Info */}
-          <div>
-            <h1 className="font-heading text-4xl md:text-5xl text-navy mb-4">{product.title}</h1>
-            <div className="mb-6">
+          <div className="min-w-0">
+            <h1 className="font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-navy mb-3 sm:mb-4 break-words">{product.title}</h1>
+            <div className="mb-4 sm:mb-6">
               {saleState.onSale ? (
                 <div className="flex flex-col gap-0.5">
-                  <span className="text-lg text-zinc-500 dark:text-zinc-400 line-through">
+                  <span className="text-base sm:text-lg text-zinc-500 dark:text-zinc-400 line-through">
                     <del>{saleState.compareAtText}</del>
                   </span>
-                  <span className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+                  <span className="text-xl sm:text-2xl font-bold text-zinc-900 dark:text-zinc-100">
                     {saleState.priceText}
                   </span>
                   <span className="text-sm text-green-600 dark:text-green-400 font-medium">
@@ -199,7 +200,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   )}
                 </div>
               ) : (
-                <span className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+                <span className="text-xl sm:text-2xl font-bold text-zinc-900 dark:text-zinc-100">
                   {saleState.priceText}
                 </span>
               )}
@@ -222,9 +223,9 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               {product.options
                 .filter((option) => option.name.toLowerCase() !== 'title')
                 .map((option) => (
-                <div key={option.id} className="mb-6">
+                <div key={option.id} className="mb-4 sm:mb-6">
                   <label className="block text-sm font-medium mb-2">{option.name}</label>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
                     {option.values.map((value) => {
                       const isSelected = selectedOptions[option.name] === value
                       return (
@@ -232,7 +233,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                           key={value}
                           type="button"
                           onClick={() => handleOptionChange(option.name, value)}
-                          className={`px-4 py-2 rounded-md border-2 transition-all ${
+                          className={`px-3 py-2 sm:px-4 rounded-md border-2 transition-all text-sm ${
                             isSelected
                               ? 'border-gold bg-gold/10 text-gold'
                               : 'border-border hover:border-gold/50'
@@ -247,7 +248,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               ))}
 
               {/* Quantity */}
-              <div className="mb-6">
+              <div className="mb-4 sm:mb-6">
                 <label className="block text-xs font-medium mb-1.5">Quantity</label>
                 <div className="flex items-center gap-2">
                   <button
@@ -300,20 +301,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                     <ExternalLink className="w-5 h-5 mr-2" />
                     Buy Now on Shop
                   </Button>
-                  <div className="flex flex-col gap-2 mb-4 text-sm font-semibold text-muted-foreground">
-                    <p className="flex items-center gap-2">
-                      <RotateCcw className="w-4 h-4 shrink-0 text-accent" aria-hidden />
-                      15 Days Free Return
-                    </p>
-                    <p className="flex items-center gap-2">
-                      <Banknote className="w-4 h-4 shrink-0 text-accent" aria-hidden />
-                      Cash on Delivery
-                    </p>
-                    <p className="flex items-center gap-2">
-                      <Truck className="w-4 h-4 shrink-0 text-accent" aria-hidden />
-                      Free Delivery
-                    </p>
-                  </div>
+                  <TrustBadges variant="compact" className="mb-4" />
                 </>
               )}
 
@@ -326,15 +314,15 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             </ClientOnly>
 
             <div
-              className="prose prose-sm max-w-none mb-6 text-muted-foreground"
+              className="prose prose-sm max-w-none mb-6 text-muted-foreground break-words [&_*]:break-words"
               dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
             />
 
-            <Accordion type="single" collapsible className="w-full mb-8" defaultValue="why-you-will-love-it">
+            <Accordion type="single" collapsible className="w-full mb-6 sm:mb-8" defaultValue="why-you-will-love-it">
               <AccordionItem value="why-you-will-love-it" className="border-b border-border">
-                <AccordionTrigger className="text-left font-medium py-4">
-                  <span className="flex items-center gap-3">
-                    <Heart className="w-5 h-5 shrink-0 text-muted-foreground" aria-hidden />
+                <AccordionTrigger className="text-left font-medium py-3 sm:py-4 text-sm sm:text-base">
+                  <span className="flex items-center gap-2 sm:gap-3">
+                    <Heart className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 text-muted-foreground" aria-hidden />
                     Why You Will Love It
                   </span>
                 </AccordionTrigger>
@@ -359,9 +347,9 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="sizes" className="border-b border-border">
-                <AccordionTrigger className="text-left font-medium py-4">
-                  <span className="flex items-center gap-3">
-                    <Ruler className="w-5 h-5 shrink-0 text-muted-foreground" aria-hidden />
+                <AccordionTrigger className="text-left font-medium py-3 sm:py-4 text-sm sm:text-base">
+                  <span className="flex items-center gap-2 sm:gap-3">
+                    <Ruler className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 text-muted-foreground" aria-hidden />
                     Sizes
                   </span>
                 </AccordionTrigger>
@@ -370,9 +358,9 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="shipping" className="border-b border-border">
-                <AccordionTrigger className="text-left font-medium py-4">
-                  <span className="flex items-center gap-3">
-                    <Truck className="w-5 h-5 shrink-0 text-muted-foreground" aria-hidden />
+                <AccordionTrigger className="text-left font-medium py-3 sm:py-4 text-sm sm:text-base">
+                  <span className="flex items-center gap-2 sm:gap-3">
+                    <Truck className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 text-muted-foreground" aria-hidden />
                     Shipping
                   </span>
                 </AccordionTrigger>
@@ -381,9 +369,9 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="payment" className="border-b border-border">
-                <AccordionTrigger className="text-left font-medium py-4">
-                  <span className="flex items-center gap-3">
-                    <CreditCard className="w-5 h-5 shrink-0 text-muted-foreground" aria-hidden />
+                <AccordionTrigger className="text-left font-medium py-3 sm:py-4 text-sm sm:text-base">
+                  <span className="flex items-center gap-2 sm:gap-3">
+                    <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 text-muted-foreground" aria-hidden />
                     Payment
                   </span>
                 </AccordionTrigger>
@@ -392,24 +380,24 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="returns" className="border-b border-border">
-                <AccordionTrigger className="text-left font-medium py-4">
-                  <span className="flex items-center gap-3">
-                    <RotateCcw className="w-5 h-5 shrink-0 text-muted-foreground" aria-hidden />
+                <AccordionTrigger className="text-left font-medium py-3 sm:py-4 text-sm sm:text-base">
+                  <span className="flex items-center gap-2 sm:gap-3">
+                    <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 text-muted-foreground" aria-hidden />
                     Returns
                   </span>
                 </AccordionTrigger>
                 <AccordionContent className="text-muted-foreground text-sm pb-4">
-                  Your satisfaction is our top priority. We take pride in delivering premium-quality wall canvas posters, but if you ever receive a defective item or feel the product doesn&apos;t meet your expectations, we offer a totally free return to ensure you shop with confidence.
+                  Your satisfaction is our top priority. We take pride in delivering premium-quality wall canvas posters, but if you ever receive a defective item or feel the product doesn&apos;t meet your expectations, we offer a return to ensure you shop with confidence.
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
 
             <ProductSeoBlock title={product.title} handle={product.handle} />
             <ProductFaq />
-            <div className="mt-8">
+            <div className="mt-6 sm:mt-8 overflow-hidden">
               <TestimonialSlider variant="compact" />
             </div>
-            <div className="mt-8">
+            <div className="mt-6 sm:mt-8">
               <UaeDeliveryAreas variant="compact" />
             </div>
           </div>

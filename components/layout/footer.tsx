@@ -3,6 +3,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Instagram } from "lucide-react"
+import { TrustBadges } from "@/components/trust-badges"
 
 const footerLinks = {
   shop: [
@@ -107,6 +108,7 @@ export function Footer() {
         </div>
 
         <div className="flex flex-col items-center justify-center pt-8 border-t border-white/10 text-center">
+          <TrustBadges variant="footer" className="mb-6" />
           <div className="flex items-center gap-4 mb-4">
             <a
               href="https://www.instagram.com/le.mah.madrid?igsh=NXd6Z3BxaDAxZHh2"

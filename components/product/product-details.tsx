@@ -14,6 +14,8 @@ import { buildProductUrl } from '@/lib/shopify/checkout'
 import { getSaleState } from '@/lib/sale-helpers'
 import { ProductSeoBlock } from '@/components/product/product-seo-block'
 import { ProductFaq } from '@/components/product/product-faq'
+import { LiveViewers } from '@/components/product/live-viewers'
+import { TestimonialSlider } from '@/components/home/testimonial-slider'
 import { UaeDeliveryAreas } from '@/components/seo/UaeDeliveryAreas'
 import {
   Accordion,
@@ -202,6 +204,9 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 </span>
               )}
             </div>
+
+            {/* Live Viewers - social proof, unique behavior per product via seed */}
+            <LiveViewers productSeed={product.handle} />
 
             <ClientOnly
               fallback={
@@ -401,6 +406,9 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
             <ProductSeoBlock title={product.title} handle={product.handle} />
             <ProductFaq />
+            <div className="mt-8">
+              <TestimonialSlider variant="compact" />
+            </div>
             <div className="mt-8">
               <UaeDeliveryAreas variant="compact" />
             </div>

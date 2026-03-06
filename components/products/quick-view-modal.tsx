@@ -11,6 +11,7 @@ import { usePromotions } from "@/components/cart/promotions-context"
 import { useToast } from "@/hooks/use-toast"
 import { cn, formatPrice, formatPriceWithCurrency } from "@/lib/utils"
 import { getCardPricing, getSaleState } from "@/lib/sale-helpers"
+import { LiveViewers } from "@/components/product/live-viewers"
 
 interface QuickViewModalProps {
   product: Product
@@ -245,6 +246,9 @@ export function QuickViewModal({ product, open, onClose, triggerRef }: QuickView
             ) : (
               <p className="text-sm text-muted-foreground mb-4">No variants available.</p>
             )}
+
+            {/* Live Viewers - social proof (same as product page) */}
+            <LiveViewers productSeed={product.handle} />
 
             {description && (
               <p className="text-sm text-muted-foreground mb-6 leading-relaxed line-clamp-4">

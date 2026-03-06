@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <!-- Blue curved shapes around the star - 5 petals -->
+    <path id="petal" d="M32 12 Q44 20 42 32 Q40 44 32 48 Q24 44 22 32 Q20 20 32 12" fill="#007bff"/>
+  </defs>
+  <!-- 5 blue petal shapes arranged radially -->
+  <g transform="translate(32,32)">
+    <use href="#petal" transform="rotate(0) translate(-32,-32)"/>
+    <use href="#petal" transform="rotate(72) translate(-32,-32)"/>
+    <use href="#petal" transform="rotate(144) translate(-32,-32)"/>
+    <use href="#petal" transform="rotate(216) translate(-32,-32)"/>
+    <use href="#petal" transform="rotate(288) translate(-32,-32)"/>
+  </g>
+  <!-- Central 5-pointed white star -->
+  <polygon points="32,16 36,28 48,28 38,36 42,48 32,40 22,48 26,36 16,28 28,28" fill="white"/>
+</svg>

@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { X, Minus, Plus, ShoppingBag, Truck } from "lucide-react"
+import { X, Minus, Plus, ShoppingBag } from "lucide-react"
 import { useCart } from "./cart-context"
 import { CartSummary } from "./cart-summary"
 import { cn, formatPriceWithCurrency } from "@/lib/utils"
@@ -210,11 +210,6 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
 
               <div className="p-6 border-t border-border bg-secondary/50 space-y-4">
                 <CartSummary cart={cart} />
-                <p className="flex items-center gap-2 text-sm font-medium text-accent">
-                  <Truck className="w-4 h-4 shrink-0" aria-hidden />
-                  Free Delivery
-                </p>
-
                 <button
                   onClick={() => {
                     if (cart.checkoutUrl)

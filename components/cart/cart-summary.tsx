@@ -1,5 +1,6 @@
 "use client"
 
+import { Truck } from "lucide-react"
 import type { Cart } from "@/lib/shopify-types"
 import { formatPriceWithCurrency } from "@/lib/utils"
 import { cn } from "@/lib/utils"
@@ -25,6 +26,13 @@ export function CartSummary({
 
   return (
     <div className={cn("space-y-2", className)}>
+      <div className="flex justify-between text-sm">
+        <span className="flex items-center gap-2 text-muted-foreground">
+          <Truck className="h-4 w-4 shrink-0" aria-hidden />
+          Free delivery
+        </span>
+        <span className="text-green-600 dark:text-green-400">-25.00 {currencyCode}</span>
+      </div>
       <div className="flex justify-between text-sm">
         <span className="text-muted-foreground">Subtotal</span>
         <span>{formatPriceWithCurrency(subtotal, currencyCode)}</span>

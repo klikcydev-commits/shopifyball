@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useScrollReveal } from "@/hooks/use-scroll-reveal"
 import { cn } from "@/lib/utils"
 import { ArrowRight, Gift, Shirt, LayoutGrid } from "lucide-react"
+import { TestimonialSlider } from "@/components/home/testimonial-slider"
 
 const SECTIONS = [
   {
@@ -109,6 +110,11 @@ export function HomeSeoSections() {
                 </div>
               )
             })}
+          </div>
+
+          {/* Testimonial slider - no images variant */}
+          <div className="mt-16 md:mt-20">
+            <TestimonialSlider variant="compact" />
           </div>
         </div>
       </div>

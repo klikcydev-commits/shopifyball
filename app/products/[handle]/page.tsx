@@ -3,7 +3,9 @@ import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { getProduct } from '@/lib/shopify'
 import { ProductDetails } from '@/components/product/product-details'
+import { ProductJsonLd } from '@/components/seo/product-json-ld'
 import { getBaseUrl, getProductDescriptionSuffix, getProductTitleTemplate } from '@/lib/seo/build-metadata'
+import { stripHtmlToText } from '@/lib/seo/structured-data'
 import type { Metadata } from 'next'
 
 export const revalidate = 300
@@ -25,8 +27,8 @@ export async function generateMetadata({
     const suffix = getProductDescriptionSuffix()
     const titleTemplate = getProductTitleTemplate()
     const title = titleTemplate.replace('{productTitle}', product.title)
-    const desc =
-      (product.description?.replace(/<[^>]*>/g, '').slice(0, 120).trim() || product.title) + ` — ${suffix}`
+    const plainDesc = stripHtmlToText(product.descriptionHtml || product.description || '')
+    const desc = (plainDesc.slice(0, 120).trim() || product.title) + ` — ${suffix}`
     const canonical = `${baseUrl}/products/${handle}`
     const ogImage = product.images.edges[0]?.node
     const imageUrl = ogImage?.url
@@ -35,6 +37,7 @@ export async function generateMetadata({
     return {
       title,
       description: desc,
+      robots: 'index,follow',
       alternates: { canonical },
       openGraph: {
         title,
@@ -73,8 +76,9 @@ export default async function ProductPage({ params }: { params: Promise<{ handle
 
   return (
     <>
+      <ProductJsonLd product={product} handle={handle} />
       <Header />
-      <main className="pt-24 sm:pt-28 md:pt-32 min-h-screen">
+      <main className="pt-24 sm:pt-28 md:pt-32 min-h-screen" id="main-content">
         <ProductDetails product={product} />
       </main>
       <Footer />

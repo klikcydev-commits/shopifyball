@@ -11,6 +11,7 @@ import { PromoBanner } from "@/components/PromoBanner"
 import { MainLoader } from "@/components/MainLoader"
 import { Toaster } from "@/components/ui/toaster"
 import { getPageMetadata } from "@/lib/seo/build-metadata"
+import { WebsiteJsonLd } from "@/components/seo/website-json-ld"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -52,6 +53,7 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${oswald.variable}`}>
       <head />
       <body className="font-sans antialiased">
+        <WebsiteJsonLd />
         <GoogleTagManager gtmId="GTM-PCV4CGG5" />
         {/* Google tag (gtag.js) - kept for existing GA */}
         <Script

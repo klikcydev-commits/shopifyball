@@ -5,6 +5,7 @@ import { Footer } from "@/components/layout/footer"
 import { HeroSection } from "@/components/home/hero-section"
 import { FeaturedCollections } from "@/components/home/featured-collections"
 import { FeaturedProducts } from "@/components/home/featured-products"
+import { RandomProductsSection } from "@/components/home/random-products-section"
 import { HomeSeoSections } from "@/components/home/home-seo-sections"
 import { HomeFaq } from "@/components/home/home-faq"
 import { ElevenKitTeaser } from "@/components/home/eleven-kit-teaser"
@@ -37,6 +38,7 @@ export default async function HomePage() {
       <main>
         <HeroSection />
         <FeaturedProducts />
+        <RandomProductsSection />
         <FeaturedCollections collections={collections} />
         <HomeSeoSections />
         <HomeFaq />

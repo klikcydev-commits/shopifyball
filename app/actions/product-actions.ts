@@ -133,6 +133,42 @@ export async function getAllCollectionProductsAction(handle: string): Promise<{
   }
 }
 
+const RANDOM_PICKS_WANTED = 6
+/** Six products, mostly CR7 (Ronaldo), then Legends or general. For "Random Picks" + "X people bought" section. */
+export async function getRandomPoolProductsAction(): Promise<{ products: ShopifyProduct[] }> {
+  try {
+    const cr7 = await getCollection('cr7', 20)
+    const legends = await getCollection('legends', 20)
+    const cr7Products = cr7?.products?.edges?.map((e) => e.node) ?? []
+    const legendsProducts = legends?.products?.edges?.map((e) => e.node) ?? []
+    const seenIds = new Set<string>()
+    const result: ShopifyProduct[] = []
+    const fromCr7 = pickRandom(cr7Products.filter((p) => !seenIds.has(p.id)), 4)
+    fromCr7.forEach((p) => {
+      seenIds.add(p.id)
+      result.push(p)
+    })
+    const fromLegends = pickRandom(
+      legendsProducts.filter((p) => !seenIds.has(p.id)),
+      RANDOM_PICKS_WANTED - result.length
+    )
+    fromLegends.forEach((p) => {
+      seenIds.add(p.id)
+      result.push(p)
+    })
+    if (result.length >= RANDOM_PICKS_WANTED) {
+      return { products: shuffle(result).slice(0, RANDOM_PICKS_WANTED) }
+    }
+    const { products: general } = await getProducts({ first: 24 })
+    const extra = general.filter((p) => !seenIds.has(p.id))
+    const filled = [...result, ...pickRandom(extra, RANDOM_PICKS_WANTED - result.length)]
+    return { products: shuffle(filled).slice(0, RANDOM_PICKS_WANTED) }
+  } catch {
+    const { products } = await getProducts({ first: 24 })
+    return { products: pickRandom(products, RANDOM_PICKS_WANTED) }
+  }
+}
+
 /** Lookbook: 9 random products, evenly spread across all collections. Used for lookbook grid. */
 export async function getLookbookProductsAction(): Promise<{ products: ShopifyProduct[] }> {
   const wanted = 9

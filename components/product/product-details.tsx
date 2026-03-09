@@ -47,6 +47,15 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   const images = product.images.edges
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
 
+  // Cache-bust image URLs so changes in Shopify reflect within 60s (revalidate)
+  const imageUrl = (url: string) => {
+    if (!url) return url
+    const v = product.updatedAt ? new Date(product.updatedAt).getTime() : undefined
+    if (!v) return url
+    const sep = url.includes('?') ? '&' : '?'
+    return `${url}${sep}v=${v}`
+  }
+
   const handleOptionChange = (optionName: string, value: string) => {
     const newOptions = { ...selectedOptions, [optionName]: value }
     setSelectedOptions(newOptions)
@@ -132,7 +141,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               )}
               {images[selectedImageIndex] && (
                 <Image
-                  src={images[selectedImageIndex].node.url}
+                  src={imageUrl(images[selectedImageIndex].node.url)}
                   alt={images[selectedImageIndex].node.altText || product.title}
                   fill
                   className="object-cover"
@@ -165,7 +174,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                       }`}
                     >
                       <Image
-                        src={image.node.url}
+                        src={imageUrl(image.node.url)}
                         alt={image.node.altText || product.title}
                         fill
                         className="object-cover"

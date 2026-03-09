@@ -109,6 +109,7 @@ export const getProductQuery = `
       id
       title
       handle
+      updatedAt
       description
       descriptionHtml
       priceRange {

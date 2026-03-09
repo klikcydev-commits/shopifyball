@@ -8,7 +8,7 @@ import { getBaseUrl, getProductDescriptionSuffix, getProductTitleTemplate } from
 import { stripHtmlToText } from '@/lib/seo/structured-data'
 import type { Metadata } from 'next'
 
-export const revalidate = 300
+export const revalidate = 60
 
 export async function generateMetadata({
   params,

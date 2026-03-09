@@ -2,6 +2,7 @@ export interface ShopifyProduct {
   id: string
   title: string
   handle: string
+  updatedAt?: string
   description: string
   descriptionHtml: string
   priceRange: {

@@ -39,7 +39,7 @@ export async function getProduct(handle: string): Promise<ShopifyProduct | null>
   const res = await shopifyFetch<{ data: { product: ShopifyProduct | null } }>({
     query: getProductQuery,
     variables: { handle },
-    next: { revalidate: 300 },
+    next: { revalidate: 60 },
   })
 
   return res.body.data.product
@@ -81,7 +81,7 @@ export async function getProducts({
       first,
       ...(after != null && { after }),
     },
-    next: { revalidate: 300 },
+    next: { revalidate: 120 },
   })
 
   return {

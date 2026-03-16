@@ -37,6 +37,7 @@ export function QuickViewModal({ product, open, onClose, triggerRef }: QuickView
 
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(firstVariant)
   const [quantity, setQuantity] = useState(1)
+  const [imageIndex, setImageIndex] = useState(0)
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const modalContainerRef = useRef<HTMLDivElement>(null)
   const { addToCart } = useCart()
@@ -53,6 +54,7 @@ export function QuickViewModal({ product, open, onClose, triggerRef }: QuickView
     // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional sync when modal opens
     setSelectedVariant(list[0] ?? null)
     setQuantity(1)
+    setImageIndex(0)
   }, [open, product.id])
 
   // Body scroll lock when modal is open
@@ -139,7 +141,9 @@ export function QuickViewModal({ product, open, onClose, triggerRef }: QuickView
     }
   }
 
-  const imageUrl = product.images?.[0]?.url || PLACEHOLDER_IMAGE
+  const images = product.images?.length ? product.images : [{ id: "qv-pl", url: PLACEHOLDER_IMAGE, altText: product.title || "Product", width: 400, height: 400 }]
+  const mainImage = images[imageIndex]
+  const mainImageUrl = mainImage?.url || PLACEHOLDER_IMAGE
   const description = stripHtml(product.description)
   const variantForSale = selectedVariant
     ? {
@@ -189,16 +193,43 @@ export function QuickViewModal({ product, open, onClose, triggerRef }: QuickView
         </button>
 
         <div className="grid grid-cols-1 md:grid-cols-2 flex-1 min-h-0 overflow-hidden">
-          {/* Image */}
-          <div className="relative aspect-square min-h-[220px] sm:min-h-[280px] bg-secondary flex-shrink-0">
-            <Image
-              src={imageUrl}
-              alt={product.title || "Product"}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 50vw"
-              unoptimized={imageUrl === PLACEHOLDER_IMAGE}
-            />
+          {/* Image: contain so full image is visible; thumbnails below */}
+          <div className="flex flex-col flex-shrink-0 min-h-0">
+            <div className="relative aspect-square min-h-[220px] sm:min-h-[280px]">
+              <Image
+                src={mainImageUrl}
+                alt={mainImage?.altText || product.title || "Product"}
+                fill
+                className="object-contain"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                unoptimized={mainImageUrl === PLACEHOLDER_IMAGE}
+              />
+            </div>
+            {images.length > 1 && (
+              <div className="flex flex-wrap justify-center gap-2 p-2 sm:p-3 border-t border-border bg-muted/30">
+                {images.map((img, i) => (
+                  <button
+                    key={img.id || i}
+                    type="button"
+                    onClick={() => setImageIndex(i)}
+                    className={cn(
+                      "relative w-12 h-12 sm:w-14 sm:h-14 rounded-md overflow-hidden border-2 transition-colors flex-shrink-0",
+                      i === imageIndex ? "border-gold ring-1 ring-gold" : "border-transparent hover:border-border"
+                    )}
+                    aria-label={`View image ${i + 1} of ${images.length}`}
+                  >
+                    <Image
+                      src={img.url}
+                      alt=""
+                      fill
+                      className="object-cover"
+                      sizes="56px"
+                      unoptimized={img.url === PLACEHOLDER_IMAGE}
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Info - scrollable when content is long */}

@@ -3,13 +3,13 @@
 import { useState, useEffect } from "react"
 import { SectionHeader } from "@/components/ui/section-header"
 import { useScrollReveal } from "@/hooks/use-scroll-reveal"
-import { getFeaturedProductsAction } from "@/app/actions/product-actions"
+import { getAllProductsAction } from "@/app/actions/product-actions"
 import { adaptShopifyProduct } from "@/lib/shopify/adapter"
 import type { Product } from "@/lib/shopify-types"
 import { ProductCard } from "@/components/products/product-card"
 import { cn } from "@/lib/utils"
 
-const FEATURED_COUNT = 6
+const SKELETON_COUNT = 8
 
 export function FeaturedProducts() {
   const { ref, isRevealed } = useScrollReveal<HTMLElement>()
@@ -18,11 +18,11 @@ export function FeaturedProducts() {
   useEffect(() => {
     async function loadProducts() {
       try {
-        const result = await getFeaturedProductsAction()
+        const result = await getAllProductsAction()
         const adaptedProducts = result.products.map(adaptShopifyProduct)
         setProducts(adaptedProducts)
       } catch (error) {
-        console.error("Error loading featured products:", error)
+        console.error("Error loading products:", error)
       }
     }
     loadProducts()
@@ -38,9 +38,9 @@ export function FeaturedProducts() {
           )}
         >
           <SectionHeader
-            eyebrow="Featured"
-            title="Premium Picks"
-            subtitle="Handpicked accessories for the discerning football lifestyle."
+            eyebrow="Shop"
+            title="All Products"
+            subtitle="Browse our full collection of premium football lifestyle accessories."
             align="left"
             variant="dark"
             className="mb-0"
@@ -55,7 +55,7 @@ export function FeaturedProducts() {
           style={{ transitionDelay: isRevealed ? "200ms" : "0ms" }}
         >
           {products.length === 0 ? (
-            Array.from({ length: FEATURED_COUNT }).map((_, index) => (
+            Array.from({ length: SKELETON_COUNT }).map((_, index) => (
               <div
                 key={index}
                 className="w-[170px] sm:w-[220px] md:w-[260px] rounded-xl overflow-hidden bg-primary-foreground/10 animate-pulse"

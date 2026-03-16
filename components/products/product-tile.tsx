@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { ShoppingBag, Eye } from "lucide-react"
@@ -26,7 +26,32 @@ export function ProductTile({
   isAdding = false,
 }: ProductTileProps) {
   const [hovered, setHovered] = useState(false)
-  const imageUrl = product.images?.[0]?.url || "/placeholder.svg"
+  const images = product.images?.length ? product.images : [{ id: "pl", url: "/placeholder.svg", altText: product.title || "Product", width: 400, height: 400 }]
+  const [imageIndex, setImageIndex] = useState(0)
+  const hoverIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (hoverIntervalRef.current) clearInterval(hoverIntervalRef.current)
+    }
+  }, [])
+
+  const startHoverCycle = () => {
+    if (images.length <= 1) return
+    setImageIndex((i) => (i + 1) % images.length)
+    hoverIntervalRef.current = setInterval(() => {
+      setImageIndex((i) => (i + 1) % images.length)
+    }, 2000)
+  }
+
+  const stopHoverCycle = () => {
+    if (hoverIntervalRef.current) {
+      clearInterval(hoverIntervalRef.current)
+      hoverIntervalRef.current = null
+    }
+    setImageIndex(0)
+  }
+
   const variantOption = product.variants?.find((v) => v.availableForSale) ?? product.variants?.[0]
   const pricing = getCardPricing(
     variantOption
@@ -55,16 +80,55 @@ export function ProductTile({
         aspect === "square" ? "aspect-square" : "aspect-[4/3]",
         isDark ? "bg-white/5" : "bg-muted",
       )}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseEnter={() => { setHovered(true); startHoverCycle() }}
+      onMouseLeave={() => { setHovered(false); stopHoverCycle() }}
     >
-      <Image
-        src={imageUrl}
-        alt={product.title || "Product"}
-        fill
-        className="object-cover transition-transform duration-500 group-hover:scale-105"
-        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-      />
+      {images.map((img, i) => (
+        <Image
+          key={img.id || i}
+          src={img.url}
+          alt={img.altText || product.title || "Product"}
+          fill
+          className={cn(
+            "object-cover transition-all duration-500 absolute inset-0",
+            "group-hover:scale-105",
+            i === imageIndex ? "opacity-100 z-0" : "opacity-0 z-[-1] pointer-events-none"
+          )}
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        />
+      ))}
+      {images.length > 1 && (
+        <div className="absolute bottom-12 left-0 right-0 z-10 flex flex-wrap justify-center gap-1 px-2" aria-hidden>
+          {images.map((img, i) => (
+            <button
+              key={img.id || i}
+              type="button"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                setImageIndex(i)
+                if (hoverIntervalRef.current) {
+                  clearInterval(hoverIntervalRef.current)
+                  hoverIntervalRef.current = null
+                }
+              }}
+              className={cn(
+                "relative w-7 h-7 rounded overflow-hidden border-2 transition-colors flex-shrink-0 shadow",
+                i === imageIndex ? "border-white ring-1 ring-white" : "border-white/60 hover:border-white"
+              )}
+              aria-label={`View image ${i + 1} of ${images.length}`}
+            >
+              <Image
+                src={img.url}
+                alt=""
+                fill
+                className="object-cover"
+                sizes="28px"
+              />
+            </button>
+          ))}
+        </div>
+      )}
 
       {onSale && (
         <span className="absolute top-2 left-2 z-10 rounded-md bg-[#0A1931] px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-white shadow-[0_0_10px_rgba(74,127,167,0.5),0_0_20px_rgba(10,25,49,0.4)]">

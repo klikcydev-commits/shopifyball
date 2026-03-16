@@ -111,9 +111,10 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     <div className="py-12 sm:py-16 md:py-20 lg:py-32 bg-cream overflow-x-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 min-w-0">
-          {/* Images - responsive, no overflow on mobile */}
+          {/* Images - full image visible (no crop), thumbnails below */}
           <div className="w-full max-w-full lg:max-w-lg mx-auto lg:mx-0 lg:sticky lg:top-24 self-start min-w-0">
-            <div className="relative w-full aspect-square max-w-[420px] lg:max-w-[480px] mx-auto rounded-lg overflow-hidden bg-muted mb-3 sm:mb-4">
+            {/* Main image: object-contain so the full image is visible */}
+            <div className="relative w-full aspect-square max-w-[420px] lg:max-w-[480px] mx-auto rounded-lg overflow-hidden mb-3 sm:mb-4">
               {saleState.onSale && (
                 <span className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10 rounded-md bg-[#0A1931] text-white text-xs sm:text-sm font-bold uppercase tracking-wider px-2.5 py-1 sm:px-3 sm:py-1.5 shadow-[0_0_14px_rgba(74,127,167,0.6),0_0_28px_rgba(10,25,49,0.5)] animate-pulse">
                   Sale
@@ -144,32 +145,38 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   src={imageUrl(images[selectedImageIndex].node.url)}
                   alt={images[selectedImageIndex].node.altText || product.title}
                   fill
-                  className="object-cover"
+                  className="object-contain"
                   priority
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 480px"
                 />
               )}
             </div>
+
+            {/* Thumbnail strip: other images, clear active state */}
             {images.length > 1 && (
               <ClientOnly
                 fallback={
-                  <div className="grid grid-cols-4 gap-2 sm:gap-4">
+                  <div className="flex gap-2 sm:gap-3 overflow-hidden">
                     {[1, 2, 3, 4].map((i) => (
-                      <div key={i} className="aspect-square rounded-lg bg-muted/50 animate-pulse" />
+                      <div key={i} className="aspect-square w-16 sm:w-20 rounded-lg bg-muted/30 animate-pulse flex-shrink-0" />
                     ))}
                   </div>
                 }
               >
-                <div className="grid grid-cols-4 gap-2 sm:gap-4">
+                <p className="text-xs font-medium text-muted-foreground mb-2 sm:mb-2.5">
+                  Other views
+                </p>
+                <div className="flex justify-center gap-2 sm:gap-3 overflow-x-auto pb-1 max-w-[420px] lg:max-w-[480px] mx-auto scrollbar-thin">
                   {images.map((image, index) => (
                     <button
                       key={image.node.id}
                       type="button"
-                      aria-label={`View image ${index + 1}`}
+                      aria-label={`View image ${index + 1} of ${images.length}`}
+                      aria-current={selectedImageIndex === index ? 'true' : undefined}
                       onClick={() => setSelectedImageIndex(index)}
-                      className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${
+                      className={`relative aspect-square w-16 sm:w-20 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 ${
                         selectedImageIndex === index
-                          ? 'border-gold'
+                          ? 'border-gold ring-2 ring-gold/30'
                           : 'border-transparent hover:border-border'
                       }`}
                     >
@@ -178,7 +185,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                         alt={image.node.altText || product.title}
                         fill
                         className="object-cover"
-                        sizes="(max-width: 1024px) 25vw, 12.5vw"
+                        sizes="80px"
                       />
                     </button>
                   ))}

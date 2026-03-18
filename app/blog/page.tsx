@@ -5,6 +5,7 @@ import Link from 'next/link'
 import fs from 'fs'
 import { join } from 'path'
 import matter from 'gray-matter'
+import { redirect } from 'next/navigation'
 
 import { getPageMetadata } from '@/lib/seo/build-metadata'
 
@@ -99,7 +100,18 @@ function getAllPosts(): BlogPost[] {
   }
 }
 
-export default function BlogPage() {
+export default function BlogPage({
+  searchParams,
+}: {
+  searchParams?: Record<string, string | string[] | undefined>
+}) {
+  // Some security tools flag `/blog?rs=...` as suspicious (even though the app doesn't use it).
+  // Strip it by redirecting to the canonical clean URL.
+  const rs = searchParams?.rs
+  if (rs != null && (typeof rs === 'string' ? rs.trim() : Array.isArray(rs) ? rs.length > 0 : false)) {
+    redirect('/blog')
+  }
+
   const posts = getAllPosts()
 
   const groupedByTheme = posts.reduce((acc, post) => {

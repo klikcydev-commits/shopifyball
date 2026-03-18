@@ -5,8 +5,6 @@ import Link from 'next/link'
 import fs from 'fs'
 import { join } from 'path'
 import matter from 'gray-matter'
-import { redirect } from 'next/navigation'
-import { headers } from 'next/headers'
 
 import { getPageMetadata } from '@/lib/seo/build-metadata'
 
@@ -106,26 +104,6 @@ export default function BlogPage({
 }: {
   searchParams?: Record<string, string | string[] | undefined>
 }) {
-  // Some security tools flag `/blog?rs=...` as suspicious (even though the app doesn't use it).
-  // Strip it by redirecting to the canonical clean URL.
-  const accept = headers().get('accept') ?? ''
-  const wantsHtml = accept.includes('text/html')
-
-  const rs = searchParams?.rs
-  const rsc = searchParams?._rsc
-
-  if (
-    wantsHtml &&
-    (rs != null || rsc != null) &&
-    (typeof (rs ?? rsc) === 'string'
-      ? (rs ?? rsc).trim().length > 0
-      : Array.isArray(rs ?? rsc)
-        ? (rs ?? rsc).length > 0
-        : true)
-  ) {
-    redirect('/blog')
-  }
-
   const posts = getAllPosts()
 
   const groupedByTheme = posts.reduce((acc, post) => {

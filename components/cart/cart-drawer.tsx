@@ -25,16 +25,16 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
   } = useCart()
 
   type PaymentMethod = "cod" | "online"
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cod")
-
-  useEffect(() => {
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(() => {
+    if (typeof window === "undefined") return "cod"
     try {
       const saved = window.localStorage.getItem("paymentMethod") as PaymentMethod | null
-      if (saved === "cod" || saved === "online") setPaymentMethod(saved)
+      if (saved === "cod" || saved === "online") return saved
     } catch {
       // ignore storage errors
     }
-  }, [])
+    return "cod"
+  })
 
   useEffect(() => {
     try {

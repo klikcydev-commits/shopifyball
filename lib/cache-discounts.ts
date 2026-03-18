@@ -5,8 +5,25 @@ import type { ActiveDiscount, ActiveDiscountsResponse } from "@/app/api/active-d
 const CACHE_TAG = "discounts"
 const REVALIDATE_SECONDS = 300
 
+function resolveBaseUrl(): string {
+  // Prefer explicit env (should be https in production).
+  const explicitBase =
+    process.env.NEXT_PUBLIC_BASE_URL ||
+    process.env.NEXT_PUBLIC_APP_URL ||
+    undefined
+
+  if (explicitBase) return explicitBase.replace(/\/+$/, "")
+
+  // On Vercel, VERCEL_URL is available at build/runtime.
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL.replace(/\/+$/, "")}`
+
+  // Local fallback: http is fine for local dev, but production should always be https.
+  if (process.env.NODE_ENV === "production") return "https://localhost:3000"
+  return "http://localhost:3000"
+}
+
 async function fetchActiveDiscountsFromApi(): Promise<ActiveDiscountsResponse> {
-  const base = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
+  const base = resolveBaseUrl()
   const res = await fetch(`${base}/api/active-discounts`, { next: { revalidate: 60 } })
   if (!res.ok) return { active: false, discounts: [] }
   const data = await res.json()

@@ -108,7 +108,7 @@ export function Lookbook() {
                     src={imageUrl}
                     alt={alt}
                     fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-110"
+                    className="object-contain transition-transform duration-700 group-hover:scale-105 bg-black"
                     sizes="(max-width: 768px) 50vw, 33vw"
                   />
 

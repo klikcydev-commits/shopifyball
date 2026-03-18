@@ -75,12 +75,6 @@ export default async function ShopPage() {
         {/* Products Section */}
         <section className="py-20 md:py-32 bg-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {collections.length > 0 && (
-              <div className="mb-16">
-                <ShopCollections collections={collections} />
-              </div>
-            )}
-
             {/* Intro copy + internal links */}
             <div className="mb-12 max-w-3xl mx-auto text-center">
               <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-4">

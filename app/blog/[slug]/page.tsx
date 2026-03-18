@@ -152,6 +152,7 @@ export default async function BlogPostPage({ params }: PageProps) {
       <main className="min-h-screen bg-background">
         <HeroSection />
         <HomeSeoSections />
+        {/* Shop all products above article */}
         <FeaturedProducts />
         <ArticleLayout>
           {(meta?.city as string) || data.theme ? (

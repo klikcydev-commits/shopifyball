@@ -1,7 +1,8 @@
 "use client"
 
+import { useEffect, useMemo, useState } from "react"
 import Image from "next/image"
-import { X, Minus, Plus, ShoppingBag } from "lucide-react"
+import { X, Minus, Plus, ShoppingBag, Banknote, CreditCard } from "lucide-react"
 import { useCart } from "./cart-context"
 import { CartSummary } from "./cart-summary"
 import { TrustBadges } from "@/components/trust-badges"
@@ -23,8 +24,46 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
     clearError,
   } = useCart()
 
+  type PaymentMethod = "cod" | "online"
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cod")
+
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem("paymentMethod") as PaymentMethod | null
+      if (saved === "cod" || saved === "online") setPaymentMethod(saved)
+    } catch {
+      // ignore storage errors
+    }
+  }, [])
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem("paymentMethod", paymentMethod)
+    } catch {
+      // ignore storage errors
+    }
+  }, [paymentMethod])
+
   const currencyCode =
     cart.currencyCode ?? cart.lines[0]?.variant?.currencyCode ?? "AED"
+
+  const checkoutUrlWithPayment = useMemo(() => {
+    if (!cart.checkoutUrl) return ""
+    if (!cart.checkoutUrl.startsWith("http")) return cart.checkoutUrl
+
+    try {
+      const url = new URL(cart.checkoutUrl)
+      // Shopify may ignore this, but it can be consumed by custom checkout/cart logic.
+      url.searchParams.set("payment", paymentMethod === "cod" ? "cash_on_delivery" : "online")
+      url.searchParams.set(
+        "payment_method",
+        paymentMethod === "cod" ? "cash_on_delivery" : "online"
+      )
+      return url.toString()
+    } catch {
+      return cart.checkoutUrl
+    }
+  }, [cart.checkoutUrl, paymentMethod])
 
   return (
     <>
@@ -212,12 +251,59 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
               <div className="p-6 border-t border-border bg-secondary/50 space-y-4">
                 <TrustBadges variant="compact" showShopifyBadge={true} />
                 <CartSummary cart={cart} />
+
+                <div className="space-y-3 pt-2">
+                  <p className="text-sm font-semibold tracking-wide">Payment method</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setPaymentMethod("cod")}
+                      className={cn(
+                        "px-3 py-3 rounded-lg border transition-colors text-left",
+                        paymentMethod === "cod"
+                          ? "border-gold bg-gold/10 text-gold"
+                          : "border-border hover:border-gold/60 hover:bg-gold/5"
+                      )}
+                      role="radio"
+                      aria-checked={paymentMethod === "cod"}
+                    >
+                      <div className="flex items-start gap-2">
+                        <Banknote className="h-4 w-4 mt-0.5" aria-hidden />
+                        <div>
+                          <div className="text-sm font-semibold">Cash on Delivery</div>
+                          <div className="text-xs text-muted-foreground">Pay at delivery</div>
+                        </div>
+                      </div>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setPaymentMethod("online")}
+                      className={cn(
+                        "px-3 py-3 rounded-lg border transition-colors text-left",
+                        paymentMethod === "online"
+                          ? "border-gold bg-gold/10 text-gold"
+                          : "border-border hover:border-gold/60 hover:bg-gold/5"
+                      )}
+                      role="radio"
+                      aria-checked={paymentMethod === "online"}
+                    >
+                      <div className="flex items-start gap-2">
+                        <CreditCard className="h-4 w-4 mt-0.5" aria-hidden />
+                        <div>
+                          <div className="text-sm font-semibold">Online Payment</div>
+                          <div className="text-xs text-muted-foreground">Secure checkout</div>
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
                 <button
                   onClick={() => {
-                    if (cart.checkoutUrl)
-                      window.location.href = cart.checkoutUrl
+                    if (checkoutUrlWithPayment) window.location.href = checkoutUrlWithPayment
                   }}
-                  disabled={isLoading || !cart.checkoutUrl}
+                  disabled={isLoading || !checkoutUrlWithPayment}
                   className="w-full py-4 bg-primary text-primary-foreground font-medium text-sm uppercase tracking-wider hover:bg-navy-light transition-colors btn-press gold-glow disabled:opacity-60 disabled:pointer-events-none"
                 >
                   {isLoading ? "Updating…" : "Proceed to Checkout"}

@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
+import { headers } from 'next/headers'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { HeroSection } from '@/components/home/hero-section'
@@ -119,12 +120,29 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return metadata
 }
 
-export default async function BlogPostPage({ params }: PageProps) {
+export default async function BlogPostPage({
+  params,
+  searchParams,
+}: PageProps & {
+  searchParams?: Record<string, string | string[] | undefined>
+}) {
   const { slug } = await params
   const post = getPost(slug)
 
   if (!post) {
     notFound()
+  }
+
+  // If someone lands on this route with Next internals like `?_rsc=...` in the URL,
+  // some security tools misclassify the RSC payload as suspicious.
+  // Only redirect when the request is for real HTML navigation (Accept: text/html),
+  // so we do not interfere with Next's internal RSC fetches.
+  const accept = headers().get('accept') ?? ''
+  const wantsHtml = accept.includes('text/html')
+  const rs = searchParams?.rs
+  const rsc = searchParams?._rsc
+  if (wantsHtml && (rs != null || rsc != null)) {
+    redirect(`/blog/${slug}`)
   }
 
   const { data, content } = post
@@ -188,10 +206,8 @@ export default async function BlogPostPage({ params }: PageProps) {
           </div>
         </ArticleLayout>
 
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
-        />
+        {/* JSON-LD (safe): keep content-only (no dangerouslySetInnerHTML) */}
+        <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
       </main>
       <Footer />
     </>

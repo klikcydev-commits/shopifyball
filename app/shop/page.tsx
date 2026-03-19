@@ -1,8 +1,7 @@
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
-import { getProducts, getCollections } from '@/lib/shopify'
+import { getProducts } from '@/lib/shopify'
 import { AllProductsClient } from '@/components/shop/shop-products-client'
-import { ShopCollections } from '@/components/shop/shop-collections'
 import { ShopFaq } from '@/components/shop/shop-faq'
 import { UaeDeliveryAreas } from '@/components/seo/UaeDeliveryAreas'
 import { getPageMetadata } from '@/lib/seo/build-metadata'
@@ -14,16 +13,11 @@ export const metadata: Metadata = getPageMetadata('/shop')
 
 export default async function ShopPage() {
   let products: Awaited<ReturnType<typeof getProducts>>['products'] = []
-  let collections: Awaited<ReturnType<typeof getCollections>> = []
   let error: Error | null = null
 
   try {
-    const [productsResult, collectionsResult] = await Promise.all([
-      getProducts({ first: 100 }),
-      getCollections(20),
-    ])
+    const productsResult = await getProducts({ first: 100 })
     products = productsResult.products ?? []
-    collections = collectionsResult ?? []
   } catch (err) {
     console.error('Error fetching shop data:', err)
     error = err instanceof Error ? err : new Error('Failed to fetch products')
@@ -75,31 +69,6 @@ export default async function ShopPage() {
         {/* Products Section */}
         <section className="py-20 md:py-32 bg-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Intro copy + internal links */}
-            <div className="mb-12 max-w-3xl mx-auto text-center">
-              <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-4">
-                Football Gifts & Accessories in Dubai & UAE
-              </h2>
-              <p className="text-muted-foreground text-lg mb-6">
-                Our complete collection of football gifts, accessories, and wall art. Perfect for football lovers, teens, and collectors. Explore by interest:{" "}
-                <a href="/football-gifts-dubai" className="text-foreground font-medium underline underline-offset-2 hover:text-gold">football gifts Dubai</a>
-                ,{" "}
-                <a href="/football-gifts-uae" className="text-foreground font-medium underline underline-offset-2 hover:text-gold">football gifts UAE</a>
-                ,{" "}
-                <a href="/ronaldo-gifts-dubai" className="text-foreground font-medium underline underline-offset-2 hover:text-gold">Ronaldo gifts</a>
-                ,{" "}
-                <a href="/messi-gifts-dubai" className="text-foreground font-medium underline underline-offset-2 hover:text-gold">Messi gifts</a>
-                ,{" "}
-                <a href="/football-gifts-for-teens-dubai" className="text-foreground font-medium underline underline-offset-2 hover:text-gold">gifts for teens</a>
-                .
-              </p>
-              {products.length > 0 && (
-                <p className="text-muted-foreground">
-                  {products.length} {products.length === 1 ? 'product' : 'products'} available
-                </p>
-              )}
-            </div>
-
             {error ? (
               <div className="text-center py-16">
                 <p className="text-xl text-destructive mb-4">
@@ -115,6 +84,56 @@ export default async function ShopPage() {
             ) : (
               <AllProductsClient products={products} />
             )}
+
+            {/* Intro copy + internal links (moved under products) */}
+            <div className="mt-10 mb-12 max-w-3xl mx-auto text-center">
+              <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-4">
+                Football Gifts & Accessories in Dubai & UAE
+              </h2>
+              <p className="text-muted-foreground text-lg mb-6">
+                Our complete collection of football gifts, accessories, and wall art. Perfect for football lovers, teens, and collectors. Explore by interest:{" "}
+                <a
+                  href="/football-gifts-dubai"
+                  className="text-foreground font-medium underline underline-offset-2 hover:text-gold"
+                >
+                  football gifts Dubai
+                </a>
+                ,{" "}
+                <a
+                  href="/football-gifts-uae"
+                  className="text-foreground font-medium underline underline-offset-2 hover:text-gold"
+                >
+                  football gifts UAE
+                </a>
+                ,{" "}
+                <a
+                  href="/ronaldo-gifts-dubai"
+                  className="text-foreground font-medium underline underline-offset-2 hover:text-gold"
+                >
+                  Ronaldo gifts
+                </a>
+                ,{" "}
+                <a
+                  href="/messi-gifts-dubai"
+                  className="text-foreground font-medium underline underline-offset-2 hover:text-gold"
+                >
+                  Messi gifts
+                </a>
+                ,{" "}
+                <a
+                  href="/football-gifts-for-teens-dubai"
+                  className="text-foreground font-medium underline underline-offset-2 hover:text-gold"
+                >
+                  gifts for teens
+                </a>
+                .
+              </p>
+              {products.length > 0 && (
+                <p className="text-muted-foreground">
+                  {products.length} {products.length === 1 ? 'product' : 'products'} available
+                </p>
+              )}
+            </div>
 
             <ShopFaq />
             <div className="mt-12">

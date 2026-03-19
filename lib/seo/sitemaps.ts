@@ -53,7 +53,17 @@ export function buildSitemapIndexXml(): string {
 export function buildPagesSitemapXml(): string {
   const base = getSitemapBaseUrl()
   const lastmod = formatLastMod(new Date())
-  const routes = ["", "/shop", "/about", "/contact", "/blog", "/search", "/products"]
+  const routes = [
+    "",
+    "/shop",
+    "/about",
+    "/contact",
+    "/blog",
+    "/search",
+    "/products",
+    "/return-and-refund-policy",
+    "/privacy-policy",
+  ]
   const entries = routes
     .filter((route) => !isNoIndexRoute(route || "/"))
     .map((route) => {

@@ -203,7 +203,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   <span className="text-base sm:text-lg text-zinc-500 dark:text-zinc-400 line-through">
                     <del>{saleState.compareAtText}</del>
                   </span>
-                  <span className="text-xl sm:text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+                  <span className="text-xl sm:text-2xl font-bold text-red-600 dark:text-red-400">
                     {saleState.priceText}
                   </span>
                   <span className="text-sm text-green-600 dark:text-green-400 font-medium">
@@ -216,7 +216,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   )}
                 </div>
               ) : (
-                <span className="text-xl sm:text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+                <span className="text-xl sm:text-2xl font-bold text-red-600 dark:text-red-400">
                   {saleState.priceText}
                 </span>
               )}

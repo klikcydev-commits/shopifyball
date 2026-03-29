@@ -62,7 +62,7 @@ export function ProductPrice({
         <span className="flex flex-wrap items-center gap-2">
           <span
             className={cn(
-              "price-now font-bold text-zinc-900 dark:text-zinc-100",
+              "price-now font-bold text-red-600 dark:text-red-400",
               size === "sm" && "text-lg",
               size === "default" && "text-xl",
               size === "lg" && "text-2xl"
@@ -90,7 +90,7 @@ export function ProductPrice({
     <div className={cn("product-price", className)}>
       <span
         className={cn(
-          "font-semibold text-zinc-900 dark:text-zinc-100",
+          "font-bold text-red-600 dark:text-red-400",
           size === "sm" && "text-lg",
           size === "default" && "text-xl",
           size === "lg" && "text-2xl"

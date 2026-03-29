@@ -146,14 +146,14 @@ export function ProductTile({
                   {formatPriceWithCurrency(String(pricing.compare), pricing.currencyCode)}
                 </span>
                 <span className="inline-block rounded-md bg-black/40 px-2 py-0.5 backdrop-blur-sm">
-                  <span className="text-gold font-semibold text-sm">
+                  <span className="text-red-400 font-bold text-sm">
                     {formatPriceWithCurrency(String(pricing.price), pricing.currencyCode)}
                   </span>
                 </span>
               </>
             ) : (
               <span className="inline-block rounded-md bg-black/40 px-2 py-0.5 backdrop-blur-sm">
-                <span className={cn("font-semibold text-sm", titleClass)}>
+                <span className="font-bold text-sm text-red-400">
                   {formatPriceWithCurrency(String(pricing.price), pricing.currencyCode)}
                 </span>
               </span>

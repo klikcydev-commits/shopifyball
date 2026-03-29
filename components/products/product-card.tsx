@@ -220,7 +220,7 @@ export function ProductCard({ product, size = "default", reviewCount }: ProductC
             {onSale && (
               <span className="text-[#999999] text-[10px] md:text-sm line-through">{originalPriceStr}</span>
             )}
-            <span className="text-[#1a1a1a] text-[11px] md:text-base font-semibold">
+            <span className="text-red-600 dark:text-red-400 text-[11px] md:text-base font-bold">
               {salePriceStr}
             </span>
           </div>

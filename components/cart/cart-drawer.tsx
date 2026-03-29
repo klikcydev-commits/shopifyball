@@ -213,7 +213,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                               Was{" "}
                               {formatPriceWithCurrency(wasTotal, currencyCode)}
                             </p>
-                            <p className="font-bold text-zinc-900 dark:text-zinc-100">
+                            <p className="font-bold text-red-600 dark:text-red-400">
                               Now{" "}
                               {formatPriceWithCurrency(
                                 lineTotal,
@@ -235,7 +235,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                           </>
                         )}
                         {!hasSale && (
-                          <p className="font-medium">
+                          <p className="font-bold text-red-600 dark:text-red-400">
                             {formatPriceWithCurrency(
                               lineTotal,
                               currencyCode

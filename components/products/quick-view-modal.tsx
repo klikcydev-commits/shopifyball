@@ -254,7 +254,7 @@ export function QuickViewModal({ product, open, onClose, triggerRef }: QuickView
                       <span className="line-through opacity-70 text-sm text-zinc-500 dark:text-zinc-400">
                         {formatPriceWithCurrency(String(cardPricing.compare), currencyCode)}
                       </span>
-                      <span className="font-semibold text-xl text-zinc-900 dark:text-zinc-100">
+                      <span className="font-bold text-xl text-red-600 dark:text-red-400">
                         {formatPriceWithCurrency(String(cardPricing.price), currencyCode)}
                       </span>
                       {saleState.percentOff > 0 && (
@@ -264,7 +264,7 @@ export function QuickViewModal({ product, open, onClose, triggerRef }: QuickView
                       )}
                     </>
                   ) : (
-                    <span className="font-semibold text-xl text-zinc-900 dark:text-zinc-100">
+                    <span className="font-bold text-xl text-red-600 dark:text-red-400">
                       {formatPriceWithCurrency(String(cardPricing.price), currencyCode)}
                     </span>
                   )}
@@ -347,10 +347,12 @@ export function QuickViewModal({ product, open, onClose, triggerRef }: QuickView
                   className="w-full py-4 bg-primary text-primary-foreground font-medium uppercase tracking-wider hover:opacity-90 transition-opacity"
                 >
                   Add to Cart —{" "}
-                  {formatPrice(
-                    (Number.parseFloat(selectedVariant.price) * quantity).toString(),
-                    currencyCode
-                  )}
+                  <span className="font-bold text-red-200">
+                    {formatPrice(
+                      (Number.parseFloat(selectedVariant.price) * quantity).toString(),
+                      currencyCode
+                    )}
+                  </span>
                 </button>
               )}
               <Link

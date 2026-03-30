@@ -8,6 +8,7 @@ import "./globals.css"
 import { CartProvider } from "@/components/cart/cart-context"
 import { PromotionsProvider } from "@/components/cart/promotions-context"
 import { PromoBanner } from "@/components/PromoBanner"
+import { PromoPopup } from "@/components/promo-popup"
 import { MainLoader } from "@/components/MainLoader"
 import { Toaster } from "@/components/ui/toaster"
 import { getPageMetadata } from "@/lib/seo/build-metadata"
@@ -73,6 +74,7 @@ export default function RootLayout({
           <PromoBanner />
           <CartProvider>
             {children}
+            <PromoPopup />
             <Toaster />
           </CartProvider>
         </PromotionsProvider>

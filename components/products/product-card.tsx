@@ -144,7 +144,7 @@ export function ProductCard({ product, size = "default", reviewCount }: ProductC
             </div>
           )}
           {onSale && (
-            <span className="absolute top-2.5 left-2.5 md:top-3 md:left-3 bg-[#0A1931] text-white text-[10px] md:text-xs font-bold px-3 md:px-4 py-1 md:py-1.5 rounded-full z-10 shadow-[0_0_12px_rgba(74,127,167,0.6),0_0_24px_rgba(10,25,49,0.5)] animate-pulse">
+            <span className="absolute top-2.5 left-2.5 md:top-3 md:left-3 bg-red-600 text-white text-[10px] md:text-xs font-bold px-3 md:px-4 py-1 md:py-1.5 rounded-full z-10 shadow-[0_0_12px_rgba(220,38,38,0.45),0_0_24px_rgba(153,27,27,0.35)] animate-pulse">
               Sale
             </span>
           )}

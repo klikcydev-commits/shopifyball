@@ -7,8 +7,9 @@ import type { NextRequest } from "next/server"
  * Some tools flag Next.js URLs that include `?_rsc=...` or `?rs=...` as suspicious,
  * even though `_rsc` is a normal Next.js App Router mechanism.
  *
- * We only redirect when the browser is requesting real HTML navigation
- * (Accept includes `text/html`) to avoid interfering with internal RSC fetches.
+ * Strategy:
+ * - Keep internal App Router RSC fetches untouched.
+ * - Redirect all other blog requests containing these params to the clean canonical URL.
  */
 export function proxy(request: NextRequest) {
   const { nextUrl } = request
@@ -23,9 +24,11 @@ export function proxy(request: NextRequest) {
     nextUrl.searchParams.has("_rsc") || nextUrl.searchParams.has("rs")
   if (!hasSuspiciousParams) return NextResponse.next()
 
-  const accept = request.headers.get("accept") ?? ""
-  const wantsHtml = accept.includes("text/html")
-  if (!wantsHtml) return NextResponse.next()
+  // Let internal App Router payload requests pass through.
+  const isInternalRscRequest =
+    request.headers.get("rsc") === "1" ||
+    request.headers.has("next-router-prefetch")
+  if (isInternalRscRequest) return NextResponse.next()
 
   // Redirect to canonical clean URL (remove query string entirely).
   const cleanUrl = nextUrl.clone()

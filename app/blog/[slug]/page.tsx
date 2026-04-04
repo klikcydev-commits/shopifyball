@@ -75,6 +75,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const ogTitle = (meta?.ogTitle as string) || title
   const ogDescription = (meta?.ogDescription as string) || description
   const publishedTime = (meta?.datePublished as string) || post.data.date
+  const modifiedTime =
+    (meta?.dateModified as string) || (post.data.dateModified as string | undefined) || post.data.date
   const metaOgImage = meta?.ogImage as string | undefined
   const ogImage = metaOgImage
     ? metaOgImage.startsWith('http')
@@ -82,13 +84,42 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       : `${baseUrl}${metaOgImage}`
     : undefined
 
-  let keywords = [
-    ...(meta?.focusKeyword ? [meta.focusKeyword as string] : []),
-    ...(Array.isArray(meta?.secondaryKeywords) ? (meta.secondaryKeywords as string[]) : []),
-    ...(Array.isArray(post.data.focus_keyword) ? post.data.focus_keyword : post.data.focus_keyword ? [post.data.focus_keyword] : []),
-    ...(Array.isArray(post.data.secondary_keywords) ? post.data.secondary_keywords : []),
-    ...(Array.isArray(post.data.target_keywords) ? post.data.target_keywords : []),
-  ].filter(Boolean) as string[]
+  /**
+   * Per-page SEO: when `content/blog/meta/<slug>.json` defines keywords, use only that list
+   * (deduped). Otherwise fall back to MDX frontmatter—avoids duplicated merged keywords.
+   */
+  const hasMetaKeywordBundle =
+    meta &&
+    (Boolean(meta.focusKeyword) ||
+      (Array.isArray(meta.secondaryKeywords) && (meta.secondaryKeywords as string[]).length > 0))
+
+  let keywords: string[] = []
+  if (hasMetaKeywordBundle) {
+    const seen = new Set<string>()
+    const add = (k: string | undefined) => {
+      if (!k) return
+      const t = String(k).trim()
+      if (!t || seen.has(t)) return
+      seen.add(t)
+      keywords.push(t)
+    }
+    add(meta!.focusKeyword as string)
+    for (const k of (Array.isArray(meta!.secondaryKeywords) ? meta!.secondaryKeywords : []) as string[]) {
+      add(k)
+    }
+  } else {
+    keywords = [
+      ...(Array.isArray(post.data.focus_keyword)
+        ? post.data.focus_keyword
+        : post.data.focus_keyword
+          ? [post.data.focus_keyword]
+          : []),
+      ...(Array.isArray(post.data.secondary_keywords) ? post.data.secondary_keywords : []),
+      ...(Array.isArray(post.data.target_keywords) ? post.data.target_keywords : []),
+    ]
+      .map((k) => (typeof k === 'string' ? k.trim() : ''))
+      .filter(Boolean) as string[]
+  }
   if (keywords.length === 0 && slug) {
     const fromSlug = slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
     keywords = [`${fromSlug} Dubai`, `${fromSlug} UAE`, 'football gifts UAE']
@@ -103,7 +134,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: ogDescription,
       type: 'article',
       publishedTime: publishedTime || undefined,
+      modifiedTime: modifiedTime || undefined,
       url: canonicalUrl,
+      ...(meta?.openGraphSection
+        ? { section: meta.openGraphSection as string }
+        : {}),
+      ...(Array.isArray(meta?.openGraphTags) && (meta.openGraphTags as string[]).length > 0
+        ? { tags: meta.openGraphTags as string[] }
+        : {}),
       ...(ogImage && { images: [{ url: ogImage, alt: ogTitle }] }),
     },
     twitter: {

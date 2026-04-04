@@ -1,6 +1,6 @@
 {
   "slug": "personalized-luxury-gifts-dubai-uae-bespoke",
-  "city": "UAE",
+  "city": "Gift Guides",
   "title": "Personalized & Luxury Gifts Dubai | Bespoke Ideas | Lemah",
   "description": "Personalized gifts and luxury gifts in Dubai and the UAE—craftsmanship, customization, and delivery context for Abu Dhabi, Sharjah, Ajman, Al Ain, Ras Al Khaimah, Fujairah, and Umm Al Quwain.",
   "focusKeyword": "personalized gifts Dubai",
@@ -31,6 +31,14 @@
   "canonical": "https://lemah.store/blog/personalized-luxury-gifts-dubai-uae-bespoke",
   "ogTitle": "Personalized & Luxury Gifts Dubai | Lemah",
   "ogDescription": "Choose bespoke-feeling gifts: personalization done tastefully, luxury backed by details, UAE delivery clarity. Shop Lemah.",
+  "openGraphSection": "Gift Guides",
+  "openGraphTags": [
+    "personalized gifts Dubai",
+    "luxury gifts Dubai",
+    "unique gifts UAE",
+    "corporate gifts Dubai",
+    "gifts Abu Dhabi"
+  ],
   "datePublished": "2026-04-04",
   "dateModified": "2026-04-04"
 }

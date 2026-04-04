@@ -1,6 +1,6 @@
 {
   "slug": "gift-ideas-dubai-uae-practical-guide",
-  "city": "UAE",
+  "city": "Gift Guides",
   "title": "Gift Ideas Dubai & UAE | Practical Guide to Choosing Presents | Lemah",
   "description": "Looking for gift ideas in Dubai and the UAE? Learn how to choose thoughtful presents for birthdays, anniversaries, Eid, and corporate moments—with delivery context for Abu Dhabi, Sharjah, Ajman, Al Ain, Ras Al Khaimah, Fujairah, and Umm Al Quwain.",
   "focusKeyword": "gift ideas Dubai",
@@ -31,6 +31,14 @@
   "canonical": "https://lemah.store/blog/gift-ideas-dubai-uae-practical-guide",
   "ogTitle": "Gift Ideas Dubai & UAE | Practical Guide | Lemah",
   "ogDescription": "Practical gift ideas for Dubai and UAE shoppers: occasions, delivery realism, and thoughtful picks. Shop Lemah.",
+  "openGraphSection": "Gift Guides",
+  "openGraphTags": [
+    "gift ideas Dubai",
+    "gifts UAE",
+    "birthday gifts Dubai",
+    "corporate gifts Dubai",
+    "Eid gifts"
+  ],
   "datePublished": "2026-04-04",
   "dateModified": "2026-04-04"
 }

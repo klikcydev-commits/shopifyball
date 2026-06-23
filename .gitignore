@@ -35,3 +35,4 @@ scripts/*.csv
 
 # Lighthouse CI reports
 .lighthouseci/
+.vercel

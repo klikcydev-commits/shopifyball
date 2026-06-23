@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useTransition } from 'react'
+import { useState, useEffect, useTransition, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getAllProductsAction, getAllCollectionProductsAction } from '@/app/actions/product-actions'
 import type { ShopifyCollection, ShopifyProduct } from '@/lib/shopify/types'
@@ -11,6 +11,7 @@ import { FilterList } from '@/components/search/filter-list'
 import { Button } from '@/components/ui/button'
 import { useCart } from '@/components/cart/cart-context'
 import { useToast } from '@/hooks/use-toast'
+import { trackSearch } from '@/lib/meta-standard-events'
 
 interface SearchClientProps {
   collectionHandle?: string
@@ -28,6 +29,7 @@ export function SearchClient({ collectionHandle, query, collections }: SearchCli
   const [addingId, setAddingId] = useState<string | null>(null)
   const { addToCart } = useCart()
   const { toast } = useToast()
+  const lastTrackedQuery = useRef<string | null>(null)
 
   const handleAddToCart = async (e: React.MouseEvent, product: Product) => {
     e.preventDefault()
@@ -76,6 +78,14 @@ export function SearchClient({ collectionHandle, query, collections }: SearchCli
     }
     loadProducts()
   }, [collectionHandle, query])
+
+  useEffect(() => {
+    if (!query?.trim() || isLoading) return
+    const trimmed = query.trim()
+    if (lastTrackedQuery.current === trimmed) return
+    lastTrackedQuery.current = trimmed
+    void trackSearch(trimmed)
+  }, [query, isLoading])
 
   const handleCollectionChange = (handle: string | null) => {
     startTransition(() => {

@@ -5,6 +5,7 @@ import { Search, X } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { searchProductsAction } from "@/app/actions/product-actions"
+import { trackSearch } from "@/lib/meta-standard-events"
 import type { ShopifyProduct } from "@/lib/shopify/types"
 import { adaptShopifyProduct } from "@/lib/shopify/adapter"
 import { ProductPrice } from "@/components/products/product-price"
@@ -34,6 +35,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
       const result = await searchProductsAction(trimmed)
       setProducts(result.products ?? [])
       if (result.error) setError(result.error)
+      else void trackSearch(trimmed)
     } catch {
       setProducts([])
       setError("Search failed")

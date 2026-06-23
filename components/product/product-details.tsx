@@ -11,8 +11,8 @@ import type { ProductVariant } from '@/lib/shopify-types'
 import { ShoppingBag, Check, ExternalLink, Heart, Ruler, Truck, CreditCard, RotateCcw, ChevronLeft, ChevronRight } from 'lucide-react'
 import { toast } from 'sonner'
 import { buildProductUrl } from '@/lib/shopify/checkout'
-import { getSaleState } from '@/lib/sale-helpers'
-import { event as trackMetaEvent } from '@/lib/fpixel'
+import { getSaleState } from "@/lib/sale-helpers"
+import { trackViewContent } from "@/lib/meta-standard-events"
 import { ProductSeoBlock } from '@/components/product/product-seo-block'
 import { ProductFaq } from '@/components/product/product-faq'
 import { LiveViewers } from '@/components/product/live-viewers'
@@ -90,12 +90,6 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         return
       }
       await addToCart(adaptedProduct, matchingVariant, quantity)
-      void trackMetaEvent('AddToCart', {
-        content_ids: [product.id],
-        content_type: 'product',
-        value: Number.parseFloat(matchingVariant.price) * quantity,
-        currency: matchingVariant.currencyCode ?? 'AED',
-      })
     } catch (error) {
       toast.error('Failed to add to cart')
       console.error(error)
@@ -118,13 +112,13 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
   useEffect(() => {
     if (!selectedVariant) return
-    void trackMetaEvent('ViewContent', {
-      content_ids: [product.id],
-      content_type: 'product',
+    void trackViewContent({
+      productId: product.id,
+      productName: product.title,
       value: currentPrice,
       currency: currencyCode,
     })
-  }, [product.id, selectedVariant, currentPrice, currencyCode])
+  }, [product.id, product.title, selectedVariant, currentPrice, currencyCode])
 
   return (
     <div className="py-12 sm:py-16 md:py-20 lg:py-32 bg-cream overflow-x-hidden">

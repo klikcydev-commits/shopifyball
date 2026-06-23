@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react"
 import { Check, Send, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useScrollReveal } from "@/hooks/use-scroll-reveal"
+import { trackContact, trackLead } from "@/lib/meta-standard-events"
 
 const subjects = [
   { value: "order", label: "Order Question" },
@@ -63,6 +64,9 @@ export function ContactForm() {
         setSubmitError(data.error ?? 'Something went wrong. Please try again.')
         return
       }
+      const email = formData.email.trim()
+      void trackContact(email)
+      void trackLead(email)
       setIsSubmitted(true)
     } catch {
       setSubmitError('Failed to send. Please try again or email us directly.')

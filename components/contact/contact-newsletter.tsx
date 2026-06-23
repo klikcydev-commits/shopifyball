@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react"
 import { cn } from "@/lib/utils"
 import { useScrollReveal } from "@/hooks/use-scroll-reveal"
+import { trackCompleteRegistration } from "@/lib/meta-standard-events"
 
 export function ContactNewsletter() {
   const { ref, isRevealed } = useScrollReveal<HTMLElement>()
@@ -12,6 +13,7 @@ export function ContactNewsletter() {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     if (email) {
+      void trackCompleteRegistration(email.trim())
       setIsSubmitted(true)
     }
   }

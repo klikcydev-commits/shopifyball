@@ -70,7 +70,9 @@ export async function POST(req: Request) {
       customData.setContentIds(cd.content_ids.map(String))
     }
     if (typeof cd.content_type === "string") customData.setContentType(cd.content_type)
+    if (typeof cd.content_name === "string") customData.setContentName(cd.content_name)
     if (typeof cd.num_items === "number") customData.setNumItems(cd.num_items)
+    if (typeof cd.search_string === "string") customData.setSearchString(cd.search_string)
   }
 
   const serverEvent = new ServerEvent()

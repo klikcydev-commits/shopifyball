@@ -19,6 +19,7 @@ import {
   removeFromCartAction,
   applyDiscountCodesAction,
 } from "@/app/actions/cart-actions"
+import { trackAddToCartFromProduct } from "@/lib/meta-standard-events"
 
 interface CartContextType {
   cart: Cart
@@ -116,6 +117,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           const fresh = await getCartAction(shopifyCart.id)
           if (fresh) setCartFromShopify(fresh)
         }
+        void trackAddToCartFromProduct(product, variant, quantity)
         setIsCartOpen(true)
       } catch (err) {
         const message = err instanceof Error ? err.message : "Could not add to cart"

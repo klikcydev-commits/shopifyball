@@ -8,7 +8,8 @@ import { CartSummary } from "./cart-summary"
 import { TrustBadges } from "@/components/trust-badges"
 import { cn, formatPriceWithCurrency } from "@/lib/utils"
 import { getSaleState } from "@/lib/sale-helpers"
-import { event as trackMetaEvent, getFbc } from "@/lib/fpixel"
+import { getFbc } from "@/lib/fpixel"
+import { trackInitiateCheckout } from "@/lib/meta-standard-events"
 
 interface CartDrawerProps {
   open: boolean
@@ -311,11 +312,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                 <button
                   onClick={() => {
                     if (!checkoutUrlWithPayment) return
-                    void trackMetaEvent("InitiateCheckout", {
-                      value: Number.parseFloat(cart.totalAmount || "0"),
-                      currency: currencyCode,
-                      num_items: cart.totalQuantity,
-                    })
+                    void trackInitiateCheckout(cart)
                     window.location.href = checkoutUrlWithPayment
                   }}
                   disabled={isLoading || !checkoutUrlWithPayment}

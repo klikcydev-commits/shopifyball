@@ -13,6 +13,7 @@ import { cn, formatPrice, formatPriceWithCurrency } from "@/lib/utils"
 import { getCardPricing, getSaleState } from "@/lib/sale-helpers"
 import { LiveViewers } from "@/components/product/live-viewers"
 import { TrustBadges } from "@/components/trust-badges"
+import { trackViewContent } from "@/lib/meta-standard-events"
 
 interface QuickViewModalProps {
   product: Product
@@ -55,7 +56,17 @@ export function QuickViewModal({ product, open, onClose, triggerRef }: QuickView
     setSelectedVariant(list[0] ?? null)
     setQuantity(1)
     setImageIndex(0)
-  }, [open, product.id])
+
+    const variant = list[0]
+    if (variant) {
+      void trackViewContent({
+        productId: product.id,
+        productName: product.title,
+        value: Number.parseFloat(variant.price),
+        currency: variant.currencyCode ?? product.currencyCode ?? "AED",
+      })
+    }
+  }, [open, product.id, product.title, product.currencyCode, product.variants])
 
   // Body scroll lock when modal is open
   useEffect(() => {

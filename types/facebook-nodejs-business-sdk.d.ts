@@ -12,7 +12,9 @@ declare module "facebook-nodejs-business-sdk" {
     setCurrency(currency: string): this
     setContentIds(ids: string[]): this
     setContentType(type: string): this
+    setContentName(name: string): this
     setNumItems(count: number): this
+    setSearchString(searchString: string): this
   }
 
   export class ServerEvent {

@@ -8,6 +8,7 @@ import { CartSummary } from "./cart-summary"
 import { TrustBadges } from "@/components/trust-badges"
 import { cn, formatPriceWithCurrency } from "@/lib/utils"
 import { getSaleState } from "@/lib/sale-helpers"
+import { event as trackMetaEvent, getFbc } from "@/lib/fpixel"
 
 interface CartDrawerProps {
   open: boolean
@@ -59,6 +60,14 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
         "payment_method",
         paymentMethod === "cod" ? "cash_on_delivery" : "online"
       )
+      const fbclid = new URLSearchParams(window.location.search).get("fbclid")
+      if (fbclid) {
+        url.searchParams.set("fbclid", fbclid)
+      }
+      const fbc = getFbc()
+      if (fbc) {
+        url.searchParams.set("fbc", fbc)
+      }
       return url.toString()
     } catch {
       return cart.checkoutUrl
@@ -301,7 +310,13 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
 
                 <button
                   onClick={() => {
-                    if (checkoutUrlWithPayment) window.location.href = checkoutUrlWithPayment
+                    if (!checkoutUrlWithPayment) return
+                    void trackMetaEvent("InitiateCheckout", {
+                      value: Number.parseFloat(cart.totalAmount || "0"),
+                      currency: currencyCode,
+                      num_items: cart.totalQuantity,
+                    })
+                    window.location.href = checkoutUrlWithPayment
                   }}
                   disabled={isLoading || !checkoutUrlWithPayment}
                   className="w-full py-4 bg-primary text-primary-foreground font-medium text-sm uppercase tracking-wider hover:bg-navy-light transition-colors btn-press gold-glow disabled:opacity-60 disabled:pointer-events-none"

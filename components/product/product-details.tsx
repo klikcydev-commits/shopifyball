@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import type { ShopifyProduct } from '@/lib/shopify/types'
 import { Button } from '@/components/ui/button'
@@ -12,6 +12,7 @@ import { ShoppingBag, Check, ExternalLink, Heart, Ruler, Truck, CreditCard, Rota
 import { toast } from 'sonner'
 import { buildProductUrl } from '@/lib/shopify/checkout'
 import { getSaleState } from '@/lib/sale-helpers'
+import { event as trackMetaEvent } from '@/lib/fpixel'
 import { ProductSeoBlock } from '@/components/product/product-seo-block'
 import { ProductFaq } from '@/components/product/product-faq'
 import { LiveViewers } from '@/components/product/live-viewers'
@@ -89,6 +90,12 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         return
       }
       await addToCart(adaptedProduct, matchingVariant, quantity)
+      void trackMetaEvent('AddToCart', {
+        content_ids: [product.id],
+        content_type: 'product',
+        value: Number.parseFloat(matchingVariant.price) * quantity,
+        currency: matchingVariant.currencyCode ?? 'AED',
+      })
     } catch (error) {
       toast.error('Failed to add to cart')
       console.error(error)
@@ -106,6 +113,18 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       }
     : null
   const saleState = getSaleState(variantForSale)
+  const currentPrice = Number.parseFloat(selectedVariant?.price?.amount ?? '0')
+  const currencyCode = selectedVariant?.price?.currencyCode ?? 'AED'
+
+  useEffect(() => {
+    if (!selectedVariant) return
+    void trackMetaEvent('ViewContent', {
+      content_ids: [product.id],
+      content_type: 'product',
+      value: currentPrice,
+      currency: currencyCode,
+    })
+  }, [product.id, selectedVariant, currentPrice, currencyCode])
 
   return (
     <div className="py-12 sm:py-16 md:py-20 lg:py-32 bg-cream overflow-x-hidden">

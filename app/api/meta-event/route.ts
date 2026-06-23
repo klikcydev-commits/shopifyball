@@ -62,13 +62,15 @@ export async function POST(req: Request) {
   }
 
   const customData = new CustomData()
-  if (payload.customData) {
-    Object.entries(payload.customData).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        // SDK does not expose typed setters for every possible custom field.
-        ;(customData as unknown as Record<string, (v: unknown) => void>)[`set${key[0].toUpperCase()}${key.slice(1)}`]?.(value)
-      }
-    })
+  const cd = payload.customData
+  if (cd) {
+    if (typeof cd.value === "number") customData.setValue(cd.value)
+    if (typeof cd.currency === "string") customData.setCurrency(cd.currency)
+    if (Array.isArray(cd.content_ids)) {
+      customData.setContentIds(cd.content_ids.map(String))
+    }
+    if (typeof cd.content_type === "string") customData.setContentType(cd.content_type)
+    if (typeof cd.num_items === "number") customData.setNumItems(cd.num_items)
   }
 
   const serverEvent = new ServerEvent()

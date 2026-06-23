@@ -1,4 +1,5 @@
 import type React from "react"
+import { Suspense } from "react"
 import type { Metadata, Viewport } from "next"
 import { Inter, Oswald } from "next/font/google"
 import Script from "next/script"
@@ -92,7 +93,9 @@ export default function RootLayout({
                 src={`https://www.facebook.com/tr?id=${FB_PIXEL_ID}&ev=PageView&noscript=1`}
               />
             </noscript>
-            <MetaPixelTracker />
+            <Suspense fallback={null}>
+              <MetaPixelTracker />
+            </Suspense>
           </>
         ) : null}
         <PromotionsProvider>

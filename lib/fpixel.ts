@@ -1,4 +1,6 @@
-const FB_PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID
+// Public pixel ID — safe to fallback if env is missing at build time.
+const FB_PIXEL_ID =
+  process.env.NEXT_PUBLIC_FB_PIXEL_ID || "1517923196626071"
 
 type PixelParams = Record<string, unknown>
 

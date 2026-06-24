@@ -13,8 +13,8 @@ import { MainLoader } from "@/components/MainLoader"
 import { Toaster } from "@/components/ui/toaster"
 import { getPageMetadata } from "@/lib/seo/build-metadata"
 import { WebsiteJsonLd } from "@/components/seo/website-json-ld"
+import { MetaPixel } from "@/components/analytics/meta-pixel"
 import { MetaPixelTracker } from "@/components/analytics/meta-pixel-tracker"
-import { FB_PIXEL_ID } from "@/lib/fpixel"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -54,7 +54,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${oswald.variable}`}>
-      <head />
+      <head>
+        <MetaPixel />
+      </head>
       <body className="font-sans antialiased">
         <WebsiteJsonLd />
         <GoogleTagManager gtmId="GTM-PCV4CGG5" />
@@ -71,33 +73,9 @@ export default function RootLayout({
             gtag('config', 'G-X86XPFY2SH');
           `}
         </Script>
-        {FB_PIXEL_ID ? (
-          <>
-            <Script id="fb-pixel" strategy="afterInteractive">
-              {`
-                !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-                n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-                n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-                t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
-                document,'script','https://connect.facebook.net/en_US/fbevents.js');
-                fbq('init', '${FB_PIXEL_ID}');
-                fbq('track', 'PageView');
-              `}
-            </Script>
-            <noscript>
-              <img
-                height="1"
-                width="1"
-                style={{ display: "none" }}
-                alt=""
-                src={`https://www.facebook.com/tr?id=${FB_PIXEL_ID}&ev=PageView&noscript=1`}
-              />
-            </noscript>
-            <Suspense fallback={null}>
-              <MetaPixelTracker />
-            </Suspense>
-          </>
-        ) : null}
+        <Suspense fallback={null}>
+          <MetaPixelTracker />
+        </Suspense>
         <PromotionsProvider>
           <MainLoader />
           <PromoBanner />
